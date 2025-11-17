@@ -3,11 +3,19 @@
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/format-date";
 import LoadingSpinner from "@/lib/loading-spinner";
-import { useGetSingleJobQuery } from "@/redux/features/jobsApi";
+import {
+  useEasyApplyJobMutation,
+  useGetSingleJobQuery,
+} from "@/redux/features/jobsApi";
 import { jwtDecode } from "jwt-decode";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import { parseCookies } from "nookies"; // lightweight cookie parser
 import JobDetail from "./job-details";
+import { Jodit } from "jodit-react";
+import { toast } from "sonner";
+import { ApiResponse } from "@/types/profileTypes";
+import { ApiError } from "@/types/types";
+import { Loader } from "lucide-react";
 
 type TokenPayload = {
   role?: string;
@@ -18,6 +26,9 @@ export default function JobDescriptionPage() {
   const { data: job, isLoading } = useGetSingleJobQuery({ id });
   const router = useRouter();
   const pathname = usePathname();
+
+  const [easyApply, { isLoading: applyLoading }] =
+    useEasyApplyJobMutation(undefined);
 
   const cookies = parseCookies();
   const token = cookies.token || cookies.user;
@@ -32,10 +43,34 @@ export default function JobDescriptionPage() {
     }
   }
 
-  const handleApplyClick = () => {
+  const handleApplyClick = async () => {
     if (role !== "applicant") {
       router.push(`/login?redirect=${pathname}`);
       return;
+    } else {
+      try {
+        const res = (await easyApply({ job: job?._id })) as {
+          data?: ApiResponse;
+          error?: ApiError;
+        };
+
+        if (res.data?.success) {
+          toast.success("Job application submitted successfully!");
+          router.push("/profile/applied-jobs");
+        } else {
+          const errorMessage = res.error?.data?.message;
+
+          toast.error(errorMessage || "Something went wrong");
+
+          if (errorMessage === "Please complete your profile first!") {
+            router.push("/profile");
+          }
+        }
+        console.log(res);
+      } catch (error) {
+        console.log(error);
+      }
+      // router.push(`/job/${job?.title}/${job?._id}`);
     }
     // Applicant: stay on the same page per requirement
   };
@@ -148,10 +183,15 @@ export default function JobDescriptionPage() {
               {role !== "recruiter" && role !== "admin" && (
                 <div>
                   <Button
+                    disabled={applyLoading}
                     onClick={handleApplyClick}
                     className="w-full bg-green-900 hover:bg-green-800 text-white px-8 py-6 text-lg font-medium rounded-lg"
                   >
-                    Apply Now
+                    {applyLoading ? (
+                      <Loader className="animate-spin size-8" />
+                    ) : (
+                      "Apply Now"
+                    )}
                   </Button>
                 </div>
               )}
