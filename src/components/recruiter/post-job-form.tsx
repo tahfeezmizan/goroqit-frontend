@@ -264,7 +264,7 @@ export function PostJobForm() {
             </Label>
             <Input
               id="jobLocation"
-              placeholder="Hair Stylist"
+              placeholder="Enter your locations"
               {...register("jobLocation", {
                 required: "jobLocation is required",
               })}
@@ -320,9 +320,10 @@ export function PostJobForm() {
                     <SelectValue placeholder="Select Expricene Level" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Freshers">Freshers</SelectItem>
-                    <SelectItem value="Beginner">Beginners</SelectItem>
-                    <SelectItem value="Experienced">Experience</SelectItem>
+                    <SelectItem value="juniorBarber">Junior Barber</SelectItem>
+                    <SelectItem value="barber">Mid-Level Barber</SelectItem>
+                    <SelectItem value="seniorBarber">Senior Barber</SelectItem>
+                    <SelectItem value="headBarber">Master Barber</SelectItem>
                   </SelectContent>
                 </Select>
               )}
