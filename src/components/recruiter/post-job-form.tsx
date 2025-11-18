@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Select,
   SelectContent,
@@ -11,7 +10,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { useGetAllCategoryQuery } from "@/redux/features/categoryApi";
 import { useCreateJobMutation } from "@/redux/features/jobsApi";
 import { Category, PostJobFormData } from "@/types/types";
@@ -38,7 +36,7 @@ export function PostJobForm() {
       jobLocation: "",
       type: undefined,
       startDate: undefined,
-      endDate: undefined,
+      engagementType: "",
       minSalary: 0,
       maxSalary: 0,
       description: "",
@@ -65,7 +63,7 @@ export function PostJobForm() {
         startDate: data.startDate
           ? new Date(data.startDate).toISOString()
           : null,
-        endDate: data.endDate ? new Date(data.endDate).toISOString() : null,
+        // endDate: data.endDate ? new Date(data.endDate).toISOString() : null,
         minSalary: Number(data.minSalary),
         maxSalary: Number(data.maxSalary),
         description: data.description,
@@ -166,7 +164,7 @@ export function PostJobForm() {
             <Label className="text-lg font-medium text-gray-90">
               Employment Type
             </Label>
-            <Controller
+            {/* <Controller
               name="type"
               control={control}
               rules={{ required: "Employment type is required" }}
@@ -205,7 +203,53 @@ export function PostJobForm() {
                   </div>
                 </RadioGroup>
               )}
-            />
+            /> */}
+            <div className="flex items-center gap-4">
+              {/* Job Type */}
+              <Controller
+                name="type"
+                control={control}
+                rules={{ required: "Job type is required" }}
+                render={({ field }) => (
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger className="mt-1 p-4 rounded-lg bg-gray-50 !text-lg text-black w-full">
+                      <SelectValue placeholder="Select Job Type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Full-time">Full-time</SelectItem>
+                      <SelectItem value="Part-time">Part-time</SelectItem>
+                      <SelectItem value="Temp">Temp</SelectItem>
+                      <SelectItem value="Self-employed">
+                        Self-employed
+                      </SelectItem>
+                      <SelectItem value="Chair-rental">Chair-rental</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+
+              {/* Engagement Type */}
+              <Controller
+                name="engagementType"
+                control={control}
+                rules={{ required: "Engagement type is required" }}
+                render={({ field }) => (
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger className="mt-1 p-4 rounded-lg bg-gray-50 !text-lg text-black w-full">
+                      <SelectValue placeholder="Select Engagement Type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Salaried">Salaried</SelectItem>
+                      <SelectItem value="Self-employed">
+                        Self-employed
+                      </SelectItem>
+                      <SelectItem value="Chair-rental">Chair Rental</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+            </div>
+
             {errors.type && (
               <p className="text-red-500 text-sm">{errors.type.message}</p>
             )}
@@ -233,7 +277,8 @@ export function PostJobForm() {
             )}
           </div>
         </div>
-        {/* Date Range */}
+
+        {/* Date Range and Expricen level */}
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label
@@ -257,7 +302,38 @@ export function PostJobForm() {
               <p className="text-red-500 text-sm">{errors.startDate.message}</p>
             )}
           </div>
+
           <div className="space-y-2">
+            <Label
+              htmlFor="experianceLabel"
+              className="text-lg font-medium text-gray-90"
+            >
+              Expricene Level
+            </Label>
+            <Controller
+              name="experianceLabel"
+              control={control}
+              rules={{ required: "Expricene Level is required" }}
+              render={({ field }) => (
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <SelectTrigger className="mt-1 p-4 rounded-lg bg-gray-50 !text-lg text-black w-full">
+                    <SelectValue placeholder="Select Expricene Level" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Freshers">Freshers</SelectItem>
+                    <SelectItem value="Beginner">Beginners</SelectItem>
+                    <SelectItem value="Experienced">Experience</SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+            />
+            {errors.experianceLabel && (
+              <p className="text-red-500 text-sm">
+                {errors.experianceLabel.message}
+              </p>
+            )}
+          </div>
+          {/* <div className="space-y-2">
             <Label
               htmlFor="endDate"
               className="text-lg font-medium text-gray-90"
@@ -276,7 +352,7 @@ export function PostJobForm() {
             {errors.endDate && (
               <p className="text-red-500 text-sm">{errors.endDate.message}</p>
             )}
-          </div>
+          </div> */}
         </div>
 
         {/* Salary Range */}
@@ -307,39 +383,8 @@ export function PostJobForm() {
           )}
         </div>
 
-        <div className="space-y-2">
-          <Label
-            htmlFor="experianceLabel"
-            className="text-lg font-medium text-gray-90"
-          >
-            Expricene Level
-          </Label>
-          <Controller
-            name="experianceLabel"
-            control={control}
-            rules={{ required: "Expricene Level is required" }}
-            render={({ field }) => (
-              <Select onValueChange={field.onChange} value={field.value}>
-                <SelectTrigger className="mt-1 p-4 rounded-lg bg-gray-50 !text-lg text-black w-full">
-                  <SelectValue placeholder="Select Expricene Level" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Freshers">Freshers</SelectItem>
-                  <SelectItem value="Beginner">Beginners</SelectItem>
-                  <SelectItem value="Experienced">Experience</SelectItem>
-                </SelectContent>
-              </Select>
-            )}
-          />
-          {errors.experianceLabel && (
-            <p className="text-red-500 text-sm">
-              {errors.experianceLabel.message}
-            </p>
-          )}
-        </div>
-
         {/* Job Description */}
-        <div className="space-y-2">
+        {/* <div className="space-y-2">
           <Label
             htmlFor="description"
             className="text-lg font-medium text-gray-90"
@@ -357,15 +402,15 @@ export function PostJobForm() {
           {errors.description && (
             <p className="text-red-500 text-sm">{errors.description.message}</p>
           )}
-        </div>
+        </div> */}
 
         {/* Job Responsibilities - FIXED */}
-        <div className="space-y-2">
+        {/* <div className="space-y-2">
           <Label
             htmlFor="responsibilities"
             className="text-lg font-medium text-gray-90"
           >
-            Job Responsibilities
+            Job Description
           </Label>
           <Controller
             name="responsibilities"
@@ -388,6 +433,49 @@ export function PostJobForm() {
               );
             }}
           />
+          {errors.responsibilities && (
+            <p className="text-red-500 text-sm">
+              {errors.responsibilities.message}
+            </p>
+          )}
+        </div> */}
+
+        <div className="space-y-2">
+          <Label
+            htmlFor="responsibilities"
+            className="text-lg font-medium text-gray-90"
+          >
+            Job Description
+          </Label>
+
+          <Controller
+            name="responsibilities"
+            control={control}
+            rules={{ required: "Job responsibilities are required" }}
+            render={({ field }) => {
+              const defaultTemplate = `
+         <p><strong>Description:</strong></p>
+         <br/><br/>
+        <p><strong>Responsibilities:</strong></p>
+<br/><br/>  
+        <p><strong>About the Business:</strong></p>
+      `;
+
+              return (
+                <JoditEditor
+                  ref={null}
+                  value={field.value || defaultTemplate}
+                  config={{
+                    height: 400,
+                    readonly: false,
+                  }}
+                  onBlur={(newContent) => field.onChange(newContent)}
+                  onChange={() => {}}
+                />
+              );
+            }}
+          />
+
           {errors.responsibilities && (
             <p className="text-red-500 text-sm">
               {errors.responsibilities.message}

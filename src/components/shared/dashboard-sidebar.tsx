@@ -47,7 +47,7 @@ export function DashboardSidebar({
 
       <div
         className={cn(
-          "h-dvh bg-slate-800 text-white z-40 flex flex-col justify-between pb-20 fixed lg:static transition-transform duration-300",
+          "fixed h-dvh bg-slate-800 text-white z-40 flex flex-col justify-between pb-20 lg:static transition-transform duration-300",
           isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
       >
