@@ -219,10 +219,10 @@ export function PostJobForm() {
                       <SelectItem value="Full-time">Full-time</SelectItem>
                       <SelectItem value="Part-time">Part-time</SelectItem>
                       <SelectItem value="Temp">Temp</SelectItem>
-                      <SelectItem value="Self-employed">
+                      {/* <SelectItem value="Self-employed">
                         Self-employed
                       </SelectItem>
-                      <SelectItem value="Chair-rental">Chair-rental</SelectItem>
+                      <SelectItem value="Chair-rental">Chair-rental</SelectItem> */}
                     </SelectContent>
                   </Select>
                 )}
@@ -308,22 +308,22 @@ export function PostJobForm() {
               htmlFor="experianceLabel"
               className="text-lg font-medium text-gray-90"
             >
-              Expricene Level
+              Experience Level
             </Label>
             <Controller
               name="experianceLabel"
               control={control}
-              rules={{ required: "Expricene Level is required" }}
+              rules={{ required: "Experience Level is required" }}
               render={({ field }) => (
                 <Select onValueChange={field.onChange} value={field.value}>
                   <SelectTrigger className="mt-1 p-4 rounded-lg bg-gray-50 !text-lg text-black w-full">
                     <SelectValue placeholder="Select Expricene Level" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="juniorBarber">Junior Barber</SelectItem>
-                    <SelectItem value="barber">Mid-Level Barber</SelectItem>
-                    <SelectItem value="seniorBarber">Senior Barber</SelectItem>
-                    <SelectItem value="headBarber">Master Barber</SelectItem>
+                    <SelectItem value="Junior">Junior Barber</SelectItem>
+                    <SelectItem value="Mid-Level">Mid-Level Barber</SelectItem>
+                    <SelectItem value="Senior">Senior Barber</SelectItem>
+                    <SelectItem value="Master">Master Barber</SelectItem>
                   </SelectContent>
                 </Select>
               )}

@@ -185,21 +185,25 @@ export default function ContactForm() {
                 <div className="col-span-1">
                   <h4 className="text-xl font-semibold  mb-2">Email Address</h4>
                   <div className="w-8 h-0.5 bg-gray-900 mb-4"></div>
-                  <p className="text-xl  mb-2">info@goroqit.com</p>
+                  <a href="mailto:info@goroqit.com" className="text-xl mb-2 block">
+                    info@goroqit.com
+                  </a>
                   <p className="text-lg ">
                     Assistance hours:
                     <br />
-                    Monday - Friday 6 am to 8 pm
+                    Monday - Friday 9 am to 8 pm
                   </p>
                 </div>
                 <div className="col-span-1">
                   <h4 className="text-xl font-semibold  mb-2">Number</h4>
                   <div className="w-8 h-0.5 bg-gray-900 mb-4"></div>
-                  <p className="text-xl  mb-2">(808) 998-3256</p>
+                  <a href="tel:+4401895913722" className="text-xl mb-2 block">
+                    +4401895 913 722
+                  </a>
                   <p className="text-lg ">
                     Assistance hours:
                     <br />
-                    Monday - Friday 6 am to 8 pm
+                    Monday - Friday 9 am to 8 pm
                   </p>
                 </div>
               </div>
