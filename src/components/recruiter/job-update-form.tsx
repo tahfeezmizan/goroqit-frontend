@@ -16,7 +16,7 @@ import {
   useUpdateJobMutation,
 } from "@/redux/features/jobsApi";
 import { Category, JobData, PostJobFormData } from "@/types/types";
-import { Calendar } from "lucide-react";
+import { Calendar, Loader } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -37,40 +37,41 @@ export function JobUpdateForm() {
       category: "",
       jobLocation: "",
       type: undefined,
+      engagementType: "",
       startDate: undefined,
-      endDate: undefined,
+      experianceLabel: undefined,
       minSalary: 0,
       maxSalary: 0,
       description: "",
-      responsibilities: "",
     },
   });
   const { id } = useParams();
   const route = useRouter();
 
-  const { data: categories, isLoading } = useGetAllCategoryQuery({});
+  const { data: categories } = useGetAllCategoryQuery({});
   const { data: jobs } = useGetAllJobsQuery({});
-  const [updateJob] = useUpdateJobMutation();
+  const [updateJob, { isLoading }] = useUpdateJobMutation();
 
   const job = jobs?.find((job: JobData) => job._id === id);
+  console.log(job);
 
   useEffect(() => {
-    if (job) {
+    if (job && categories) {
       reset({
         title: job.title || "",
-        // ✅ Fixed: Extract _id from category object to match SelectItem value
-        category: job.category?._id || job.category || "",
+        category: job.category?.name || job.category || "",
         jobLocation: job.jobLocation || "",
-        type: job.type || undefined,
+        type: job.type || "",
+        engagementType: job.engagementType || "",
         startDate: job.startDate ? job.startDate.split("T")[0] : undefined,
-        endDate: job.endDate ? job.endDate.split("T")[0] : undefined,
+        experianceLabel: job.experianceLabel || "",
         minSalary: job.minSalary || 0,
         maxSalary: job.maxSalary || 0,
         description: job.description || "",
-        responsibilities: job.responsibilities || "",
+        salryType: job.salryType || "hourly",
       });
     }
-  }, [job, reset]);
+  }, [job, categories, reset]);
 
   const onSubmit = async (data: PostJobFormData) => {
     const updateData = {
@@ -79,11 +80,11 @@ export function JobUpdateForm() {
       jobLocation: data.jobLocation,
       type: data.type,
       startDate: data.startDate ? new Date(data.startDate).toISOString() : null,
-      endDate: data.endDate ? new Date(data.endDate).toISOString() : null,
       minSalary: Number(data.minSalary),
       maxSalary: Number(data.maxSalary),
       description: data.description,
-      responsibilities: data.responsibilities,
+      engagementType: data.engagementType, // ✅ Added engagementType
+      salryType: data.salryType, // ✅ Added salryType
     };
 
     try {
@@ -162,7 +163,7 @@ export function JobUpdateForm() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid md:grid-cols-2 gap-4">
           {/* Employment Type */}
           <div className="space-y-3">
             <Label className="text-lg font-medium text-gray-90">
@@ -306,8 +307,8 @@ export function JobUpdateForm() {
           <Label className="text-lg font-medium text-gray-90">
             Salary Range
           </Label>
-          <div className="flex gap-4">
-            <div className="flex-1 grid grid-cols-2 gap-4">
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex-1 grid md:grid-cols-2 gap-4">
               <Input
                 type="number"
                 placeholder="Min"
@@ -355,16 +356,16 @@ export function JobUpdateForm() {
         {/* Job Description */}
         <div className="space-y-2">
           <Label
-            htmlFor="responsibilities"
+            htmlFor="description"
             className="text-lg font-medium text-gray-90"
           >
             Job Description
           </Label>
 
           <Controller
-            name="responsibilities"
+            name="description"
             control={control}
-            rules={{ required: "Job responsibilities are required" }}
+            rules={{ required: "Job description are required" }}
             render={({ field }) => {
               const defaultTemplate = `
                <p><strong>Description:</strong></p>
@@ -389,10 +390,8 @@ export function JobUpdateForm() {
             }}
           />
 
-          {errors.responsibilities && (
-            <p className="text-red-500 text-sm">
-              {errors.responsibilities.message}
-            </p>
+          {errors.description && (
+            <p className="text-red-500 text-sm">{errors.description.message}</p>
           )}
         </div>
 
@@ -401,7 +400,11 @@ export function JobUpdateForm() {
           type="submit"
           className="w-full bg-green-900 hover:bg-green-800 text-white px-8 py-6 mt-5 text-lg font-medium rounded-lg"
         >
-          Update Job
+          {isLoading ? (
+            <Loader className="animate-spin size-8" />
+          ) : (
+            "Update Job"
+          )}
         </Button>
       </form>
     </div>

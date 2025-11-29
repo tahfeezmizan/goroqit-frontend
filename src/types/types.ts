@@ -172,6 +172,12 @@ export interface PostJobFormData {
       location: string;
       companyEmail: string;
       companyDescription: string;
+      phone: string;
+      companyWebsite: string;
+      linkedinProfile: string;
+      twitterProfile: string;
+      facebookProfile: string;
+      instagramProfile: string;
     } | null;
     role: string;
     roleProfile: string;

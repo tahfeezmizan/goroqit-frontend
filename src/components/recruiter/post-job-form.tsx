@@ -512,7 +512,7 @@ import { useGetAllCategoryQuery } from "@/redux/features/categoryApi";
 import { useCreateJobMutation } from "@/redux/features/jobsApi";
 import { Category, PostJobFormData } from "@/types/types";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import { Calendar } from "lucide-react";
+import { Calendar, Loader } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
@@ -545,7 +545,7 @@ export function PostJobForm() {
   });
 
   const route = useRouter();
-  const [createJob] = useCreateJobMutation();
+  const [createJob, {isLoading}] = useCreateJobMutation();
   const { data: categories } = useGetAllCategoryQuery(undefined);
 
   const onSubmit = async (data: PostJobFormData) => {
@@ -895,7 +895,8 @@ export function PostJobForm() {
           type="submit"
           className="w-full bg-green-900 hover:bg-green-800 text-white px-8 py-6 mt-5 text-lg font-medium rounded-lg"
         >
-          Job post
+          {isLoading ? <Loader className="animate-spin size-8" /> : "Job post"}
+          
         </Button>
       </form>
     </div>
