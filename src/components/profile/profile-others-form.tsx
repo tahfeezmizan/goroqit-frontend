@@ -55,8 +55,6 @@ export function ProfileOthersForm() {
 
   const profileData = userData?.profile;
 
-  console.log("Others data:", userData);
-
   const {
     register,
     handleSubmit,
@@ -243,6 +241,42 @@ export function ProfileOthersForm() {
     });
   };
 
+  // const onSubmit = async (data: EssentialPersonalData) => {
+  //   console.log("Others Form Data:", data);
+  //   const oldSkills = profileData?.profile?.skills || [];
+  //   const oldExpertise = profileData?.profile?.expartes || [];
+  //   const mergedSkills = [...new Set([...oldSkills, ...(data.skills || [])])];
+  //   const mergedExpertise = [
+  //     ...new Set([...oldExpertise, ...(data.expartes || [])]),
+  //   ];
+
+  //   const finalData = {
+  //     ...data,
+  //     preferredWorkType: data.preferredWorkType,
+  //     salaryExpectation: data.salaryExpectation || { amount: null, type: null },
+  //     skills: mergedSkills,
+  //     expartes: mergedExpertise,
+  //     languages,
+  //   };
+
+  //   const formData = new FormData();
+  //   formData.append("data", JSON.stringify(finalData));
+
+  //   try {
+  //     const res = await updateProfile({ body: formData });
+  //     console.log("Api", res);
+  //     if (res?.data?.success) {
+  //       toast.success("Profile updated successfully");
+  //       refetch();
+  //     } else {
+  //       toast.error(res?.data?.message || "Failed to update profile");
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //     toast.error("Error updating profile");
+  //   }
+  // };
+
   const onSubmit = async (data: EssentialPersonalData) => {
     console.log("Others Form Data:", data);
     const oldSkills = profileData?.profile?.skills || [];
@@ -255,7 +289,10 @@ export function ProfileOthersForm() {
     const finalData = {
       ...data,
       preferredWorkType: data.preferredWorkType,
-      salaryExpectation: data.salaryExpectation || { amount: null, type: null },
+      salaryExpectation: {
+        amount: data.salaryExpectation?.amount || null,
+        type: data.salaryExpectation?.type || "hourly", // Ensure type is never null
+      },
       skills: mergedSkills,
       expartes: mergedExpertise,
       languages,
@@ -278,7 +315,7 @@ export function ProfileOthersForm() {
       toast.error("Error updating profile");
     }
   };
-
+  
   if (isUserLoading) {
     return <LoadingSpinner />;
   }
@@ -444,9 +481,9 @@ export function ProfileOthersForm() {
                 className="flex items-center space-x-8"
               >
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="yes" id="yes" />
+                  <RadioGroupItem value="Yes" id="Yes" />
                   <Label
-                    htmlFor="yes"
+                    htmlFor="Yes"
                     className="text-md font-medium text-gray-600"
                   >
                     Yes

@@ -108,7 +108,7 @@ export default function MergedProfileForm() {
       </h3>
 
       {/* === Profile Image Section === */}
-      <div className="flex flex-col items-center space-y-4">
+      <div className="flex flex-col items-start space-y-4">
         <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
           {preview ? (
             <Image
@@ -149,14 +149,14 @@ export default function MergedProfileForm() {
               id="name"
               placeholder="John"
               {...register("name", { required: true })}
-              className="mt-1 p-4 text-black bg-gray-50"
+              className="mt-1 p-4 !text-xl text-black bg-gray-50"
             />
             {errors.name && (
               <p className="text-sm text-red-500">First name is required</p>
             )}
           </div>
 
-          <div>
+          {/* <div>
             <Label htmlFor="emails" className="text-lg text-gray-900">
               Email
             </Label>
@@ -169,7 +169,7 @@ export default function MergedProfileForm() {
             {errors.email && (
               <p className="text-sm text-red-500">Email is required</p>
             )}
-          </div>
+          </div> */}
         </div>
 
         <div className="pt-4">

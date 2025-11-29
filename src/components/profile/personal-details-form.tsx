@@ -39,8 +39,6 @@ export function PersonalDetailsForm() {
 
   const profileData = userData?.profile;
 
-  console.log("Profile data:", userData);
-
   const { register, handleSubmit, reset } = useForm<EssentialPersonalData>({
     defaultValues: {
       firstName: "",

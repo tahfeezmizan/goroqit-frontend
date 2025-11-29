@@ -159,7 +159,8 @@ export interface PostJobFormData {
   responsibilities?: string;
   jobLocation: string;
   applicationsCount: string;
-  experianceLabel: "Experienced" | "Beginner" | "Freshers";
+  salryType: "yearly" | "monthly" | "weekly" | "hourly";
+  experianceLabel: "Junior" | "Mid-Level" | "Senior" | "Master";
   user?: {
     email: string;
     image: string | null;
