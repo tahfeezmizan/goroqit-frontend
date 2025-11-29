@@ -9,6 +9,7 @@ import {
 import { useGetMeQuery } from "@/redux/features/userApi";
 import { TopNavbar } from "../recruiter/top-navbar";
 import { DashboardSidebar } from "./dashboard-sidebar";
+import { SidebarInset, SidebarProvider } from "../ui/sidebar";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -38,16 +39,14 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   }
 
   return (
-    <div className="h-screen overflow-x-auto grid grid-cols-6 gap-0 bg-[#F5F6FA]">
-      <div className=" lg:col-span-1">
-        <DashboardSidebar sidebarItems={sidebarItems} />
-      </div>
+    <SidebarProvider className="bg-slate-800">
+      {/* Sidebar */}
+      <DashboardSidebar sidebarItems={sidebarItems} />
 
-      {/* Main Content Area */}
-      <main className="col-span-6 lg:col-span-5 overflow-y-auto">
+      <SidebarInset className="bg-[#EBF1FA]">
         <TopNavbar />
-        <div className="p-2 lg:p-8 bg-[#EBF1FA]">{children}</div>
-      </main>
-    </div>
+        <div className="p-2 lg:p-8">{children}</div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }

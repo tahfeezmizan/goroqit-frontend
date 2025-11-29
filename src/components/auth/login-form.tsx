@@ -68,7 +68,7 @@ export function LoginForm() {
               targetPath = "/admin";
               break;
             case "recruiter":
-              targetPath = "/recruiter";
+              targetPath = "/recruiter/company";
               break;
             case "applicant":
               targetPath = "/profile";

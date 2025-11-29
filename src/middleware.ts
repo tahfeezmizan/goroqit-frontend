@@ -53,20 +53,7 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  // 🔹 Role-based access rules
-  if (pathname.startsWith("/profile") && role !== "applicant") {
-    return NextResponse.redirect(new URL("/login", req.url));
-  }
-
-  if (pathname.startsWith("/recruiter") && role !== "recruiter") {
-    return NextResponse.redirect(new URL("/login", req.url));
-  }
-
-  if (pathname.startsWith("/admin") && role !== "admin") {
-    return NextResponse.redirect(new URL("/login", req.url));
-  }
-
-  // ✅ Allow valid access
+  // 🔹 s
   return NextResponse.next();
 }
 

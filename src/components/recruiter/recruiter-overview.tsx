@@ -49,28 +49,11 @@ export default function RecruiterOverview() {
 
   return (
     <div>
-      <div className="flex justify-between items-end mb-8 ">
-        <div className=" space-y-1">
-          <h2 className="text-2xl font-semibold">Welcome back, {userData?.name}</h2>
-          <p>Here is your job listings statistic report.</p>
-        </div>
-        <div className="w-full max-w-xs">
-          <div className="flex justify-between mb-1">
-            <span className="text-gray-700 font-medium">
-              Complete your profile
-            </span>
-            <span className="font-semibold">
-              {userData?.profileCompletion ?? 0}%
-            </span>
-          </div>
-
-          <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
-            <div
-              className="h-3 bg-green-800 rounded-full transition-all duration-500 ease-out"
-              style={{ width: `${userData?.profileCompletion ?? 0}%` }}
-            ></div>
-          </div>
-        </div>
+      <div className="mb-8 space-y-2">
+        <h2 className="text-2xl font-semibold">
+          Welcome back, {userData?.name}
+        </h2>
+        <p>Here is your job listings dynamic report.</p>
       </div>
 
       <StatsCard stats={stats} />

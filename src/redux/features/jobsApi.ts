@@ -125,6 +125,15 @@ const jobsApi = baseApi.injectEndpoints({
         return response?.data;
       },
     }),
+
+    easyApplyJob: builder.mutation({
+      query: (data) => ({
+        url: `/application`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Application"],
+    }),
   }),
 });
 
@@ -137,4 +146,5 @@ export const {
   useDeleteJobMutation,
   useGetAllJobswithStaticsQuery,
   useGetFilterdJobsQuery,
+  useEasyApplyJobMutation,
 } = jobsApi;

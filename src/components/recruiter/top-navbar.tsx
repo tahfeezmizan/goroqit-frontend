@@ -52,7 +52,7 @@ export function TopNavbar() {
         Swal.fire("Deleted!", "Your account has been deleted.", "success");
         dispatch(removeUser());
         router.push("/");
-      } catch{
+      } catch {
         Swal.fire("Error!", "Failed to delete account.", "error");
       }
     }
@@ -87,9 +87,7 @@ export function TopNavbar() {
                 )}
               </div>
 
-              <div
-                className="md:flex flex-col text-start hidden "
-              >
+              <div className="md:flex flex-col text-start hidden ">
                 <span className="!text-lg font-semibold text-gray-900 leading-none">
                   {data?.name}
                 </span>
@@ -106,7 +104,7 @@ export function TopNavbar() {
               <span className="text-sm text-gray-500">{data?.email}</span>
             </DropdownMenuItem>
 
-            <DropdownMenuItem onClick={handleLogout} className="">
+            <DropdownMenuItem onClick={handleLogout} className="text-red-500">
               Logout
             </DropdownMenuItem>
             {role !== "admin" && (

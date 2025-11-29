@@ -50,7 +50,7 @@ export function SignupForm() {
         role: role,
         companyName: data.companyName,
       });
-
+      console.log(res);
       if (res?.data?.success === true) {
         route.push(
           `/otp-verify?email=${encodeURIComponent(

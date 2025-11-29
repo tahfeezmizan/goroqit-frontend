@@ -149,16 +149,18 @@ export interface PostJobFormData {
   _id?: number | string;
   title: string;
   category?: string;
-  type: "Full-time" | "Remote" | "Freelance";
+  type: "Full-time" | "Part-time" | "Temp" | "Self-employed" | "Chair-rental";
   startDate: Date;
   endDate: Date;
+  engagementType: string;
   minSalary: number;
   maxSalary: number;
   description?: string;
   responsibilities?: string;
   jobLocation: string;
   applicationsCount: string;
-  experianceLabel: "Experienced" | "Beginner" | "Freshers";
+  salryType: "yearly" | "monthly" | "weekly" | "hourly";
+  experianceLabel: "Junior" | "Mid-Level" | "Senior" | "Master";
   user?: {
     email: string;
     image: string | null;
@@ -170,6 +172,12 @@ export interface PostJobFormData {
       location: string;
       companyEmail: string;
       companyDescription: string;
+      phone: string;
+      companyWebsite: string;
+      linkedinProfile: string;
+      twitterProfile: string;
+      facebookProfile: string;
+      instagramProfile: string;
     } | null;
     role: string;
     roleProfile: string;

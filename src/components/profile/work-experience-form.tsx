@@ -16,6 +16,13 @@ import { Edit, Plus, Save, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import Swal from "sweetalert2";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 interface WorkExperienceData {
   jobTitle: string;
@@ -556,7 +563,7 @@ export function WorkExperienceForm() {
             />
           </div>
 
-          <div className="space-y-2">
+          {/* <div className="space-y-2">
             <Label
               className="text-lg font-medium text-gray-900"
               htmlFor="employmentType"
@@ -572,6 +579,32 @@ export function WorkExperienceForm() {
               placeholder="Full Time"
               className="mt-1 p-4 rounded-lg !text-lg text-black w-full bg-gray-100"
             />
+            
+          </div> */}
+          <div className="space-y-2">
+            <Label
+              className="text-lg font-medium text-gray-900"
+              htmlFor="employmentType"
+            >
+              Employment Type
+            </Label>
+            <Select
+              value={formData.employmentType}
+              onValueChange={(value) =>
+                handleInputChange("employmentType", value)
+              }
+            >
+              <SelectTrigger className="mt-1 p-4 rounded-lg !text-lg text-black w-full bg-gray-100">
+                <SelectValue placeholder="Select employment type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Full-time">Full-time</SelectItem>
+                <SelectItem value="Part-time">Part-time</SelectItem>
+                <SelectItem value="Temp">Temp</SelectItem>
+                <SelectItem value="Self-employed">Self-employed</SelectItem>
+                <SelectItem value="Chair-rental">Chair-rental</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
 
@@ -629,7 +662,7 @@ export function WorkExperienceForm() {
       </div>
 
       {/* Action Buttons */}
-      <div className="flex gap-4">
+      {/* <div className="flex flex-col md:flex-row gap-4">
         <Button
           onClick={handleAddExperience}
           type="button"
@@ -671,6 +704,54 @@ export function WorkExperienceForm() {
           <Save className="h-4 w-4" />
           {isLoading ? "Saving..." : "Save All Experience"}
         </Button>
+      </div> */}
+
+      {/* Action Buttons */}
+      <div className="flex flex-col md:flex-row gap-4">
+        <Button
+          onClick={handleAddExperience}
+          type="button"
+          disabled={!isFormValid() || isLoading}
+          className={`px-8 py-4 text-lg font-medium rounded-lg flex items-center gap-2 ${
+            isFormValid() && !isLoading
+              ? "bg-green-600 hover:bg-green-700 text-white"
+              : "bg-gray-300 text-gray-500 cursor-not-allowed"
+          }`}
+        >
+          <Plus className="h-4 w-4" />
+          {isLoading
+            ? "Saving..."
+            : editingIndex !== null
+            ? "Update Experience"
+            : "Add Work Experience"}
+        </Button>
+
+        {editingIndex !== null && (
+          <>
+            <Button
+              onClick={handleCancelEdit}
+              type="button"
+              className="bg-gray-500 hover:bg-gray-600 text-white px-8 py-4 text-lg font-medium rounded-lg"
+            >
+              Cancel Edit
+            </Button>
+
+            {/* Show Save All Experience only when editing */}
+            <Button
+              onClick={handleSave}
+              type="button"
+              disabled={!isSaveEnabled() || isLoading}
+              className={`px-8 py-4 text-lg font-medium rounded-lg flex items-center gap-2 ${
+                isSaveEnabled() && !isLoading
+                  ? "bg-green-900 hover:bg-green-800 text-white"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+              }`}
+            >
+              <Save className="h-4 w-4" />
+              {isLoading ? "Saving..." : "Save All Experience"}
+            </Button>
+          </>
+        )}
       </div>
 
       {/* Added Work Experience List */}

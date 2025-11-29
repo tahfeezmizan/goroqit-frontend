@@ -23,7 +23,6 @@ const tableHeaders = [
   { key: "location", label: "Location" },
   { key: "salary", label: "Salary" },
   { key: "posted", label: "Posted" },
-  { key: "expires", label: "Expires" },
   { key: "applicantCount", label: "Applicant Count" },
   { key: "action", label: "Action" },
 ];
@@ -43,7 +42,7 @@ export function JobPostTable() {
 
   const job = data?.jobs?.data;
 
-  // console.log("job data", data);
+  console.log("job data", data);
 
   const handleDelete = (id: string | number | undefined) => {
     Swal.fire({
@@ -114,9 +113,7 @@ export function JobPostTable() {
                   <td className="py-4 px-6 text-gray-700">
                     {new Date(job.startDate).toLocaleDateString()}
                   </td>
-                  <td className="py-4 px-6 text-gray-700">
-                    {new Date(job.endDate).toLocaleDateString()}
-                  </td>
+
                   <td className="py-4 px-6 text-gray-700">
                     {job.applicationsCount}
                   </td>

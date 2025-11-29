@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import { Input } from "@/components/ui/input";
 import LoadingSpinner from "@/lib/loading-spinner";
 import { getImageUrl } from "@/lib/utils";
 import { useGetChatsQuery } from "@/redux/features/chatAPI";
@@ -11,6 +10,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import io, { Socket } from "socket.io-client";
+import { Input } from "../ui/input";
 
 export default function ChatList() {
   const pathname = usePathname();
@@ -275,6 +275,7 @@ export default function ChatList() {
       <div className="w-full bg-white border-r border-gray-200 flex flex-col">
         {/* 🔍 Search bar with connection status */}
         <div className="p-3 py-3.5 border-b border-gray-200">
+          <h3 className="text-2xl font-semibold mb-2">All Messages</h3>
           <div className="relative mb-2">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input

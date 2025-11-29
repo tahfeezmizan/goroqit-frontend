@@ -39,8 +39,6 @@ export function PersonalDetailsForm() {
 
   const profileData = userData?.profile;
 
-  console.log("Profile data:", profileData);
-
   const { register, handleSubmit, reset } = useForm<EssentialPersonalData>({
     defaultValues: {
       firstName: "",
@@ -89,11 +87,37 @@ export function PersonalDetailsForm() {
   const [updateProfile, { isLoading, isError, error }] =
     useUpdateProfileMutation();
 
+  // const onSubmit = async (data: EssentialPersonalData) => {
+  //   console.log("Personal Details Form Data:", data);
+
+  //   const finalData = {
+  //     ...data,
+  //   };
+
+  //   const formData = new FormData();
+  //   formData.append("data", JSON.stringify(finalData));
+
+  //   try {
+  //     const res = await updateProfile({ body: formData });
+  //     console.log("Api", res);
+  //     if (res?.data?.success) {
+  //       toast.success("Profile updated successfully");
+  //       refetch();
+  //     } else {
+  //       toast.error(res?.data?.message || "Failed to update profile");
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //     toast.error("Error updating profile");
+  //   }
+  // };
+
   const onSubmit = async (data: EssentialPersonalData) => {
     console.log("Personal Details Form Data:", data);
 
     const finalData = {
       ...data,
+      age: data.age ? Number(data.age) : undefined, // Convert age to number
     };
 
     const formData = new FormData();

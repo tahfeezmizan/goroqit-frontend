@@ -50,6 +50,8 @@ export function EducationForm() {
 
   const education = userData?.profile?.education;
 
+  console.log(education)
+
   const onSubmit = async (data: EducationData) => {
     const formData = new FormData();
     formData.append("degreeTitle", data.degreeTitle);

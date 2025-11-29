@@ -49,8 +49,6 @@ export function PricingCard({
     features: features.join("\n"),
   });
 
-  console.log(_id);
-
   const [updatePlan] = useUpdatePlanMutation();
   const [deletePlan, { isLoading: isDeleteLoading }] = useDeletePlanMutation();
   const [createCheckoutSession, { isLoading }] =
@@ -59,7 +57,6 @@ export function PricingCard({
   const handleCheckout = async () => {
     try {
       const res = await createCheckoutSession(_id).unwrap();
-      console.log("Checkout response:", res); // This should now show the URL object
 
       if (res?.url) {
         window.location.href = res.url; // This will redirect to Stripe
