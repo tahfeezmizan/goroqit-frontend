@@ -164,6 +164,17 @@ const userApi = baseApi.injectEndpoints({
       },
     }),
 
+    // Delete specific education by index
+    deletePortfolio: builder.mutation({
+      query: ({ title }) => {
+        console.log("DeleteEducation title:", title);
+        return {
+          url: `/user/applicants/portfolio/${title}`,
+          method: "DELETE",
+        };
+      },
+    }),
+
     deleteUser: builder.mutation<void, void>({
       query: () => ({
         url: "/user/me",
@@ -195,4 +206,5 @@ export const {
   useDeleteUserMutation,
   useDeleteEducationMutation,
   useDeleteSingleUserMutation,
+  useDeletePortfolioMutation,
 } = userApi;

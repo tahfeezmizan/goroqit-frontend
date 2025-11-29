@@ -2,29 +2,29 @@
 
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { UploadCloud, X, Trash2, Save } from "lucide-react";
-import Image from "next/image";
+import { Textarea } from "@/components/ui/textarea";
+import LoadingSpinner from "@/lib/loading-spinner";
+import { getImageUrl } from "@/lib/utils";
 import {
   useAddPortfolioMutation,
+  useDeletePortfolioMutation,
   useGetMeQuery,
-  useUpdateProfileMutation,
 } from "@/redux/features/userApi";
-import { toast } from "sonner";
-import Swal from "sweetalert2";
 import {
   ApiResponse,
   Portfolio,
   PortfolioApiResponse,
 } from "@/types/profileTypes";
 import { ApiError } from "@/types/types";
-import { getImageUrl } from "@/lib/utils";
-import LoadingSpinner from "@/lib/loading-spinner";
+import { Trash2, UploadCloud, X } from "lucide-react";
+import Image from "next/image";
+import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import Swal from "sweetalert2";
 
 export default function PortfolioForm() {
   const { register, handleSubmit, reset, setValue } = useForm<Portfolio>({
@@ -38,8 +38,7 @@ export default function PortfolioForm() {
   } = useGetMeQuery("");
   const [addPortfolio, { isLoading: isAddingPortfolio }] =
     useAddPortfolioMutation();
-  const [updateProfile, { isLoading: isUpdatingProfile }] =
-    useUpdateProfileMutation();
+  const [deleteProfile] = useDeletePortfolioMutation();
 
   const [previewImages, setPreviewImages] = useState<string[]>([]);
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
@@ -115,9 +114,7 @@ export default function PortfolioForm() {
         data?: ApiResponse;
         error?: ApiError;
       };
-
-      console.log(res);
-
+      
       if (res.data?.success) {
         toast.success("Portfolio added successfully!");
 
@@ -138,7 +135,7 @@ export default function PortfolioForm() {
   };
 
   // ✅ Delete portfolio
-  const handleDeletePortfolio = async (index: number) => {
+  const handleDeletePortfolio = async (title: string) => {
     const result = await Swal.fire({
       title: "Are you sure?",
       text: "This will delete the portfolio permanently!",
@@ -151,13 +148,7 @@ export default function PortfolioForm() {
 
     if (result.isConfirmed) {
       try {
-        const updatedPortfolios = [...portfolios];
-        updatedPortfolios.splice(index, 1);
-        setPortfolios(updatedPortfolios);
-
-        await updateProfile({
-          body: { portfolio: updatedPortfolios },
-        }).unwrap();
+        await deleteProfile({ title }).unwrap();
 
         toast.success("Portfolio deleted successfully!");
         await refetch();
@@ -169,19 +160,19 @@ export default function PortfolioForm() {
   };
 
   // ✅ Save all portfolios to database
-  const handleSaveAll = async () => {
-    try {
-      const res = await updateProfile({
-        body: { portfolio: portfolios },
-      }).unwrap();
-      console.log(res);
-      toast.success("All portfolio data saved successfully!");
-      await refetch();
-    } catch (error: any) {
-      console.error("Save all portfolio error:", error);
-      toast.error("Failed to save portfolio data");
-    }
-  };
+  // const handleSaveAll = async () => {
+  //   try {
+  //     const res = await updateProfile({
+  //       body: { portfolio: portfolios },
+  //     }).unwrap();
+  //     console.log(res);
+  //     toast.success("All portfolio data saved successfully!");
+  //     await refetch();
+  //   } catch (error: any) {
+  //     console.error("Save all portfolio error:", error);
+  //     toast.error("Failed to save portfolio data");
+  //   }
+  // };
 
   // ✅ Helper function to determine image source
   const getImageSource = (src: string) => {
@@ -293,7 +284,7 @@ export default function PortfolioForm() {
             {isAddingPortfolio ? "Adding Portfolio..." : "Add Portfolio"}
           </Button>
 
-          <Button
+          {/* <Button
             type="button"
             onClick={handleSaveAll}
             disabled={isUpdatingProfile}
@@ -305,7 +296,7 @@ export default function PortfolioForm() {
             {isUpdatingProfile
               ? "Saving All Portfolios..."
               : "Save All Portfolios"}
-          </Button>
+          </Button> */}
         </div>
       </form>
 
@@ -351,14 +342,14 @@ export default function PortfolioForm() {
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
-                          handleDeletePortfolio(index);
+                          handleDeletePortfolio(p.title);
                         }}
                         size="sm"
                         variant="outline"
                         className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50"
                         type="button"
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Trash2 className="h-4 w-4" /> delete
                       </Button>
                     </div>
                   </div>
