@@ -1,3 +1,4 @@
+import CompanyPortfolioForm from "@/components/recruiter/company-portfolio-form";
 import CompanyProfile from "@/components/recruiter/company-profile";
 import Link from "next/link";
 import React from "react";
@@ -9,6 +10,7 @@ export default function page() {
         <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
           About Company{" "}
         </h2>
+
         <div className="">
           <Link
             href={"/recruiter/company/edit-company"}
@@ -19,7 +21,14 @@ export default function page() {
         </div>
       </div>
 
-      <CompanyProfile />
+      <div className="flex flex-col md:flex-row items-start justify-between gap-6">
+        <div className="flex-1">
+          <CompanyProfile />
+        </div>
+        <div className="flex-1">
+          <CompanyPortfolioForm />
+        </div>
+      </div>
     </div>
   );
 }
