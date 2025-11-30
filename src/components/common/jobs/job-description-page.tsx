@@ -135,7 +135,7 @@ export default function JobDescriptionPage() {
                       <div className="flex justify-between">
                         <span className="text-gray-600">Salary</span>
                         <span className="font-medium text-gray-900">
-                          ${job?.minSalary} - ${job?.maxSalary} USD
+                          £{job?.minSalary} - £{job?.maxSalary}
                         </span>
                       </div>
                       <div className="flex justify-between">
