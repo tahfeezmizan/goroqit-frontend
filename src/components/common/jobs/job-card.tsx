@@ -1,17 +1,12 @@
 // components/JobCard.tsx
 import { CardContent } from "@/components/ui/card";
 import TimeAgo from "@/lib/time-ago";
-import { getImageUrl, getTokenAndRole } from "@/lib/utils";
+import { getImageUrl } from "@/lib/utils";
 import { PostJobFormData } from "@/types/types";
-import { jwtDecode } from "jwt-decode";
 import { Briefcase, Calendar, CirclePoundSterling, MapPin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { parseCookies } from "nookies";
 
-type TokenPayload = {
-  role?: string;
-};
 
 export default function JobCard({ job }: { job: PostJobFormData }) {
   const {

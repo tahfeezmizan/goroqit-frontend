@@ -15,6 +15,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import Image from "next/image";
+import logo from "@/assets/mian-logo.png";
 
 export function AppSidebar({ sidebarItems }: { sidebarItems: SidebarItem[] }) {
   const pathname = usePathname();
@@ -30,7 +31,7 @@ export function AppSidebar({ sidebarItems }: { sidebarItems: SidebarItem[] }) {
       <SidebarHeader className="border-b bg-slate-800 border-sidebar-border">
         <Link href="/" className="flex items-center justify-center py-2">
           <Image
-            src={require("@/assets/mian-logo.png")}
+            src={logo}
             alt="Logo"
             width={165}
             height={40}

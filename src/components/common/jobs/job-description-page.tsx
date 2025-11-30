@@ -98,7 +98,8 @@ export default function JobDescriptionPage() {
                       </h2>
                       <p className="font-medium text-gray-500">
                         <Link
-                          href={`/about-company/${job?.user?.profile?._id}`}
+                          href={`/about-company`}
+                          // ${job?.user?.profile?._id}
                         >
                           <span> {job?.user?.profile?.companyName}</span>
                         </Link>
