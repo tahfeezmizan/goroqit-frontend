@@ -675,6 +675,7 @@ export function CompanyProfileForm() {
               </Label>
               <Input
                 id="companyWebsite"
+                type="url"
                 placeholder="https://example.com"
                 {...register("companyWebsite", {
                   validate: validateUrl
@@ -715,6 +716,7 @@ export function CompanyProfileForm() {
               </Label>
               <Input
                 id="linkedinProfile"
+                type="url"
                 placeholder="https://linkedin.com/company/example"
                 {...register("linkedinProfile", {
                   validate: validateUrl
@@ -734,6 +736,7 @@ export function CompanyProfileForm() {
               </Label>
               <Input
                 id="twitterProfile"
+                type="url"
                 placeholder="https://twitter.com/example"
                 {...register("twitterProfile", {
                   validate: validateUrl
@@ -753,6 +756,7 @@ export function CompanyProfileForm() {
               </Label>
               <Input
                 id="facebookProfile"
+                type="url"
                 placeholder="https://facebook.com/example"
                 {...register("facebookProfile", {
                   validate: validateUrl
@@ -772,6 +776,7 @@ export function CompanyProfileForm() {
               </Label>
               <Input
                 id="instagramProfile"
+                type="url"
                 placeholder="https://instagram.com/example"
                 {...register("instagramProfile", {
                   validate: validateUrl
