@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { ApiResponse } from "@/types/profileTypes";
 import { ApiError } from "@/types/types";
 import { Loader } from "lucide-react";
+import Link from "next/link";
 
 type TokenPayload = {
   role?: string;
@@ -24,6 +25,7 @@ type TokenPayload = {
 export default function JobDescriptionPage() {
   const { id } = useParams();
   const { data: job, isLoading } = useGetSingleJobQuery({ id });
+  console.log(job?.user?.profile?._id);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -95,7 +97,12 @@ export default function JobDescriptionPage() {
                         {job?.title}
                       </h2>
                       <p className="font-medium text-gray-500">
-                        <span> {job?.user?.profile?.companyName}</span>
+                        <Link
+                          href={`/about-company`}
+                          // ${job?.user?.profile?._id}
+                        >
+                          <span> {job?.user?.profile?.companyName}</span>
+                        </Link>
                         {"  • "}
                         {job?.user?.profile?.location}
                       </p>
@@ -135,7 +142,7 @@ export default function JobDescriptionPage() {
                       <div className="flex justify-between">
                         <span className="text-gray-600">Salary</span>
                         <span className="font-medium text-gray-900">
-                          ${job?.minSalary} - ${job?.maxSalary} USD
+                          £{job?.minSalary} - £{job?.maxSalary}
                         </span>
                       </div>
                       <div className="flex justify-between">

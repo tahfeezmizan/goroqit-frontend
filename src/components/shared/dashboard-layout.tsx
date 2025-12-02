@@ -10,6 +10,7 @@ import { useGetMeQuery } from "@/redux/features/userApi";
 import { TopNavbar } from "../recruiter/top-navbar";
 import { DashboardSidebar } from "./dashboard-sidebar";
 import { SidebarInset, SidebarProvider } from "../ui/sidebar";
+import { AppSidebar } from "./social-login/app-sidebar";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -42,6 +43,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     <SidebarProvider className="bg-slate-800">
       {/* Sidebar */}
       <DashboardSidebar sidebarItems={sidebarItems} />
+      {/* <AppSidebar sidebarItems={sidebarItems} /> */}
 
       <SidebarInset className="bg-[#EBF1FA]">
         <TopNavbar />
