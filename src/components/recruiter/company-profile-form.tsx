@@ -385,7 +385,6 @@
 //   );
 // }
 
-
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -423,7 +422,13 @@ interface CompanyFormData {
 }
 
 export function CompanyProfileForm() {
-  const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm<CompanyFormData>({
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    reset,
+    formState: { errors },
+  } = useForm<CompanyFormData>({
     defaultValues: {
       companyName: "",
       companyDescription: "",
@@ -450,7 +455,7 @@ export function CompanyProfileForm() {
   // URL validation function
   const validateUrl = (value: string) => {
     if (!value) return true; // Allow empty values
-    if (value.startsWith('http://') || value.startsWith('https://')) {
+    if (value.startsWith("http://") || value.startsWith("https://")) {
       return true;
     }
     return "URL must start with http:// or https://";
@@ -524,7 +529,10 @@ export function CompanyProfileForm() {
         formData.append("companyLogo", data.companyLogo);
       }
 
+      console.log(data);
+
       const res = await updateProfile({ body: formData });
+      console.log(res);
 
       if (res?.data?.success) {
         if (subscribeStatus === false) {
@@ -661,6 +669,7 @@ export function CompanyProfileForm() {
               </Label>
               <Input
                 id="phone"
+                type="tel"
                 placeholder="0000 0000 0000"
                 {...register("phone")}
                 className="mt-1 p-4 rounded-lg !text-lg text-black w-full"
@@ -678,12 +687,14 @@ export function CompanyProfileForm() {
                 type="url"
                 placeholder="https://example.com"
                 {...register("companyWebsite", {
-                  validate: validateUrl
+                  validate: validateUrl,
                 })}
                 className="mt-1 p-4 rounded-lg !text-lg text-black w-full"
               />
               {errors.companyWebsite && (
-                <p className="text-red-500 text-sm mt-1">{errors.companyWebsite.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.companyWebsite.message}
+                </p>
               )}
             </div>
             <div className="space-y-2">
@@ -719,12 +730,14 @@ export function CompanyProfileForm() {
                 type="url"
                 placeholder="https://linkedin.com/company/example"
                 {...register("linkedinProfile", {
-                  validate: validateUrl
+                  validate: validateUrl,
                 })}
                 className="mt-1 p-4 rounded-lg !text-lg text-black w-full"
               />
               {errors.linkedinProfile && (
-                <p className="text-red-500 text-sm mt-1">{errors.linkedinProfile.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.linkedinProfile.message}
+                </p>
               )}
             </div>
             <div className="space-y-2">
@@ -739,12 +752,14 @@ export function CompanyProfileForm() {
                 type="url"
                 placeholder="https://twitter.com/example"
                 {...register("twitterProfile", {
-                  validate: validateUrl
+                  validate: validateUrl,
                 })}
                 className="mt-1 p-4 rounded-lg !text-lg text-black w-full"
               />
               {errors.twitterProfile && (
-                <p className="text-red-500 text-sm mt-1">{errors.twitterProfile.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.twitterProfile.message}
+                </p>
               )}
             </div>
             <div className="space-y-2">
@@ -759,12 +774,14 @@ export function CompanyProfileForm() {
                 type="url"
                 placeholder="https://facebook.com/example"
                 {...register("facebookProfile", {
-                  validate: validateUrl
+                  validate: validateUrl,
                 })}
                 className="mt-1 p-4 rounded-lg !text-lg text-black w-full"
               />
               {errors.facebookProfile && (
-                <p className="text-red-500 text-sm mt-1">{errors.facebookProfile.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.facebookProfile.message}
+                </p>
               )}
             </div>
             <div className="space-y-2">
@@ -779,12 +796,14 @@ export function CompanyProfileForm() {
                 type="url"
                 placeholder="https://instagram.com/example"
                 {...register("instagramProfile", {
-                  validate: validateUrl
+                  validate: validateUrl,
                 })}
                 className="mt-1 p-4 rounded-lg !text-lg text-black w-full"
               />
               {errors.instagramProfile && (
-                <p className="text-red-500 text-sm mt-1">{errors.instagramProfile.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.instagramProfile.message}
+                </p>
               )}
             </div>
           </div>

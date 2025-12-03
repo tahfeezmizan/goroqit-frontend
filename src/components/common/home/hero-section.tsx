@@ -1,18 +1,13 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import heroBg from "@/assets/hero-bg.png";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { useGetHomeStatisticsQuery } from "@/redux/features/adminStatics";
+import Link from "next/link";
 
 export function HeroSection() {
-  const {
-    data: homeStatistics,
-    isLoading,
-    error,
-  } = useGetHomeStatisticsQuery({});
-  console.log("home", homeStatistics?.totalUsers);
+  const { data: homeStatistics } = useGetHomeStatisticsQuery({});
 
   return (
     <section
