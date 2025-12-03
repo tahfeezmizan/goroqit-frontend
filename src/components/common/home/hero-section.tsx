@@ -1,9 +1,19 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import heroBg from "@/assets/hero-bg.png";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { useGetHomeStatisticsQuery } from "@/redux/features/adminStatics";
 
 export function HeroSection() {
+  const {
+    data: homeStatistics,
+    isLoading,
+    error,
+  } = useGetHomeStatisticsQuery({});
+  console.log("home", homeStatistics?.totalUsers);
+
   return (
     <section
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
@@ -60,7 +70,10 @@ export function HeroSection() {
             </Avatar>
           </div>
         </div>
-        <p className="text-center">1,200+ applicant already joined</p>
+        <p className="text-center">
+          {homeStatistics ? homeStatistics.totalUsers : "1.200"}+ applicants
+          already joined
+        </p>
       </div>
     </section>
   );
