@@ -12,6 +12,7 @@ import {
   Twitter,
   Facebook,
   Instagram,
+  CircleUserRound,
 } from "lucide-react";
 import LoadingSpinner from "@/lib/loading-spinner";
 
@@ -19,19 +20,27 @@ export default function CompanyProfile() {
   const { data, isLoading } = useGetMeQuery(undefined);
   const profileData = data?.profile;
 
+  console.log(profileData);
+
   if (isLoading) return <LoadingSpinner />;
 
   return (
     <div className="bg-white rounded-lg shadow-sm p-4 md:p-8">
       {/* Company Logo */}
       <div className="flex flex-col md:flex-row justify-between items-start gap-6 mb-8">
-        <Image
-          src={getImageUrl(profileData?.companyLogo)}
-          alt={profileData?.companyName}
-          width={80}
-          height={80}
-          className="w-26 h-26 border p-2 rounded"
-        />
+        <div className="w-26 h-26 border p-2 rounded flex items-center justify-center">
+          {profileData?.companyLogo ? (
+            <Image
+              src={getImageUrl(profileData?.companyLogo)}
+              alt={profileData?.companyName}
+              width={80}
+              height={80}
+              className="w-full h-full"
+            />
+          ) : (
+            <CircleUserRound className="size-36" />
+          )}
+        </div>
 
         <div className="w-full md:max-w-xs">
           <div className="flex justify-between mb-1">
