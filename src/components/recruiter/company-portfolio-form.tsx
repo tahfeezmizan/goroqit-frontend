@@ -131,7 +131,6 @@ export default function CompanyPortfolioForm() {
         toast.error(res.error?.data?.message || "Something went wrong");
       }
     } catch (error) {
-      console.log("Error:", error);
       toast.error("Failed to add portfolio");
     }
   };

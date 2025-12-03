@@ -33,8 +33,6 @@ export default function MergedProfileForm() {
   const [preview, setPreview] = useState<string | null>(null);
   const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation();
 
-  console.log(userData);
-
   // === React Hook Form setup ===
   const {
     register,

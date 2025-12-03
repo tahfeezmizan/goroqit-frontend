@@ -25,7 +25,6 @@ type TokenPayload = {
 export default function JobDescriptionPage() {
   const { id } = useParams();
   const { data: job, isLoading } = useGetSingleJobQuery({ id });
-  console.log(job?.user?.profile?._id);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -68,9 +67,9 @@ export default function JobDescriptionPage() {
             router.push("/profile");
           }
         }
-        console.log(res);
-      } catch (error) {
-        console.log(error);
+    
+      } catch {
+    
       }
       // router.push(`/job/${job?.title}/${job?._id}`);
     }

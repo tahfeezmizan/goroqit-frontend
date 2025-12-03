@@ -79,8 +79,6 @@ export default function JobsSection() {
     error,
   } = useGetFilterdJobsQuery(apiFilters);
 
-  console.log(jobsResponse, "jobs");
-
   // Extract jobs and pagination data from response
   const { jobs, pagination } = useMemo(() => {
     if (!jobsResponse) {
@@ -98,7 +96,6 @@ export default function JobsSection() {
   }, [jobsResponse]);
 
   const handleFiltersChange = useCallback((newFilters: FilterData) => {
-    console.log("handleFiltersChange", newFilters);
     setFilters(newFilters);
     setCurrentPage(1);
   }, []);

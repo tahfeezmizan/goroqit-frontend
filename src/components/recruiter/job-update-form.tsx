@@ -53,7 +53,6 @@ export function JobUpdateForm() {
   const [updateJob, { isLoading }] = useUpdateJobMutation();
 
   const job = jobs?.find((job: JobData) => job._id === id);
-  console.log(job);
 
   useEffect(() => {
     if (job && categories) {

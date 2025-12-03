@@ -12,7 +12,6 @@ import Link from "next/link";
 import { Badge } from "../ui/badge";
 
 export default function TalentCards({ talent }: { talent: TalentProps }) {
-  console.log(talent);
   return (
     <div
       key={talent.id}

@@ -49,10 +49,8 @@
 //   const [createJob] = useCreateJobMutation();
 //   const { data: categories } = useGetAllCategoryQuery(undefined);
 
-//   // console.log("Category", categories);
-
 //   const onSubmit = async (data: PostJobFormData) => {
-//     console.log(data);
+
 //     try {
 //       const res = await createJob({
 //         title: data.title,
@@ -70,13 +68,11 @@
 //         responsibilities: data.responsibilities,
 //       }).unwrap();
 
-//       console.log(res.data?.message);
-
 //       if (res.success) {
 //         toast.success("✅ Job Createed Sucessfully");
 //         route.push("/recruiter/jobs");
 //       } else {
-//         console.log(res.data?.message);
+
 //         toast.error("❌ Job creation failed");
 //       }
 //     } catch (error) {
@@ -545,11 +541,10 @@ export function PostJobForm() {
   });
 
   const route = useRouter();
-  const [createJob, {isLoading}] = useCreateJobMutation();
+  const [createJob, { isLoading }] = useCreateJobMutation();
   const { data: categories } = useGetAllCategoryQuery(undefined);
 
   const onSubmit = async (data: PostJobFormData) => {
-    console.log(data);
     try {
       const res = await createJob({
         title: data.title,
@@ -568,13 +563,10 @@ export function PostJobForm() {
         responsibilities: data.responsibilities,
       }).unwrap();
 
-      console.log(res.data?.message);
-
       if (res.success) {
         toast.success("✅ Job Created Successfully");
         route.push("/recruiter/jobs");
       } else {
-        console.log(res.data?.message);
         toast.error("❌ Job creation failed");
       }
     } catch (error) {
@@ -896,7 +888,6 @@ export function PostJobForm() {
           className="w-full bg-green-900 hover:bg-green-800 text-white px-8 py-6 mt-5 text-lg font-medium rounded-lg"
         >
           {isLoading ? <Loader className="animate-spin size-8" /> : "Job post"}
-          
         </Button>
       </form>
     </div>

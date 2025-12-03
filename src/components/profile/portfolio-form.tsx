@@ -128,8 +128,7 @@ export default function PortfolioForm() {
       } else {
         toast.error(res.error?.data?.message || "Something went wrong");
       }
-    } catch (error) {
-      console.log("Error:", error);
+    } catch{
       toast.error("Failed to add portfolio");
     }
   };

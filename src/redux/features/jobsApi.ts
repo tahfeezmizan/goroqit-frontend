@@ -68,7 +68,6 @@ const jobsApi = baseApi.injectEndpoints({
 
     deleteJob: builder.mutation({
       query: (id) => {
-        console.log("Deleting job with ID:", id);
         return {
           url: `/job/${id}`,
           method: "DELETE",

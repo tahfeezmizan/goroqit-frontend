@@ -529,10 +529,7 @@ export function CompanyProfileForm() {
         formData.append("companyLogo", data.companyLogo);
       }
 
-      console.log(data);
-
       const res = await updateProfile({ body: formData });
-      console.log(res);
 
       if (res?.data?.success) {
         if (subscribeStatus === false) {
@@ -549,7 +546,6 @@ export function CompanyProfileForm() {
         toast.error(errorMessage);
       }
     } catch (error) {
-      console.log(error);
       toast.error("Failed to update profile");
     } finally {
       setIsSubmitting(false);

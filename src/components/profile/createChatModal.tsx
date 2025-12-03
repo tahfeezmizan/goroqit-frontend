@@ -24,7 +24,7 @@ const CreateChatModal = ({ myId }: { myId: string }) => {
       const res = await createChat({
         participants: [myId],
       }).unwrap();
-      console.log(res);
+      // console.log(res);
       if (res.success) {
         router.push("/recruiter/messages"); // 🔹 navigate after success
       }

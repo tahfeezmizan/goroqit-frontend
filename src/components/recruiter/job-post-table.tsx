@@ -42,8 +42,6 @@ export function JobPostTable() {
 
   const job = data?.jobs?.data;
 
-  console.log("job data", data);
-
   const handleDelete = (id: string | number | undefined) => {
     Swal.fire({
       title: "Are you sure?",

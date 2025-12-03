@@ -18,7 +18,6 @@ export default function GoogleLogin() {
     // Redirect to your Google auth endpoint
     window.location.href = `${process.env.NEXT_PUBLIC_BASEURL}/api/v1/auth/google`;
     // window.location.href = `http://localhost:5000/api/v1/auth/google`;
-    // console.log("goolge api called")
   };
 
   return (

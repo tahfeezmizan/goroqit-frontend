@@ -20,8 +20,6 @@ export default function CompanyProfile() {
   const { data, isLoading } = useGetMeQuery(undefined);
   const profileData = data?.profile;
 
-  console.log("About Company", profileData);
-
   if (isLoading) return <LoadingSpinner />;
 
   return (

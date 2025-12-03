@@ -24,7 +24,6 @@ export function TopNavbar() {
   const dispatch = useDispatch();
 
   const { role } = getTokenAndRole();
-  console.log(role);
 
   if (isLoading) {
     return <PageLoading />;
@@ -98,7 +97,7 @@ export function TopNavbar() {
             </Button>
           </DropdownMenuTrigger>
 
-          <DropdownMenuContent align="end" className="w-56 ">
+          <DropdownMenuContent align="end" className="w-80">
             <DropdownMenuItem className="flex flex-col items-start">
               <span className="text-xl font-semibold">{data?.name}</span>
               <span className="text-sm text-gray-500">{data?.email}</span>

@@ -20,8 +20,6 @@ export default function ResumePreview() {
     : talent.profile.resume;
   const resumeUrl = `${baseUrl}/${resumePath}`;
 
-  // console.log(resumeUrl)
-
   const [numPages, setNumPages] = useState<number>(0);
   return (
     <div className="w-full max-w-4xl mx-auto">

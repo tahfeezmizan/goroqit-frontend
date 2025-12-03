@@ -50,7 +50,7 @@ export function SignupForm() {
         role: role,
         companyName: data.companyName,
       });
-      console.log(res);
+
       if (res?.data?.success === true) {
         route.push(
           `/otp-verify?email=${encodeURIComponent(
@@ -76,7 +76,6 @@ export function SignupForm() {
     } catch (error: unknown) {
       const apiError = error as ApiError;
       toast.error(apiError?.data?.message || "Something went wrong");
-      console.log("error", apiError);
     }
   };
 

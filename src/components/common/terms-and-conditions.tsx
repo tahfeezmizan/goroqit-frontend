@@ -7,7 +7,6 @@ import LoadingSpinner from "@/lib/loading-spinner";
 
 export default function TermsAndConditions() {
   const { data, isLoading, isError } = useGetTermsQuery();
-  console.log(data)
 
   if (isLoading) {
     return <LoadingSpinner />;
