@@ -66,8 +66,8 @@ export function HeroSection() {
           </div>
         </div>
         <p className="text-center">
-          {homeStatistics ? homeStatistics.totalUsers : "1.200"}+ applicants
-          already joined
+          {homeStatistics ? homeStatistics.totalApplicants : "1.200"}+
+          applicants already joined
         </p>
       </div>
     </section>

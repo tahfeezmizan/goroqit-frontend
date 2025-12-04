@@ -247,7 +247,7 @@ export function Navbar() {
                               <span>Dashboard</span>
                             </Link>
                           </DropdownMenuItem>
-                          <DropdownMenuItem asChild>
+                          {/* <DropdownMenuItem asChild>
                             <Link
                               href="/recruiter/jobs/post-job"
                               className="flex items-center space-x-2"
@@ -255,7 +255,7 @@ export function Navbar() {
                               <Plus className="h-4 w-4" />
                               <span>Create Job</span>
                             </Link>
-                          </DropdownMenuItem>
+                          </DropdownMenuItem> */}
                         </>
                       )}
 

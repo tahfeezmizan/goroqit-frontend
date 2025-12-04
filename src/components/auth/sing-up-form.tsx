@@ -241,7 +241,7 @@ export function SignupForm() {
             })}
           />
           <Label htmlFor="terms" className="text-sm font-normal">
-            I have read and agree to roqit&apos;s Terms and conditions
+            I have read and agree to the goroqit Terms and Conditions
           </Label>
         </div>
         {errors.agreeToTerms && (
