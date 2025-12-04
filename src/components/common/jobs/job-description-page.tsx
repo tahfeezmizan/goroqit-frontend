@@ -67,10 +67,7 @@ export default function JobDescriptionPage() {
             router.push("/profile");
           }
         }
-    
-      } catch {
-    
-      }
+      } catch {}
       // router.push(`/job/${job?.title}/${job?._id}`);
     }
     // Applicant: stay on the same page per requirement

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { PostJobFormData } from "@/types/types";
 import {
   Facebook,
@@ -9,9 +11,11 @@ import {
   Phone,
   Twitter,
 } from "lucide-react";
+import ApplicantPortfolio from "../find-talent/applicant-portfolio";
 
 export default function JobDetail({ data }: { data: PostJobFormData }) {
   const compnayData = data?.user?.profile;
+  console.log(data);
 
   const content: string = data.description || "";
 
@@ -46,6 +50,7 @@ export default function JobDetail({ data }: { data: PostJobFormData }) {
           <p className="text-gray-600 leading-relaxed">
             {compnayData?.companyDescription}
           </p>
+
           <hr />
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between">
             <div className="flex-1 mb-4">
@@ -177,6 +182,15 @@ export default function JobDetail({ data }: { data: PostJobFormData }) {
               </div>
             </div>
           </div>
+
+          <hr />
+          <h2 className="text-xl font-bold text-gray-900">Company Portfolio</h2>
+          {compnayData && (
+            <ApplicantPortfolio
+              data={compnayData as any}
+              key={compnayData._id}
+            />
+          )}
         </section>
       </div>
     </aside>

@@ -114,7 +114,7 @@ export default function PortfolioForm() {
         data?: ApiResponse;
         error?: ApiError;
       };
-      
+
       if (res.data?.success) {
         toast.success("Portfolio added successfully!");
 
@@ -128,7 +128,7 @@ export default function PortfolioForm() {
       } else {
         toast.error(res.error?.data?.message || "Something went wrong");
       }
-    } catch{
+    } catch {
       toast.error("Failed to add portfolio");
     }
   };

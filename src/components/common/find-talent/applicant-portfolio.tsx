@@ -15,7 +15,7 @@ export default function ApplicantPortfolio({
 }: {
   data: UserData | undefined;
 }) {
-  const portfolios = data?.profile?.portfolio;
+  const portfolios = data?.profile?.portfolio || data?.portfolio;
 
   if (!portfolios) {
     return <LoadingSpinner />;

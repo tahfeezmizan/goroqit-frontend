@@ -2,6 +2,7 @@
 
 import { LucideIcon } from "lucide-react";
 import { StaticImageData } from "next/image";
+import { Portfolio } from "./profileTypes";
 
 // types/job.ts
 export type JobCardProps = {
@@ -178,6 +179,7 @@ export interface PostJobFormData {
       twitterProfile: string;
       facebookProfile: string;
       instagramProfile: string;
+      portfolio?: Portfolio[] | null;
     } | null;
     role: string;
     roleProfile: string;
@@ -245,3 +247,19 @@ export type ApiUser = {
   companyName?: string;
   createdAt: string;
 };
+
+export interface CompanyProfile {
+  _id: string;
+  companyName: string;
+  companyLogo: string | null;
+  location: string;
+  companyEmail: string;
+  companyDescription: string;
+  phone: string;
+  companyWebsite: string;
+  linkedinProfile: string;
+  twitterProfile: string;
+  facebookProfile: string;
+  instagramProfile: string;
+  portfolio?: Portfolio[] | null;
+}
