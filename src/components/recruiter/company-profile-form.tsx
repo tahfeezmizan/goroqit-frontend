@@ -508,6 +508,54 @@ export function CompanyProfileForm() {
     document.getElementById("companyLogo")?.click();
   };
 
+  // const onSubmit = async (data: CompanyFormData) => {
+  //   setIsSubmitting(true);
+
+  //   try {
+  //     const formData = new FormData();
+
+  //     formData.append("companyName", data.companyName);
+  //     formData.append("companyDescription", data.companyDescription);
+  //     formData.append("companyEmail", data.companyEmail);
+  //     formData.append("phone", data.phone);
+  //     formData.append("companyWebsite", data.companyWebsite);
+  //     formData.append("location", data.location);
+  //     formData.append("linkedinProfile", data.linkedinProfile);
+  //     formData.append("twitterProfile", data.twitterProfile);
+  //     formData.append("facebookProfile", data.facebookProfile);
+  //     formData.append("instagramProfile", data.instagramProfile);
+
+  //     if (data.companyLogo) {
+  //       formData.append("companyLogo", data.companyLogo);
+  //     }
+
+  //     const res = await updateProfile({ body: formData });
+
+  //     console.log(res?.data?.success);
+
+  //     if (res?.data?.success) {
+  //       if (subscribeStatus === false) {
+  //         console.log("subscribeStatus" + subscribeStatus);
+  //         toast.success("Please purchase a plan first.");
+  //         router.push("/pricing");
+  //       }
+  //     } else if (res?.data?.success) {
+  //       console.log("go to company", res?.data?.success);
+  //       toast.success("Company profile updated successfully");
+  //       router.push("/recruiter/company");
+  //     } else if (res?.error) {
+  //       const err = res.error as FetchBaseQueryError;
+  //       const errorMessage =
+  //         (err.data as { message?: string })?.message || "Something went wrong";
+  //       toast.error(errorMessage);
+  //     }
+  //   } catch (error) {
+  //     toast.error("Failed to update profile");
+  //   } finally {
+  //     setIsSubmitting(false);
+  //   }
+  // };
+
   const onSubmit = async (data: CompanyFormData) => {
     setIsSubmitting(true);
 
@@ -531,14 +579,18 @@ export function CompanyProfileForm() {
 
       const res = await updateProfile({ body: formData });
 
+      console.log(res?.data?.success);
+
       if (res?.data?.success) {
         if (subscribeStatus === false) {
-          toast.success("Please purchase a plan first.");
+          toast.success(
+            "Profile updated. Please purchase a plan to access all features."
+          );
           router.push("/pricing");
+        } else {
+          toast.success("Company profile updated successfully");
+          router.push("/recruiter/company");
         }
-      } else if (res?.data?.success) {
-        toast.success("Company profile updated successfully");
-        router.push("/recruiter/company");
       } else if (res?.error) {
         const err = res.error as FetchBaseQueryError;
         const errorMessage =

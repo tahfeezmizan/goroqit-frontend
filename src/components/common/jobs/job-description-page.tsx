@@ -7,16 +7,15 @@ import {
   useEasyApplyJobMutation,
   useGetSingleJobQuery,
 } from "@/redux/features/jobsApi";
-import { jwtDecode } from "jwt-decode";
-import { useParams, usePathname, useRouter } from "next/navigation";
-import { parseCookies } from "nookies"; // lightweight cookie parser
-import JobDetail from "./job-details";
-import { Jodit } from "jodit-react";
-import { toast } from "sonner";
 import { ApiResponse } from "@/types/profileTypes";
 import { ApiError } from "@/types/types";
+import { jwtDecode } from "jwt-decode";
 import { Loader } from "lucide-react";
 import Link from "next/link";
+import { useParams, usePathname, useRouter } from "next/navigation";
+import { parseCookies } from "nookies"; // lightweight cookie parser
+import { toast } from "sonner";
+import JobDetail from "./job-details";
 
 type TokenPayload = {
   role?: string;

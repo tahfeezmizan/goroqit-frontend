@@ -150,11 +150,10 @@ export default function CompanyPortfolioForm() {
     if (result.isConfirmed) {
       try {
         await deleteProfile({ title }).unwrap();
-
         toast.success("Portfolio deleted successfully!");
         await refetch();
       } catch (error: any) {
-        console.error("Delete portfolio error:", error);
+        // console.error("Delete portfolio error:", error);
         toast.error("Failed to delete portfolio");
       }
     }
@@ -175,17 +174,17 @@ export default function CompanyPortfolioForm() {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm p-4 md:p-8">
+    <div className="bg-white rounded-lg shadow-sm p-4 md:p-6">
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-3xl font-semibold text-gray-900">
           Company Portfolio
         </h3>
         <Button
           onClick={() => setShowAddForm(!showAddForm)}
-          className="bg-green-900 hover:bg-green-800 text-white px-6"
+          className="bg-green-900 hover:bg-green-800 text-white px-4 xl:px-6"
         >
-          {showAddForm ? "" : <Plus className="w-4 h-4 mr-2" />}
-          
+          {showAddForm ? "" : <Plus className="w-4 h-4 mr-1" />}
+
           {showAddForm ? "Cancel" : "Add Portfolio"}
         </Button>
       </div>
@@ -309,13 +308,13 @@ export default function CompanyPortfolioForm() {
                   key={`portfolio-${index}`}
                   className="border border-gray-200 rounded-lg p-6 bg-white shadow-sm"
                 >
-                  <div className="flex justify-between items-start">
+                  <div className="flex flex-col md:flex-row lg:flex-col xl:flex-row gap-6 justify-between items-start">
                     <div className="flex-1">
-                      <h5 className="text-lg font-semibold text-gray-900">
+                      <h5 className="text-lg font-semibold text-gray-900 mb-2">
                         {p.title}
                       </h5>
                       <p className="text-gray-600 mb-2">{p.description}</p>
-                      <div className="grid grid-cols-6 gap-3 mt-3">
+                      <div className="grid grid-cols-3 xl:grid-cols-6 gap-3 mt-3">
                         {p.portfolioImages?.map((img, idx) => (
                           <Image
                             key={idx}

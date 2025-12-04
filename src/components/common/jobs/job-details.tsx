@@ -15,7 +15,6 @@ import ApplicantPortfolio from "../find-talent/applicant-portfolio";
 
 export default function JobDetail({ data }: { data: PostJobFormData }) {
   const compnayData = data?.user?.profile;
-  console.log(data);
 
   const content: string = data.description || "";
 
