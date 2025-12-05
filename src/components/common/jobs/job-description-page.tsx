@@ -27,6 +27,8 @@ export default function JobDescriptionPage() {
   const router = useRouter();
   const pathname = usePathname();
 
+  console.log(job);
+
   const [easyApply, { isLoading: applyLoading }] =
     useEasyApplyJobMutation(undefined);
 
@@ -82,6 +84,7 @@ export default function JobDescriptionPage() {
             <div className="col-span-2">
               <JobDetail data={job} />
             </div>
+
             <div className="col-span-1 space-y-6 ">
               <aside className="w-full bg-white p-6 rounded-lg">
                 <div className="space-y-8">
