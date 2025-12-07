@@ -156,11 +156,12 @@ export interface PostJobFormData {
   engagementType: string;
   minSalary: number;
   maxSalary: number;
+  rent?: number;
   description?: string;
   responsibilities?: string;
   jobLocation: string;
   applicationsCount: string;
-  salryType: "yearly" | "monthly" | "weekly" | "hourly";
+  paymentType: "yearly" | "monthly" | "weekly" | "hourly";
   experianceLabel: "Junior" | "Mid-Level" | "Senior" | "Master";
   user?: {
     email: string;

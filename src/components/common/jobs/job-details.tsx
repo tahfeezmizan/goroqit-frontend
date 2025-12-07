@@ -51,6 +51,7 @@ export default function JobDetail({ data }: { data: PostJobFormData }) {
           </p>
 
           <hr />
+          {/* Contact Information */}
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between">
             <div className="flex-1 mb-4">
               <h3 className="block text-xl font-semibold text-gray-900 mb-3">
