@@ -238,7 +238,6 @@ export function JobPostTable() {
     const isSecureContext =
       window.isSecureContext ||
       window.location.hostname === "localhost" ||
-      window.location.hostname === "127.0.0.1" ||
       window.location.hostname === "http://goroqit.com";
 
     // Check if Web Share API is available AND we're in a secure context
