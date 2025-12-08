@@ -27,7 +27,7 @@ export default function JobDescriptionPage() {
   const router = useRouter();
   const pathname = usePathname();
 
-  console.log(job);
+  console.log("Jobs", job);
 
   const [easyApply, { isLoading: applyLoading }] =
     useEasyApplyJobMutation(undefined);
@@ -138,10 +138,26 @@ export default function JobDescriptionPage() {
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Salary</span>
-                        <span className="font-medium text-gray-900">
-                          £{job?.minSalary} - £{job?.maxSalary}
+                        <span className="text-gray-600">
+                          {job?.rent ? "Rent" : "Salary"}
                         </span>
+                        <div className="flex items-center justify-center gap-1">
+                          <div className="">
+                            {job?.rent ? (
+                              <span className="font-medium text-gray-900">
+                                £ {job?.rent}
+                              </span>
+                            ) : (
+                              <span className="font-medium text-gray-900">
+                                £ {job?.minSalary} - £ {job?.maxSalary}
+                              </span>
+                            )}
+                          </div>
+
+                          <span className="font-medium text-gray-900 capitalize">
+                            {job?.paymentType}
+                          </span>
+                        </div>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-600">Applied</span>

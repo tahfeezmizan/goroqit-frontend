@@ -229,7 +229,7 @@ export function JobPostTable() {
     });
   };
 
-  const handleShare = (jobId: string | undefined) => {
+  const handleShare = (jobId: string | number | undefined) => {
     if (!jobId) return;
 
     const shareUrl = `${window.location.origin}/job/${jobId}`;
@@ -322,7 +322,9 @@ export function JobPostTable() {
                   </td>
                   <td className="py-4 px-6 text-gray-700">{job.jobLocation}</td>
                   <td className="py-4 px-6 text-gray-700">
-                    {job.minSalary} - {job.maxSalary}
+                    {job?.rent
+                      ? `£${job.rent}`
+                      : `£${job.minSalary} - £${job.maxSalary}`}
                   </td>
                   <td className="py-4 px-6 text-gray-700">
                     {new Date(job.startDate).toLocaleDateString()}
