@@ -119,12 +119,12 @@ export default function JobDescriptionPage() {
                     </div>
                   </div> */}
                     <div className="space-y-3">
-                      <div className="flex justify-between">
+                      {/* <div className="flex justify-between">
                         <span className="text-gray-600">Apply Before</span>
                         <span className="font-medium text-gray-900">
                           {formatDate(job?.endDate)}
                         </span>
-                      </div>
+                      </div> */}
                       <div className="flex justify-between">
                         <span className="text-gray-600">Job Posted On</span>
                         <span className="font-medium text-gray-900">
@@ -155,7 +155,7 @@ export default function JobDescriptionPage() {
                           </div>
 
                           <span className="font-medium text-gray-900 capitalize">
-                            {job?.paymentType}
+                            {job?.paymentType || job?.salryType}
                           </span>
                         </div>
                       </div>
