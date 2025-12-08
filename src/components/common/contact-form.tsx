@@ -46,11 +46,10 @@ export default function ContactForm() {
           message: "",
         });
       } else {
-        console.log(res.data?.message);
+     
         toast.error("❌ Job creation failed");
       }
-    } catch (error) {
-      console.log(error);
+    } catch{
     }
   };
 

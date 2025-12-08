@@ -1,17 +1,16 @@
 "use client";
-import Image from "next/image";
-import React from "react";
 import hiringImg from "@/assets/hiring.png";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { useGetAllUserQuery } from "@/redux/features/userApi";
 import CountUp from "@/lib/CountUp";
+import { useGetHomeStatisticsQuery } from "@/redux/features/adminStatics";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function HiringHero() {
-  const { data, isLoading } = useGetAllUserQuery({});
+  const { data, isLoading } = useGetHomeStatisticsQuery({});
 
-  const activeUsers = data?.data?.staticData?.totalUsers || 0;
-  const applicationsSubmitted = data?.data?.staticData?.totalApplicants || 0;
+  const activeUsers = data?.totalUsers;
+  const applicationsSubmitted = data?.totalApplications;
   // hii
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-20">

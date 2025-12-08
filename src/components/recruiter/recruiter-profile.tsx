@@ -19,7 +19,6 @@ import {
 
 interface EssentialPersonalData {
   name: string;
-  email: string;
 }
 
 export default function MergedProfileForm() {
@@ -33,9 +32,6 @@ export default function MergedProfileForm() {
   const [preview, setPreview] = useState<string | null>(null);
   const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation();
 
-  console.log(userData);
-
-  // === React Hook Form setup ===
   const {
     register,
     handleSubmit,
@@ -52,7 +48,6 @@ export default function MergedProfileForm() {
     if (profileData) {
       reset({
         name: userData.name || "",
-        email: userData.email || "",
       });
     }
 

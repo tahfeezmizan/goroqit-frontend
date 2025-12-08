@@ -92,7 +92,7 @@ export default function FilterSection() {
     }));
   }, [talents]);
 
-  console.log(transformedTalents, "transformed talents");
+  // console.log(transformedTalents, "transformed talents");
 
   const handleFiltersChange = useCallback((newFilters: TalentFilterData) => {
     setFilters(newFilters);

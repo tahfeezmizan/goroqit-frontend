@@ -50,8 +50,6 @@ export function EducationForm() {
 
   const education = userData?.profile?.education;
 
-  console.log(education)
-
   const onSubmit = async (data: EducationData) => {
     const formData = new FormData();
     formData.append("degreeTitle", data.degreeTitle);
@@ -71,11 +69,7 @@ export function EducationForm() {
         reset();
         refetch(); // Refresh the data to show the new education
       }
-
-      console.log("Education added successfully:", res);
-    } catch {
-      console.log("error");
-    }
+    } catch {}
 
     // If you want to see the file details specifically
     if (data.certificate) {

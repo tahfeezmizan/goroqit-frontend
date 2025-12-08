@@ -385,7 +385,6 @@
 //   );
 // }
 
-
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -423,7 +422,13 @@ interface CompanyFormData {
 }
 
 export function CompanyProfileForm() {
-  const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm<CompanyFormData>({
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    reset,
+    formState: { errors },
+  } = useForm<CompanyFormData>({
     defaultValues: {
       companyName: "",
       companyDescription: "",
@@ -450,7 +455,7 @@ export function CompanyProfileForm() {
   // URL validation function
   const validateUrl = (value: string) => {
     if (!value) return true; // Allow empty values
-    if (value.startsWith('http://') || value.startsWith('https://')) {
+    if (value.startsWith("http://") || value.startsWith("https://")) {
       return true;
     }
     return "URL must start with http:// or https://";
@@ -503,6 +508,54 @@ export function CompanyProfileForm() {
     document.getElementById("companyLogo")?.click();
   };
 
+  // const onSubmit = async (data: CompanyFormData) => {
+  //   setIsSubmitting(true);
+
+  //   try {
+  //     const formData = new FormData();
+
+  //     formData.append("companyName", data.companyName);
+  //     formData.append("companyDescription", data.companyDescription);
+  //     formData.append("companyEmail", data.companyEmail);
+  //     formData.append("phone", data.phone);
+  //     formData.append("companyWebsite", data.companyWebsite);
+  //     formData.append("location", data.location);
+  //     formData.append("linkedinProfile", data.linkedinProfile);
+  //     formData.append("twitterProfile", data.twitterProfile);
+  //     formData.append("facebookProfile", data.facebookProfile);
+  //     formData.append("instagramProfile", data.instagramProfile);
+
+  //     if (data.companyLogo) {
+  //       formData.append("companyLogo", data.companyLogo);
+  //     }
+
+  //     const res = await updateProfile({ body: formData });
+
+  //     console.log(res?.data?.success);
+
+  //     if (res?.data?.success) {
+  //       if (subscribeStatus === false) {
+  //         console.log("subscribeStatus" + subscribeStatus);
+  //         toast.success("Please purchase a plan first.");
+  //         router.push("/pricing");
+  //       }
+  //     } else if (res?.data?.success) {
+  //       console.log("go to company", res?.data?.success);
+  //       toast.success("Company profile updated successfully");
+  //       router.push("/recruiter/company");
+  //     } else if (res?.error) {
+  //       const err = res.error as FetchBaseQueryError;
+  //       const errorMessage =
+  //         (err.data as { message?: string })?.message || "Something went wrong";
+  //       toast.error(errorMessage);
+  //     }
+  //   } catch (error) {
+  //     toast.error("Failed to update profile");
+  //   } finally {
+  //     setIsSubmitting(false);
+  //   }
+  // };
+
   const onSubmit = async (data: CompanyFormData) => {
     setIsSubmitting(true);
 
@@ -526,14 +579,18 @@ export function CompanyProfileForm() {
 
       const res = await updateProfile({ body: formData });
 
+      console.log(res?.data?.success);
+
       if (res?.data?.success) {
         if (subscribeStatus === false) {
-          toast.success("Please purchase a plan first.");
+          toast.success(
+            "Profile updated. Please purchase a plan to access all features."
+          );
           router.push("/pricing");
+        } else {
+          toast.success("Company profile updated successfully");
+          router.push("/recruiter/company");
         }
-      } else if (res?.data?.success) {
-        toast.success("Company profile updated successfully");
-        router.push("/recruiter/company");
       } else if (res?.error) {
         const err = res.error as FetchBaseQueryError;
         const errorMessage =
@@ -541,7 +598,6 @@ export function CompanyProfileForm() {
         toast.error(errorMessage);
       }
     } catch (error) {
-      console.log(error);
       toast.error("Failed to update profile");
     } finally {
       setIsSubmitting(false);
@@ -661,6 +717,7 @@ export function CompanyProfileForm() {
               </Label>
               <Input
                 id="phone"
+                type="tel"
                 placeholder="0000 0000 0000"
                 {...register("phone")}
                 className="mt-1 p-4 rounded-lg !text-lg text-black w-full"
@@ -675,14 +732,17 @@ export function CompanyProfileForm() {
               </Label>
               <Input
                 id="companyWebsite"
+                type="url"
                 placeholder="https://example.com"
                 {...register("companyWebsite", {
-                  validate: validateUrl
+                  validate: validateUrl,
                 })}
                 className="mt-1 p-4 rounded-lg !text-lg text-black w-full"
               />
               {errors.companyWebsite && (
-                <p className="text-red-500 text-sm mt-1">{errors.companyWebsite.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.companyWebsite.message}
+                </p>
               )}
             </div>
             <div className="space-y-2">
@@ -715,14 +775,17 @@ export function CompanyProfileForm() {
               </Label>
               <Input
                 id="linkedinProfile"
+                type="url"
                 placeholder="https://linkedin.com/company/example"
                 {...register("linkedinProfile", {
-                  validate: validateUrl
+                  validate: validateUrl,
                 })}
                 className="mt-1 p-4 rounded-lg !text-lg text-black w-full"
               />
               {errors.linkedinProfile && (
-                <p className="text-red-500 text-sm mt-1">{errors.linkedinProfile.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.linkedinProfile.message}
+                </p>
               )}
             </div>
             <div className="space-y-2">
@@ -734,14 +797,17 @@ export function CompanyProfileForm() {
               </Label>
               <Input
                 id="twitterProfile"
+                type="url"
                 placeholder="https://twitter.com/example"
                 {...register("twitterProfile", {
-                  validate: validateUrl
+                  validate: validateUrl,
                 })}
                 className="mt-1 p-4 rounded-lg !text-lg text-black w-full"
               />
               {errors.twitterProfile && (
-                <p className="text-red-500 text-sm mt-1">{errors.twitterProfile.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.twitterProfile.message}
+                </p>
               )}
             </div>
             <div className="space-y-2">
@@ -753,14 +819,17 @@ export function CompanyProfileForm() {
               </Label>
               <Input
                 id="facebookProfile"
+                type="url"
                 placeholder="https://facebook.com/example"
                 {...register("facebookProfile", {
-                  validate: validateUrl
+                  validate: validateUrl,
                 })}
                 className="mt-1 p-4 rounded-lg !text-lg text-black w-full"
               />
               {errors.facebookProfile && (
-                <p className="text-red-500 text-sm mt-1">{errors.facebookProfile.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.facebookProfile.message}
+                </p>
               )}
             </div>
             <div className="space-y-2">
@@ -772,14 +841,17 @@ export function CompanyProfileForm() {
               </Label>
               <Input
                 id="instagramProfile"
+                type="url"
                 placeholder="https://instagram.com/example"
                 {...register("instagramProfile", {
-                  validate: validateUrl
+                  validate: validateUrl,
                 })}
                 className="mt-1 p-4 rounded-lg !text-lg text-black w-full"
               />
               {errors.instagramProfile && (
-                <p className="text-red-500 text-sm mt-1">{errors.instagramProfile.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.instagramProfile.message}
+                </p>
               )}
             </div>
           </div>

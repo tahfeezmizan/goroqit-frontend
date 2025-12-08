@@ -72,7 +72,6 @@ export function ResumeUpload({ currentResume }: Props) {
     try {
       const res = await updateProfile({ body: formData }).unwrap();
       toast.success("Resume uploaded successfully!");
-      console.log("Resume updated in DB:", res);
 
       // Refetch user data to get updated resume path
       // const updatedUser = await refetchUser();
@@ -139,7 +138,7 @@ export function ResumeUpload({ currentResume }: Props) {
       // Refetch user data to reflect the change
       await refetchUser();
 
-      console.log("Resume removed from DB:", res);
+      // console.log("Resume removed from DB:", res);
     } catch (err: ApiError | any) {
       toast.error(err?.data?.message || "Failed to remove resume");
       console.error("Resume removal failed:", err);

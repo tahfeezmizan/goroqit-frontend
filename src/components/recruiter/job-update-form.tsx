@@ -28,6 +28,7 @@ export function JobUpdateForm() {
   const {
     register,
     handleSubmit,
+    watch,
     control,
     formState: { errors },
     reset,
@@ -48,12 +49,13 @@ export function JobUpdateForm() {
   const { id } = useParams();
   const route = useRouter();
 
+  const watchEngagementType = watch("engagementType");
+
   const { data: categories } = useGetAllCategoryQuery({});
   const { data: jobs } = useGetAllJobsQuery({});
   const [updateJob, { isLoading }] = useUpdateJobMutation();
 
   const job = jobs?.find((job: JobData) => job._id === id);
-  console.log(job);
 
   useEffect(() => {
     if (job && categories) {
@@ -63,12 +65,13 @@ export function JobUpdateForm() {
         jobLocation: job.jobLocation || "",
         type: job.type || "",
         engagementType: job.engagementType || "",
+        rent: job.rent || 0,
+        paymentType: job.paymentType || "hourly",
         startDate: job.startDate ? job.startDate.split("T")[0] : undefined,
         experianceLabel: job.experianceLabel || "",
         minSalary: job.minSalary || 0,
         maxSalary: job.maxSalary || 0,
         description: job.description || "",
-        salryType: job.salryType || "hourly",
       });
     }
   }, [job, categories, reset]);
@@ -78,13 +81,23 @@ export function JobUpdateForm() {
       title: data.title,
       category: data.category,
       jobLocation: data.jobLocation,
+      experianceLabel: data.experianceLabel,
       type: data.type,
       startDate: data.startDate ? new Date(data.startDate).toISOString() : null,
-      minSalary: Number(data.minSalary),
-      maxSalary: Number(data.maxSalary),
+      engagementType: data.engagementType,
+      paymentType: data.paymentType,
+      minSalary:
+        data.engagementType !== "Chair-rental"
+          ? Number(data.minSalary)
+          : undefined,
+      maxSalary:
+        data.engagementType !== "Chair-rental"
+          ? Number(data.maxSalary)
+          : undefined,
+      rent:
+        data.engagementType === "Chair-rental" ? Number(data.rent) : undefined,
       description: data.description,
-      engagementType: data.engagementType, // ✅ Added engagementType
-      salryType: data.salryType, // ✅ Added salryType
+      responsibilities: data.responsibilities,
     };
 
     try {
@@ -303,55 +316,97 @@ export function JobUpdateForm() {
         </div>
 
         {/* Salary Range with Salary Type */}
-        <div className="space-y-2">
-          <Label className="text-lg font-medium text-gray-90">
-            Salary Range
-          </Label>
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-1 grid md:grid-cols-2 gap-4">
-              <Input
-                type="number"
-                placeholder="Min"
-                {...register("minSalary", {
-                  required: "Minimum salary is required",
-                })}
-                className="mt-1 p-4 rounded-lg bg-gray-50 !text-lg text-black w-full"
-              />
-              <Input
-                type="number"
-                placeholder="Max"
-                {...register("maxSalary", {
-                  required: "Maximum salary is required",
-                })}
-                className="mt-1 p-4 rounded-lg bg-gray-50 !text-lg text-black w-full"
+        {/* Salary / Rent Conditional */}
+        {watchEngagementType !== "Chair-rental" ? (
+          <div className="space-y-2">
+            <Label className="text-lg font-medium text-gray-90">
+              Salary Range
+            </Label>
+            <div className="flex gap-4">
+              <div className="flex-1 grid grid-cols-2 gap-4">
+                <Input
+                  type="number"
+                  placeholder="Min"
+                  {...register("minSalary", {
+                    required: "Minimum salary is required",
+                  })}
+                  className="mt-1 p-4 rounded-lg bg-gray-50 !text-lg text-black w-full"
+                />
+                <Input
+                  type="number"
+                  placeholder="Max"
+                  {...register("maxSalary", {
+                    required: "Maximum salary is required",
+                  })}
+                  className="mt-1 p-4 rounded-lg bg-gray-50 !text-lg text-black w-full"
+                />
+              </div>
+
+              <Controller
+                name="paymentType"
+                control={control}
+                rules={{ required: "Salary type is required" }}
+                render={({ field }) => (
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger className="w-[180px] mt-1 p-4 rounded-lg !text-lg text-black bg-gray-50">
+                      <SelectValue placeholder="Hourly" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="hourly">Hourly</SelectItem>
+                      <SelectItem value="weekly">Weekly</SelectItem>
+                      <SelectItem value="monthly">Monthly</SelectItem>
+                      <SelectItem value="yearly">Yearly</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
               />
             </div>
-            {/* Salary Type Selector */}
-            <Controller
-              name="salryType"
-              control={control}
-              rules={{ required: "Salary type is required" }}
-              render={({ field }) => (
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger className="w-[180px] mt-1 p-4 rounded-lg !text-lg text-black bg-gray-50">
-                    <SelectValue placeholder="Hourly" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="hourly">Hourly</SelectItem>
-                    <SelectItem value="weekly">Weekly</SelectItem>
-                    <SelectItem value="monthly">Monthly</SelectItem>
-                    <SelectItem value="yearly">Yearly</SelectItem>
-                  </SelectContent>
-                </Select>
-              )}
-            />
+
+            {(errors.minSalary || errors.maxSalary || errors.paymentType) && (
+              <p className="text-red-500 text-sm">
+                Salary information is required
+              </p>
+            )}
           </div>
-          {(errors.minSalary || errors.maxSalary || errors.salryType) && (
-            <p className="text-red-500 text-sm">
-              Salary information is required
-            </p>
-          )}
-        </div>
+        ) : (
+          <div className="space-y-2">
+            <Label htmlFor="rent" className="text-lg font-medium text-gray-90">
+              Rent
+            </Label>
+
+            <div className="flex gap-4">
+              <Input
+                id="rent"
+                type="number"
+                placeholder="Enter rent amount"
+                {...register("rent", { required: "Rent amount is required" })}
+                className="mt-1 p-4 rounded-lg bg-gray-50 !text-lg text-black w-full"
+              />
+              <Controller
+                name="paymentType"
+                control={control}
+                rules={{ required: "Salary type is required" }}
+                render={({ field }) => (
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger className="w-[180px] mt-1 p-4 rounded-lg !text-lg text-black bg-gray-50">
+                      <SelectValue placeholder="Hourly" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="hourly">Hourly</SelectItem>
+                      <SelectItem value="weekly">Weekly</SelectItem>
+                      <SelectItem value="monthly">Monthly</SelectItem>
+                      <SelectItem value="yearly">Yearly</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+            </div>
+
+            {errors.rent && (
+              <p className="text-red-500 text-sm">{errors.rent.message}</p>
+            )}
+          </div>
+        )}
 
         {/* Job Description */}
         <div className="space-y-2">

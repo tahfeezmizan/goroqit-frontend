@@ -62,7 +62,6 @@ const userApi = baseApi.injectEndpoints({
     // Update logged-in user's basic info
     UpdateMe: builder.mutation({
       query: ({ body }) => {
-        console.log("UpdateMe body:", body);
         return {
           url: "/user/update-me",
           method: "PATCH",
@@ -74,7 +73,6 @@ const userApi = baseApi.injectEndpoints({
     // Update company profile
     UpdateCompnayProfile: builder.mutation({
       query: ({ body }) => {
-        console.log("UpdateMe body:", body);
         return {
           url: "/user/profile",
           method: "PATCH",
@@ -101,7 +99,6 @@ const userApi = baseApi.injectEndpoints({
     // Add new work experience
     AddWorkExperience: builder.mutation({
       query: ({ body }) => {
-        console.log("AddWorkExperience body:", body);
         return {
           url: "/user/profile/work-experience",
           method: "POST",
@@ -121,7 +118,6 @@ const userApi = baseApi.injectEndpoints({
     // Update specific work experience by index
     UpdateWorkExperience: builder.mutation({
       query: ({ index, body }) => {
-        console.log("UpdateWorkExperience index:", index, "body:", body);
         return {
           url: `/user/profile/work-experience/${index}`,
           method: "PUT",
@@ -144,7 +140,6 @@ const userApi = baseApi.injectEndpoints({
 
     addEducation: builder.mutation({
       query: ({ body }) => {
-        console.log("addEducations", body);
         return {
           url: `/user/applicants/education`,
           method: "POST",
@@ -156,7 +151,6 @@ const userApi = baseApi.injectEndpoints({
     // Delete specific education by index
     deleteEducation: builder.mutation({
       query: ({ title }) => {
-        console.log("DeleteEducation title:", title);
         return {
           url: `/user/applicants/education/${title}`,
           method: "DELETE",
@@ -167,7 +161,6 @@ const userApi = baseApi.injectEndpoints({
     // Delete specific education by index
     deletePortfolio: builder.mutation({
       query: ({ title }) => {
-        console.log("DeleteEducation title:", title);
         return {
           url: `/user/applicants/portfolio/${title}`,
           method: "DELETE",

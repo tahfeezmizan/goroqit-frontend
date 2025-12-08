@@ -21,7 +21,7 @@ export default function page() {
         </div>
       </div>
 
-      <div className="flex flex-col md:flex-row items-start justify-between gap-6">
+      <div className="flex flex-col lg:flex-row items-start justify-between gap-6">
         <div className="flex-1">
           <CompanyProfile />
         </div>

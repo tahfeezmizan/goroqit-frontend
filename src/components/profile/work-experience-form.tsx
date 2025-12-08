@@ -58,15 +58,8 @@ export function WorkExperienceForm() {
   } = useGetMeQuery("");
 
   useEffect(() => {
-    console.log("Full user data received:", userData);
-
     if (userData) {
       if (userData?.profile?.workExperience) {
-        console.log(
-          "Work Experience data found:",
-          userData?.profile.workExperience
-        );
-
         if (Array.isArray(userData?.profile?.workExperience)) {
           // Convert any numeric values to strings for form compatibility
           const formattedWorkExperiences =
@@ -86,24 +79,16 @@ export function WorkExperienceForm() {
               })
             );
 
-          console.log(
-            "Formatted work experiences for state:",
-            formattedWorkExperiences
-          );
           setWorkExperiences(formattedWorkExperiences);
         }
       } else {
-        console.log("No work experience data found in userData.data");
       }
     } else {
-      console.log("No userData or userData.data available");
     }
   }, [userData]);
 
   // Debug effect to track work experiences state
-  useEffect(() => {
-    console.log("Current work experiences state:", workExperiences);
-  }, [workExperiences]);
+  useEffect(() => {}, [workExperiences]);
 
   const handleInputChange = (
     field: keyof WorkExperienceData,
@@ -235,15 +220,10 @@ export function WorkExperienceForm() {
         endDate: exp.endDate,
         experience: exp.experience,
       }));
-
-      console.log("Sending work experiences to API:", workExperiencesForAPI);
-
       // Call API to save to database
       const response = await updateProfile({
         body: { workExperience: workExperiencesForAPI },
       }).unwrap();
-
-      console.log("Add/Update API response:", response);
 
       if (editingIndex !== null) {
         toast.success("Work experience updated and saved to database!");
@@ -279,9 +259,6 @@ export function WorkExperienceForm() {
   };
 
   const handleDeleteExperience = async (index: number) => {
-    console.log("handleDeleteExperience called with index:", index);
-    console.log("Current workExperiences length:", workExperiences.length);
-
     if (index < 0 || index >= workExperiences.length) {
       console.error("Invalid index for deletion:", index);
       toast.error("Invalid experience selected for deletion");
@@ -300,12 +277,8 @@ export function WorkExperienceForm() {
 
     if (result.isConfirmed) {
       try {
-        console.log("Proceeding with deletion...");
-
         const newWorkExperiences = [...workExperiences];
         newWorkExperiences.splice(index, 1);
-
-        console.log("New workExperiences after deletion:", newWorkExperiences);
 
         setWorkExperiences(newWorkExperiences);
 
@@ -319,16 +292,10 @@ export function WorkExperienceForm() {
           experience: exp.experience,
         }));
 
-        console.log(
-          "Sending updated work experiences to API:",
-          workExperiencesForAPI
-        );
-
         const response = await updateProfile({
           body: { workExperience: workExperiencesForAPI },
         }).unwrap();
 
-        console.log("Delete API response:", response);
         toast.success("Work experience deleted and saved to database!");
 
         if (editingIndex === index) {
@@ -367,12 +334,6 @@ export function WorkExperienceForm() {
     }
 
     try {
-      console.log("Saving work experiences to database:", workExperiences);
-
-      // Let's debug by trying different approaches
-      // First, let's see what education sends when it works
-      console.log("=== DEBUGGING WORK EXPERIENCE API CALL ===");
-
       // Method 1: Exactly like education form (simple object mapping)
       const workExperiencesForAPI = workExperiences.map((exp) => ({
         jobTitle: exp.jobTitle,
@@ -384,40 +345,18 @@ export function WorkExperienceForm() {
         experience: exp.experience,
       }));
 
-      console.log(
-        "Method 1 - Formatted work experiences for API:",
-        workExperiencesForAPI
-      );
-      console.log("Method 1 - Request body:", {
-        workExperience: workExperiencesForAPI,
-      });
-
       // Try to send the request
       const response = await updateProfile({
         body: { workExperience: workExperiencesForAPI },
       }).unwrap();
 
       toast.success("Work experience information saved successfully!");
-      console.log(
-        "Work experience saved to database - API response:",
-        response
-      );
 
       // Force refetch to ensure we have the latest data
-      const refreshedData = await refetch();
-      console.log("Refreshed data after save:", refreshedData);
+      await refetch();
     } catch (error: any) {
-      console.error("=== DETAILED ERROR ANALYSIS ===");
-      console.error("Full error object:", error);
-      console.error("Error status:", error?.status);
-      console.error("Error data:", error?.data);
-      console.error("Error message:", error?.data?.message);
-      console.error("Error messages array:", error?.data?.errorMessages);
-      console.error("Error stack:", error?.data?.stack);
-
       // Try alternative approach if the first method fails
       if (error?.data?.message === "Cast Error") {
-        console.log("=== TRYING ALTERNATIVE METHODS ===");
 
         try {
           // Method 2: Try with snake_case fields (common in some APIs)
@@ -431,9 +370,9 @@ export function WorkExperienceForm() {
             experience: exp.experience,
           }));
 
-          console.log("Method 2 - Snake case attempt:", {
-            workExperience: altWorkExperience,
-          });
+          // console.log("Method 2 - Snake case attempt:", {
+          //   workExperience: altWorkExperience,
+          // });
 
           // const altResponse = await updateProfile({
           //   body: { workExperience: altWorkExperience },
@@ -457,10 +396,6 @@ export function WorkExperienceForm() {
             endDate: exp.endDate,
             experience: exp.experience,
           }));
-
-          console.log("Method 3 - Different key attempt:", {
-            work_experience: workExp,
-          });
 
           // const altResponse2 = await updateProfile({
           //   body: { work_experience: workExp },
@@ -815,7 +750,7 @@ export function WorkExperienceForm() {
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
-                          console.log("Edit button clicked for index:", index);
+                          // console.log("Edit button clicked for index:", index);
                           handleEditExperience(index);
                         }}
                         size="sm"
@@ -830,14 +765,14 @@ export function WorkExperienceForm() {
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
-                          console.log(
-                            "Delete button clicked for index:",
-                            index
-                          );
-                          console.log(
-                            "Current workExperiences:",
-                            workExperiences
-                          );
+                          // console.log(
+                          //   "Delete button clicked for index:",
+                          //   index
+                          // );
+                          // console.log(
+                          //   "Current workExperiences:",
+                          //   workExperiences
+                          // );
                           handleDeleteExperience(index);
                         }}
                         size="sm"

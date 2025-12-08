@@ -26,7 +26,7 @@ export default function ForgotPasswordForm() {
   const [forgetPasswordSendOTP] = useForgetPasswordSendOTPMutation();
 
   const onSubmit = async (data: LoginFormData) => {
-    console.log("Login form data:", data);
+    // console.log("Login form data:", data);
     setIsLoading(true); // Start loading
 
     try {
@@ -47,9 +47,7 @@ export default function ForgotPasswordForm() {
 
         toast.error(errorMessage);
       }
-    } catch (error) {
-      console.log(error);
-    }
+    } catch {}
   };
 
   return (

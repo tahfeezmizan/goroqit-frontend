@@ -45,8 +45,6 @@ export default function RecruiterOverview() {
     },
   ];
 
-  console.log("RECRUITER STATS", userData);
-
   return (
     <div>
       <div className="mb-8 space-y-2">

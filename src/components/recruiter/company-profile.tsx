@@ -12,6 +12,7 @@ import {
   Twitter,
   Facebook,
   Instagram,
+  CircleUserRound,
 } from "lucide-react";
 import LoadingSpinner from "@/lib/loading-spinner";
 
@@ -25,13 +26,19 @@ export default function CompanyProfile() {
     <div className="bg-white rounded-lg shadow-sm p-4 md:p-8">
       {/* Company Logo */}
       <div className="flex flex-col md:flex-row justify-between items-start gap-6 mb-8">
-        <Image
-          src={getImageUrl(profileData?.companyLogo)}
-          alt={profileData?.companyName}
-          width={80}
-          height={80}
-          className="w-26 h-26 border p-2 rounded"
-        />
+        <div className="w-26 h-26 border p-2 rounded flex items-center justify-center">
+          {profileData?.companyLogo ? (
+            <Image
+              src={getImageUrl(profileData?.companyLogo)}
+              alt={profileData?.companyName}
+              width={80}
+              height={80}
+              className="w-full h-full"
+            />
+          ) : (
+            <CircleUserRound className="size-36" />
+          )}
+        </div>
 
         <div className="w-full md:max-w-xs">
           <div className="flex justify-between mb-1">
@@ -132,48 +139,66 @@ export default function CompanyProfile() {
           </h3>
 
           <div className="space-y-2">
-            <a
-              href={`mailto:${profileData?.companyEmail || ""}`}
-              className="flex items-center gap-2 text-black/65 hover:text-blue-600 transition-colors"
-            >
-              <Mail className="w-5 h-5 text-gray-500" />
-              {profileData?.companyEmail || "Email not available"}
-            </a>
+            {profileData?.companyEmail ? (
+              <a
+                href={`mailto:${profileData?.companyEmail || ""}`}
+                className="flex items-center gap-2 text-black/65 hover:text-blue-600 transition-colors"
+              >
+                <Mail className="w-5 h-5 text-gray-500" />
+                {profileData?.companyEmail || "Email not available"}
+              </a>
+            ) : (
+              ""
+            )}
 
-            <a
-              href={`tel:${profileData?.phone || ""}`}
-              className="flex items-center gap-2 text-black/65 hover:text-blue-600 transition-colors"
-            >
-              <Phone className="w-5 h-5 text-gray-500" />
-              {profileData?.phone || "Phone not available"}
-            </a>
+            {profileData?.phone ? (
+              <a
+                href={`tel:${profileData?.phone || ""}`}
+                className="flex items-center gap-2 text-black/65 hover:text-blue-600 transition-colors"
+              >
+                <Phone className="w-5 h-5 text-gray-500" />
+                {profileData?.phone || "Phone not available"}
+              </a>
+            ) : (
+              ""
+            )}
 
-            <a
-              href={`https://maps.google.com/?q=${profileData?.location || ""}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 text-black/65 hover:text-blue-600 transition-colors"
-            >
-              <MapPin className="w-5 h-5 text-gray-500" />
-              {profileData?.location || "Location not available"}
-            </a>
+            {profileData?.location ? (
+              <a
+                href={`https://maps.google.com/?q=${
+                  profileData?.location || ""
+                }`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-black/65 hover:text-blue-600 transition-colors"
+              >
+                <MapPin className="w-5 h-5 text-gray-500" />
+                {profileData?.location || "Location not available"}
+              </a>
+            ) : (
+              ""
+            )}
 
-            <a
-              href={
-                profileData?.companyWebsite
-                  ? `https://${profileData.companyWebsite.replace(
-                      /^https?:\/\//,
-                      ""
-                    )}`
-                  : "#"
-              }
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 text-black/65 hover:text-blue-600 transition-colors"
-            >
-              <Globe className="w-5 h-5 text-gray-500" />
-              {profileData?.companyWebsite || "Website not available"}
-            </a>
+            {profileData?.companyWebsite ? (
+              <a
+                href={
+                  profileData?.companyWebsite
+                    ? `https://${profileData.companyWebsite.replace(
+                        /^https?:\/\//,
+                        ""
+                      )}`
+                    : "#"
+                }
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-black/65 hover:text-blue-600 transition-colors"
+              >
+                <Globe className="w-5 h-5 text-gray-500" />
+                {profileData?.companyWebsite || "Website not available"}
+              </a>
+            ) : (
+              ""
+            )}
           </div>
         </div>
 
@@ -183,103 +208,92 @@ export default function CompanyProfile() {
           </h3>
 
           <div className="space-y-2">
-            <a
-              href={
-                profileData?.linkedinProfile
-                  ? `https://${profileData.linkedinProfile.replace(
-                      /^https?:\/\//,
-                      ""
-                    )}`
-                  : "#"
-              }
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 text-black/65 hover:text-blue-600 transition-colors"
-            >
-              <Linkedin className="w-5 h-5 text-gray-500" />
-              {profileData?.linkedinProfile || "LinkedIn not available"}
-            </a>
+            {profileData?.linkedinProfile ? (
+              <a
+                href={
+                  profileData?.linkedinProfile
+                    ? `https://${profileData.linkedinProfile.replace(
+                        /^https?:\/\//,
+                        ""
+                      )}`
+                    : "#"
+                }
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-black/65 hover:text-blue-600 transition-colors"
+              >
+                <Linkedin className="w-5 h-5 text-gray-500" />
+                {profileData?.linkedinProfile || "LinkedIn not available"}
+              </a>
+            ) : (
+              " "
+            )}
 
-            <a
-              href={
-                profileData?.twitterProfile
-                  ? `https://${profileData.twitterProfile.replace(
-                      /^https?:\/\//,
-                      ""
-                    )}`
-                  : "#"
-              }
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 text-black/65 hover:text-blue-600 transition-colors"
-            >
-              <Twitter className="w-5 h-5 text-gray-500" />
-              {profileData?.twitterProfile || "Twitter not available"}
-            </a>
+            {profileData?.twitterProfile ? (
+              <a
+                href={
+                  profileData?.twitterProfile
+                    ? `https://${profileData.twitterProfile.replace(
+                        /^https?:\/\//,
+                        ""
+                      )}`
+                    : "#"
+                }
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-black/65 hover:text-blue-600 transition-colors"
+              >
+                <Twitter className="w-5 h-5 text-gray-500" />
+                {profileData?.twitterProfile || "Twitter not available"}
+              </a>
+            ) : (
+              ""
+            )}
 
-            <a
-              href={
-                profileData?.facebookProfile
-                  ? `https://${profileData.facebookProfile.replace(
-                      /^https?:\/\//,
-                      ""
-                    )}`
-                  : "#"
-              }
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 text-black/65 hover:text-blue-600 transition-colors"
-            >
-              <Facebook className="w-5 h-5 text-gray-500" />
-              {profileData?.facebookProfile || "Facebook not available"}
-            </a>
+            {profileData?.facebookProfile ? (
+              <a
+                href={
+                  profileData?.facebookProfile
+                    ? `https://${profileData.facebookProfile.replace(
+                        /^https?:\/\//,
+                        ""
+                      )}`
+                    : "#"
+                }
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-black/65 hover:text-blue-600 transition-colors"
+              >
+                <Facebook className="w-5 h-5 text-gray-500" />
+                {profileData?.facebookProfile || "Facebook not available"}
+              </a>
+            ) : (
+              ""
+            )}
 
-            <a
-              href={
-                profileData?.instagramProfile
-                  ? `https://${profileData.instagramProfile.replace(
-                      /^https?:\/\//,
-                      ""
-                    )}`
-                  : "#"
-              }
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 text-black/65 hover:text-blue-600 transition-colors"
-            >
-              <Instagram className="w-5 h-5 text-gray-500" />
-              {profileData?.instagramProfile || "Instagram not available"}
-            </a>
+            {profileData?.instagramProfile ? (
+              <a
+                href={
+                  profileData?.instagramProfile
+                    ? `https://${profileData.instagramProfile.replace(
+                        /^https?:\/\//,
+                        ""
+                      )}`
+                    : "#"
+                }
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-black/65 hover:text-blue-600 transition-colors"
+              >
+                <Instagram className="w-5 h-5 text-gray-500" />
+                {profileData?.instagramProfile || "Instagram not available"}
+              </a>
+            ) : (
+              ""
+            )}
           </div>
         </div>
       </div>
-
-      {/* Responsibilities */}
-      {/* <div className="mb-8">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">
-          Responsibilities
-        </h2>
-        <div className="space-y-3">
-          {responsibilities.map((responsibility, index) => (
-            <div key={index} className="flex items-start gap-3">
-              <div className="flex-shrink-0 w-5 h-5 bg-green-100 rounded-full flex items-center justify-center mt-0.5">
-                <Check className="w-3 h-3 text-green-600" />
-              </div>
-              <p className="text-gray-600 text-sm leading-relaxed">
-                {responsibility}
-              </p>
-            </div>
-          ))}
-        </div>
-      </div> */}
-
-      {/* Save Button */}
-      {/* <Button
-        onClick={handleSave}
-        className="w-full bg-green-900 hover:bg-green-800 rounded-lg text-white py-3 text-base font-medium"
-      >
-        Save Change
-      </Button> */}
     </div>
   );
 }

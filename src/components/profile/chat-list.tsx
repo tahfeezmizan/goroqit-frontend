@@ -110,26 +110,26 @@ export default function ChatList() {
 
   // Socket connection for real-time updates
   useEffect(() => {
-    // console.log("🔌 Connecting socket for chat list...");
-    // console.log("Current User ID:", currentUserId);
-    // console.log("Current User Role:", currentUserRole);
+    console.log("🔌 Connecting socket for chat list...");
+    console.log("Current User ID:", currentUserId);
+    console.log("Current User Role:", currentUserRole);
 
     const socket = io("https://api.goroqit.com");
     socketRef.current = socket;
 
     socket.on("connect", () => {
-      // console.log("✅ Chat list socket connected");
+      console.log("✅ Chat list socket connected");
       setIsSocketConnected(true);
     });
 
     socket.on("disconnect", () => {
-      console.log("❌ Chat list socket disconnected");
+      // console.log("❌ Chat list socket disconnected");
       setIsSocketConnected(false);
     });
 
     // Listen for new messages to update chat list
     const handleNewMessage = (newMessage: any) => {
-      console.log("📨 New message received in chat list:", newMessage);
+      // console.log("📨 New message received in chat list:", newMessage);
 
       // Only process messages that belong to the current user's chats
       if (!currentUserId) return;
@@ -173,14 +173,14 @@ export default function ChatList() {
     // Listen for specific chat events
     socket.onAny((eventName, data) => {
       if (eventName.includes("Message") || eventName.includes("message")) {
-        console.log(`📡 Chat list received event: ${eventName}`, data);
+        // console.log(`📡 Chat list received event: ${eventName}`, data);
         // Only handle if this message is relevant to current user
         handleNewMessage(data);
       }
     });
 
     return () => {
-      console.log("🧹 Cleaning up chat list socket");
+      // console.log("🧹 Cleaning up chat list socket");
       socket.off("newMessage", handleNewMessage);
       socket.off("message", handleNewMessage);
       socket.off("getMessage", handleNewMessage);
@@ -240,16 +240,16 @@ export default function ChatList() {
   // Debug: Log participant information
   useEffect(() => {
     if (sortedChats.length > 0) {
-      console.log("🧩 Chat list participants debug:");
+      // console.log("🧩 Chat list participants debug:");
       sortedChats.forEach((chat, index) => {
         const participant = getParticipantInfo(chat);
-        console.log(`Chat ${index + 1}:`, {
-          chatId: chat._id,
-          participantName: participant.name,
-          allParticipants: chat.participants,
-          currentUserId,
-          currentUserRole,
-        });
+        // console.log(`Chat ${index + 1}:`, {
+        //   chatId: chat._id,
+        //   participantName: participant.name,
+        //   allParticipants: chat.participants,
+        //   currentUserId,
+        //   currentUserRole,
+        // });
       });
     }
   }, [sortedChats, currentUserId, currentUserRole, getParticipantInfo]);

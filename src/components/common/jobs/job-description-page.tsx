@@ -7,16 +7,15 @@ import {
   useEasyApplyJobMutation,
   useGetSingleJobQuery,
 } from "@/redux/features/jobsApi";
-import { jwtDecode } from "jwt-decode";
-import { useParams, usePathname, useRouter } from "next/navigation";
-import { parseCookies } from "nookies"; // lightweight cookie parser
-import JobDetail from "./job-details";
-import { Jodit } from "jodit-react";
-import { toast } from "sonner";
 import { ApiResponse } from "@/types/profileTypes";
 import { ApiError } from "@/types/types";
+import { jwtDecode } from "jwt-decode";
 import { Loader } from "lucide-react";
 import Link from "next/link";
+import { useParams, usePathname, useRouter } from "next/navigation";
+import { parseCookies } from "nookies"; // lightweight cookie parser
+import { toast } from "sonner";
+import JobDetail from "./job-details";
 
 type TokenPayload = {
   role?: string;
@@ -25,9 +24,10 @@ type TokenPayload = {
 export default function JobDescriptionPage() {
   const { id } = useParams();
   const { data: job, isLoading } = useGetSingleJobQuery({ id });
-  console.log(job?.user?.profile?._id);
   const router = useRouter();
   const pathname = usePathname();
+
+  console.log("Jobs", job);
 
   const [easyApply, { isLoading: applyLoading }] =
     useEasyApplyJobMutation(undefined);
@@ -68,10 +68,7 @@ export default function JobDescriptionPage() {
             router.push("/profile");
           }
         }
-        console.log(res);
-      } catch (error) {
-        console.log(error);
-      }
+      } catch {}
       // router.push(`/job/${job?.title}/${job?._id}`);
     }
     // Applicant: stay on the same page per requirement
@@ -87,6 +84,7 @@ export default function JobDescriptionPage() {
             <div className="col-span-2">
               <JobDetail data={job} />
             </div>
+
             <div className="col-span-1 space-y-6 ">
               <aside className="w-full bg-white p-6 rounded-lg">
                 <div className="space-y-8">
@@ -121,12 +119,12 @@ export default function JobDescriptionPage() {
                     </div>
                   </div> */}
                     <div className="space-y-3">
-                      <div className="flex justify-between">
+                      {/* <div className="flex justify-between">
                         <span className="text-gray-600">Apply Before</span>
                         <span className="font-medium text-gray-900">
                           {formatDate(job?.endDate)}
                         </span>
-                      </div>
+                      </div> */}
                       <div className="flex justify-between">
                         <span className="text-gray-600">Job Posted On</span>
                         <span className="font-medium text-gray-900">
@@ -140,10 +138,26 @@ export default function JobDescriptionPage() {
                         </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Salary</span>
-                        <span className="font-medium text-gray-900">
-                          £{job?.minSalary} - £{job?.maxSalary}
+                        <span className="text-gray-600">
+                          {job?.rent ? "Rent" : "Salary"}
                         </span>
+                        <div className="flex items-center justify-center gap-1">
+                          <div className="">
+                            {job?.rent ? (
+                              <span className="font-medium text-gray-900">
+                                £ {job?.rent}
+                              </span>
+                            ) : (
+                              <span className="font-medium text-gray-900">
+                                £ {job?.minSalary} - £ {job?.maxSalary}
+                              </span>
+                            )}
+                          </div>
+
+                          <span className="font-medium text-gray-900 capitalize">
+                            {job?.paymentType || job?.salryType}
+                          </span>
+                        </div>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-600">Applied</span>

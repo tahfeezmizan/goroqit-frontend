@@ -2,6 +2,7 @@
 
 import { LucideIcon } from "lucide-react";
 import { StaticImageData } from "next/image";
+import { Portfolio } from "./profileTypes";
 
 // types/job.ts
 export type JobCardProps = {
@@ -155,11 +156,12 @@ export interface PostJobFormData {
   engagementType: string;
   minSalary: number;
   maxSalary: number;
+  rent?: number;
   description?: string;
   responsibilities?: string;
   jobLocation: string;
   applicationsCount: string;
-  salryType: "yearly" | "monthly" | "weekly" | "hourly";
+  paymentType: "yearly" | "monthly" | "weekly" | "hourly";
   experianceLabel: "Junior" | "Mid-Level" | "Senior" | "Master";
   user?: {
     email: string;
@@ -178,6 +180,7 @@ export interface PostJobFormData {
       twitterProfile: string;
       facebookProfile: string;
       instagramProfile: string;
+      portfolio?: Portfolio[] | null;
     } | null;
     role: string;
     roleProfile: string;
@@ -245,3 +248,19 @@ export type ApiUser = {
   companyName?: string;
   createdAt: string;
 };
+
+export interface CompanyProfile {
+  _id: string;
+  companyName: string;
+  companyLogo: string | null;
+  location: string;
+  companyEmail: string;
+  companyDescription: string;
+  phone: string;
+  companyWebsite: string;
+  linkedinProfile: string;
+  twitterProfile: string;
+  facebookProfile: string;
+  instagramProfile: string;
+  portfolio?: Portfolio[] | null;
+}

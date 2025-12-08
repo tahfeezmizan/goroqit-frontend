@@ -62,7 +62,6 @@ export function PersonalDetailsForm() {
   // ✅ Set form values when user data is loaded (Bio fix included)
   useEffect(() => {
     if (profileData) {
-      console.log("Loading profile data:", profileData);
       reset({
         firstName: profileData.firstName || "",
         lastName: profileData.lastName || "",
@@ -113,8 +112,6 @@ export function PersonalDetailsForm() {
   // };
 
   const onSubmit = async (data: EssentialPersonalData) => {
-    console.log("Personal Details Form Data:", data);
-
     const finalData = {
       ...data,
       age: data.age ? Number(data.age) : undefined, // Convert age to number
@@ -125,7 +122,6 @@ export function PersonalDetailsForm() {
 
     try {
       const res = await updateProfile({ body: formData });
-      console.log("Api", res);
       if (res?.data?.success) {
         toast.success("Profile updated successfully");
         refetch();

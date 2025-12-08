@@ -49,10 +49,8 @@
 //   const [createJob] = useCreateJobMutation();
 //   const { data: categories } = useGetAllCategoryQuery(undefined);
 
-//   // console.log("Category", categories);
-
 //   const onSubmit = async (data: PostJobFormData) => {
-//     console.log(data);
+
 //     try {
 //       const res = await createJob({
 //         title: data.title,
@@ -70,13 +68,11 @@
 //         responsibilities: data.responsibilities,
 //       }).unwrap();
 
-//       console.log(res.data?.message);
-
 //       if (res.success) {
 //         toast.success("✅ Job Createed Sucessfully");
 //         route.push("/recruiter/jobs");
 //       } else {
-//         console.log(res.data?.message);
+
 //         toast.error("❌ Job creation failed");
 //       }
 //     } catch (error) {
@@ -496,6 +492,7 @@
 //   );
 // }
 
+
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -518,7 +515,7 @@ import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-// ✅ FIXED: dynamically load JoditEditor with no SSR
+// ✅ Dynamic import for Jodit Editor
 const JoditEditor = dynamic(() => import("jodit-react"), { ssr: false });
 
 export function PostJobForm() {
@@ -526,6 +523,7 @@ export function PostJobForm() {
     register,
     handleSubmit,
     control,
+    watch,
     formState: { errors },
   } = useForm<PostJobFormData>({
     defaultValues: {
@@ -535,21 +533,23 @@ export function PostJobForm() {
       type: undefined,
       startDate: undefined,
       engagementType: "",
-      salryType: "hourly", // ✅ Added default value for salryType
+      paymentType: "hourly",
       minSalary: 0,
       maxSalary: 0,
+      rent: 0,
       description: "",
       responsibilities: "",
       experianceLabel: undefined,
     },
   });
 
+  const watchEngagementType = watch("engagementType");
+
   const route = useRouter();
-  const [createJob, {isLoading}] = useCreateJobMutation();
+  const [createJob, { isLoading }] = useCreateJobMutation();
   const { data: categories } = useGetAllCategoryQuery(undefined);
 
   const onSubmit = async (data: PostJobFormData) => {
-    console.log(data);
     try {
       const res = await createJob({
         title: data.title,
@@ -560,25 +560,31 @@ export function PostJobForm() {
         startDate: data.startDate
           ? new Date(data.startDate).toISOString()
           : null,
-        engagementType: data.engagementType, // ✅ Added engagementType
-        salryType: data.salryType, // ✅ Added salryType
-        minSalary: Number(data.minSalary),
-        maxSalary: Number(data.maxSalary),
+        engagementType: data.engagementType,
+        paymentType: data.paymentType,
+        minSalary:
+          data.engagementType !== "Chair-rental"
+            ? Number(data.minSalary)
+            : undefined,
+        maxSalary:
+          data.engagementType !== "Chair-rental"
+            ? Number(data.maxSalary)
+            : undefined,
+        rent:
+          data.engagementType === "Chair-rental"
+            ? Number(data.rent)
+            : undefined,
         description: data.description,
         responsibilities: data.responsibilities,
       }).unwrap();
-
-      console.log(res.data?.message);
 
       if (res.success) {
         toast.success("✅ Job Created Successfully");
         route.push("/recruiter/jobs");
       } else {
-        console.log(res.data?.message);
         toast.error("❌ Job creation failed");
       }
     } catch (error) {
-      // ✅ Type the error properly
       const err = error as FetchBaseQueryError & {
         data?: { message?: string };
       };
@@ -590,8 +596,6 @@ export function PostJobForm() {
 
       toast.error(errorMessage);
       console.error("❌ Job creation failed:", err);
-
-      // ✅ Redirect user if an error occurs
       route.push("/recruiter/company");
     }
   };
@@ -617,7 +621,7 @@ export function PostJobForm() {
             )}
           </div>
 
-          {/* Job Category */}
+          {/* Category */}
           <div className="space-y-2">
             <Label
               htmlFor="category"
@@ -657,13 +661,12 @@ export function PostJobForm() {
         </div>
 
         <div className="grid grid-cols-2 gap-4">
-          {/* Employment Type */}
+          {/* Job Type + Engagement Type */}
           <div className="space-y-3">
             <Label className="text-lg font-medium text-gray-90">
               Employment Type
             </Label>
             <div className="flex items-center gap-4">
-              {/* Job Type */}
               <Controller
                 name="type"
                 control={control}
@@ -682,7 +685,6 @@ export function PostJobForm() {
                 )}
               />
 
-              {/* Engagement Type */}
               <Controller
                 name="engagementType"
                 control={control}
@@ -714,6 +716,7 @@ export function PostJobForm() {
             )}
           </div>
 
+          {/* Job Location */}
           <div className="space-y-2">
             <Label
               htmlFor="jobLocation"
@@ -737,7 +740,99 @@ export function PostJobForm() {
           </div>
         </div>
 
-        {/* Date Range and Experience level */}
+        {/* Salary / Rent Conditional */}
+        {watchEngagementType !== "Chair-rental" ? (
+          <div className="space-y-2">
+            <Label className="text-lg font-medium text-gray-90">
+              Salary Range
+            </Label>
+            <div className="flex gap-4">
+              <div className="flex-1 grid grid-cols-2 gap-4">
+                <Input
+                  type="number"
+                  placeholder="Min"
+                  {...register("minSalary", {
+                    required: "Minimum salary is required",
+                  })}
+                  className="mt-1 p-4 rounded-lg bg-gray-50 !text-lg text-black w-full"
+                />
+                <Input
+                  type="number"
+                  placeholder="Max"
+                  {...register("maxSalary", {
+                    required: "Maximum salary is required",
+                  })}
+                  className="mt-1 p-4 rounded-lg bg-gray-50 !text-lg text-black w-full"
+                />
+              </div>
+
+              <Controller
+                name="paymentType"
+                control={control}
+                rules={{ required: "Salary type is required" }}
+                render={({ field }) => (
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger className="w-[180px] mt-1 p-4 rounded-lg !text-lg text-black bg-gray-50">
+                      <SelectValue placeholder="Hourly" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="hourly">Hourly</SelectItem>
+                      <SelectItem value="weekly">Weekly</SelectItem>
+                      <SelectItem value="monthly">Monthly</SelectItem>
+                      <SelectItem value="yearly">Yearly</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+            </div>
+
+            {(errors.minSalary || errors.maxSalary || errors.paymentType) && (
+              <p className="text-red-500 text-sm">
+                Salary information is required
+              </p>
+            )}
+          </div>
+        ) : (
+          <div className="space-y-2">
+            <Label htmlFor="rent" className="text-lg font-medium text-gray-90">
+              Rent
+            </Label>
+
+            <div className="flex gap-4">
+              <Input
+                id="rent"
+                type="number"
+                placeholder="Enter rent amount"
+                {...register("rent", { required: "Rent amount is required" })}
+                className="mt-1 p-4 rounded-lg bg-gray-50 !text-lg text-black w-full"
+              />
+              <Controller
+                name="paymentType"
+                control={control}
+                rules={{ required: "Salary type is required" }}
+                render={({ field }) => (
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger className="w-[180px] mt-1 p-4 rounded-lg !text-lg text-black bg-gray-50">
+                      <SelectValue placeholder="Hourly" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="hourly">Hourly</SelectItem>
+                      <SelectItem value="weekly">Weekly</SelectItem>
+                      <SelectItem value="monthly">Monthly</SelectItem>
+                      <SelectItem value="yearly">Yearly</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+            </div>
+
+            {errors.rent && (
+              <p className="text-red-500 text-sm">{errors.rent.message}</p>
+            )}
+          </div>
+        )}
+
+        {/* Date + Experience */}
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label
@@ -795,57 +890,6 @@ export function PostJobForm() {
           </div>
         </div>
 
-        {/* Salary Range with Salary Type */}
-        <div className="space-y-2">
-          <Label className="text-lg font-medium text-gray-90">
-            Salary Range
-          </Label>
-          <div className="flex gap-4">
-            <div className="flex-1 grid grid-cols-2 gap-4">
-              <Input
-                type="number"
-                placeholder="Min"
-                {...register("minSalary", {
-                  required: "Minimum salary is required",
-                })}
-                className="mt-1 p-4 rounded-lg bg-gray-50 !text-lg text-black w-full"
-              />
-              <Input
-                type="number"
-                placeholder="Max"
-                {...register("maxSalary", {
-                  required: "Maximum salary is required",
-                })}
-                className="mt-1 p-4 rounded-lg bg-gray-50 !text-lg text-black w-full"
-              />
-            </div>
-            {/* Salary Type Selector */}
-            <Controller
-              name="salryType"
-              control={control}
-              rules={{ required: "Salary type is required" }}
-              render={({ field }) => (
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger className="w-[180px] mt-1 p-4 rounded-lg !text-lg text-black bg-gray-50">
-                    <SelectValue placeholder="Hourly" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="hourly">Hourly</SelectItem>
-                    <SelectItem value="weekly">Weekly</SelectItem>
-                    <SelectItem value="monthly">Monthly</SelectItem>
-                    <SelectItem value="yearly">Yearly</SelectItem>
-                  </SelectContent>
-                </Select>
-              )}
-            />
-          </div>
-          {(errors.minSalary || errors.maxSalary || errors.salryType) && (
-            <p className="text-red-500 text-sm">
-              Salary information is required
-            </p>
-          )}
-        </div>
-
         {/* Job Description */}
         <div className="space-y-2">
           <Label
@@ -890,13 +934,11 @@ export function PostJobForm() {
           )}
         </div>
 
-        {/* Submit Button */}
         <Button
           type="submit"
           className="w-full bg-green-900 hover:bg-green-800 text-white px-8 py-6 mt-5 text-lg font-medium rounded-lg"
         >
           {isLoading ? <Loader className="animate-spin size-8" /> : "Job post"}
-          
         </Button>
       </form>
     </div>

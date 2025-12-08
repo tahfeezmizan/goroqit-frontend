@@ -14,7 +14,7 @@ import { ApplicantResume } from "./applicant-resume";
 
 export default function ApplicantProfile() {
   const { id }: { id: string } = useParams();
-  const { data: talent } = useGetSingleTalentQuery(id);  
+  const { data: talent } = useGetSingleTalentQuery(id);
 
   return (
     <section className=" px-4 bg-slate-50">

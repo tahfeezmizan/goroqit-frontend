@@ -15,8 +15,6 @@ export function NewsletterSection() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("[v0] Newsletter subscription:", email);
-    // Handle newsletter subscription logic here
     setEmail("");
 
     try {

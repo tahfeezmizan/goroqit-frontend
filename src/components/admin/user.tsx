@@ -36,10 +36,10 @@ export default function User() {
   const meta = data?.data?.meta;
   const staticData = data?.data?.staticData;
 
-  console.log(users);
+  // console.log(users);
 
   const handleDelete = async (userId: string) => {
-    console.log(userId);
+    // console.log(userId);
     const result = await Swal.fire({
       title: "Are you sure?",
       text: "This action cannot be undone!",
@@ -53,7 +53,7 @@ export default function User() {
     if (result.isConfirmed) {
       try {
         const res = await deleteSingleUser(userId).unwrap();
-        console.log(res);
+        // console.log(res);
         Swal.fire("Deleted!", "User has been deleted.", "success");
       } catch {
         Swal.fire("Error!", "Failed to delete user.", "error");
