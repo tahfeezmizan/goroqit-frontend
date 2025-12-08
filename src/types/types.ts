@@ -1,5 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { LucideIcon } from "lucide-react";
 import { StaticImageData } from "next/image";
+import { Portfolio } from "./profileTypes";
 
 // types/job.ts
 export type JobCardProps = {
@@ -12,6 +15,31 @@ export type JobCardProps = {
   salary?: string;
   location?: string;
 };
+
+export type WorkExperience = {
+  institution?: string;
+  degree?: string;
+  fieldOfStudy?: string;
+  startDate?: string;
+  endDate?: string;
+  [key: string]: any;
+};
+
+export type Education = {
+  institution?: string;
+  degree?: string;
+  fieldOfStudy?: string;
+  startDate?: string;
+  endDate?: string;
+  [key: string]: any;
+};
+
+export interface PortfolioData {
+  title: string;
+  description: string;
+  images: File[];
+  imageUrls: string[]; // For displaying existing images from server
+}
 
 export interface TalentProps {
   // Core display fields
@@ -35,24 +63,11 @@ export interface TalentProps {
   location?: string;
   preferredWorkType?: string | null;
   bio?: string | null;
+  yearsOfExperience: string;
 
-  education: Array<{
-    institution?: string;
-    degree?: string;
-    fieldOfStudy?: string;
-    startDate?: string;
-    endDate?: string;
-    [key: string]: any;
-  }>;
+  education: Education[];
 
-  workExperience: Array<{
-    company?: string;
-    position?: string;
-    startDate?: string;
-    endDate?: string;
-    description?: string;
-    [key: string]: any;
-  }>;
+  workExperience: WorkExperience[];
 
   salaryExpectation?: number | null;
   mobile: string;
@@ -75,7 +90,7 @@ export interface AppliedJob {
     companyName: string;
   };
   companyName: string;
-  createdAt: Date;
+  createdAt: string;
   updatedAt: string;
   email: string;
   experience: number;
@@ -110,15 +125,16 @@ export type UserData = {
   _id: string;
   name: string;
   email: string;
-  role: "applicant" | "recruiter";
+  role: "applicant" | "recruiter" | "admin" | string;
   status: "active" | "restricted" | string;
   companyName?: string | null;
   subscribe?: boolean;
-  createdAt: string;
+  createdAt: string | Date;
   updatedAt: string;
   profile?: string;
   roleProfile?: string;
   image?: string | null;
+  action?: React.ReactNode;
 };
 
 export type CompanyData = {
@@ -131,31 +147,44 @@ export type CompanyData = {
 };
 
 export interface PostJobFormData {
-  _id?: number | string | undefined;
+  _id?: number | string;
   title: string;
   category?: string;
-  type: "Full-time" | "Remote" | "Freelance";
+  type: "Full-time" | "Part-time" | "Temp" | "Self-employed" | "Chair-rental";
   startDate: Date;
   endDate: Date;
+  engagementType: string;
   minSalary: number;
   maxSalary: number;
+  rent?: number;
   description?: string;
   responsibilities?: string;
   jobLocation: string;
   applicationsCount: string;
-  experianceLabel: "Experienced" | "Beginner" | "Freshers";
-  user: {
+  paymentType: "yearly" | "monthly" | "weekly" | "hourly";
+  experianceLabel: "Junior" | "Mid-Level" | "Senior" | "Master";
+  user?: {
     email: string;
     image: string | null;
     name: string;
-    profile: {
+    profile?: {
       _id: string;
       companyName: string;
       companyLogo: string | null;
-    };
+      location: string;
+      companyEmail: string;
+      companyDescription: string;
+      phone: string;
+      companyWebsite: string;
+      linkedinProfile: string;
+      twitterProfile: string;
+      facebookProfile: string;
+      instagramProfile: string;
+      portfolio?: Portfolio[] | null;
+    } | null;
     role: string;
     roleProfile: string;
-  };
+  } | null;
 }
 
 export type Column<T> = {
@@ -164,6 +193,7 @@ export type Column<T> = {
 };
 
 export type JobData = {
+  _id?: string;
   userId: string;
   jobTitle: string;
   companyName: string;
@@ -182,7 +212,55 @@ export type JobApplyFormInputs = {
 };
 
 export interface ApiError {
+  status: number;
   data?: {
-    message: string;
+    message?: string;
+    success?: boolean;
+    errorMessages?: { message: string }[];
   };
+}
+
+export type Category = {
+  _id: string;
+  name: string;
+  description: string;
+  status: boolean;
+  createdAt: string | Date; // ISO date string
+  updatedAt: string | Date; // ISO date string
+  __v: number;
+};
+
+export type ApiParams = {
+  page: number;
+  limit: number;
+  searchTerm?: string;
+  location?: string;
+  gender?: string;
+  skills?: string | string[];
+};
+
+export type ApiUser = {
+  _id: string;
+  name: string;
+  email: string;
+  role: string;
+  status: string;
+  companyName?: string;
+  createdAt: string;
+};
+
+export interface CompanyProfile {
+  _id: string;
+  companyName: string;
+  companyLogo: string | null;
+  location: string;
+  companyEmail: string;
+  companyDescription: string;
+  phone: string;
+  companyWebsite: string;
+  linkedinProfile: string;
+  twitterProfile: string;
+  facebookProfile: string;
+  instagramProfile: string;
+  portfolio?: Portfolio[] | null;
 }

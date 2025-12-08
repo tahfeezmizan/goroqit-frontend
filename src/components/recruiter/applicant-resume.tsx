@@ -1,7 +1,7 @@
 import Image from "next/image";
 import React from "react";
 import resumeSample from "@/assets/resume.jpg";
-import applicantImage from "@/assets/applicent-image.png";
+import applicantImage from "@/assets/discover-section-img (1).png";
 import { Button } from "../ui/button";
 import { Mail, MessageCircle } from "lucide-react";
 
@@ -18,7 +18,7 @@ export default function ApplicantResume() {
           <div className="flex items-center space-x-4 mb-8">
             <div className="relative w-20 h-20">
               <Image
-                src={applicantImage.src}
+                src={applicantImage}
                 width={98}
                 height={98}
                 alt="Jerome Bell"
@@ -97,7 +97,7 @@ export default function ApplicantResume() {
         <h2 className="text-3xl font-medium leading-loose">Resume</h2>
 
         <Image
-          src={resumeSample.src}
+          src={resumeSample}
           width={960}
           height={400}
           alt="Applicant Resume "

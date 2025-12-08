@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -10,24 +10,21 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { MessageSquare } from "lucide-react";
 import { useCreateChatMutation } from "@/redux/features/chatAPI";
+import { MessageSquare } from "lucide-react";
 
 const CreateChatModal = ({ myId }: { myId: string }) => {
-  const params = useParams(); // 🔹 dynamic route params
-  
+  // const params = useParams(); // 🔹 dynamic route params
+
   const router = useRouter();
   const [createChat, { isLoading }] = useCreateChatMutation();
 
   const handleCreateChat = async () => {
-    
-
     try {
       const res = await createChat({
         participants: [myId],
       }).unwrap();
-       console.log(res)
+      // console.log(res);
       if (res.success) {
         router.push("/recruiter/messages"); // 🔹 navigate after success
       }

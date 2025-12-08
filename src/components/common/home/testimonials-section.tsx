@@ -83,7 +83,7 @@ export function TestimonialsSection() {
       <div className="max-w-7xl mx-auto  px-4 sm:px-6 ">
         <div className="hidden lg:block w-[450px] h-[450px] -ml-32 -mb-56">
           <Image
-            src={img.src}
+            src={img}
             alt="testimonial image"
             width={500}
             height={500}

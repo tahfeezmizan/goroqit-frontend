@@ -7,9 +7,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { MapPin } from "lucide-react";
-import { useEffect, useState, useCallback } from "react";
 import { debounce } from "lodash";
+import { MapPin } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
 
 export interface TalentFilterData {
   search: string;
@@ -31,10 +31,11 @@ export function TalentSidebar({ onFiltersChange }: TalentSidebarProps) {
   });
 
   // Debounced filter change handler
-  const debouncedFilterChange = useCallback(
-    debounce((filters: TalentFilterData) => {
-      onFiltersChange(filters);
-    }, 500),
+  const debouncedFilterChange = useMemo(
+    () =>
+      debounce((filters: TalentFilterData) => {
+        onFiltersChange(filters);
+      }, 500),
     [onFiltersChange]
   );
 
@@ -72,7 +73,7 @@ export function TalentSidebar({ onFiltersChange }: TalentSidebarProps) {
       <div className="flex justify-between items-center text-xl border-b">
         <h2 className="font-semibold text-gray-800 leading-relaxed">Filter</h2>
         <button
-          className="text-red-500 hover:text-red-600 leading-relaxed cursor-pointer"
+          className="text-red-500 text-lg hover:text-red-600 leading-relaxed cursor-pointer"
           onClick={handleClearAll}
         >
           Clear All
@@ -123,8 +124,6 @@ export function TalentSidebar({ onFiltersChange }: TalentSidebarProps) {
           </SelectContent>
         </Select>
       </div>
-
-     
     </div>
   );
 }

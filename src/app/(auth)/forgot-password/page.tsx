@@ -1,6 +1,5 @@
 import { AuthLayout } from "@/components/auth/auth-layout";
-import ForgotPasswordForm from "@/components/auth/forgot-password-form";
-import React from "react";
+import ForgotPasswordForm from "@/components/auth/reset-password-form";
 
 export default function page() {
   return (

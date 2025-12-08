@@ -5,15 +5,40 @@ import type React from "react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useCreateNewsletterMutation } from "@/redux/features/newsletterApi";
+import { toast } from "sonner";
+import { ApiError } from "@/types/types";
 
 export function NewsletterSection() {
   const [email, setEmail] = useState("");
+  const [createNewsletter] = useCreateNewsletterMutation();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("[v0] Newsletter subscription:", email);
-    // Handle newsletter subscription logic here
     setEmail("");
+
+    try {
+      const res = await createNewsletter({ email }).unwrap();
+
+      // ✅ Handle success
+      if (res?.success) {
+        toast.success("Thanks for subscribing! Exciting updates are coming your way");
+      } else {
+        toast.error(res?.message || "Something went wrong. Please try again.");
+      }
+    } catch (error: unknown) {
+      const err = error as ApiError;
+      const msg =
+        err?.data?.errorMessages?.[0]?.message ||
+        err?.data?.message ||
+        "An unexpected error occurred.";
+
+      toast.error(
+        msg.includes("E11000 duplicate key")
+          ? "This email is already subscribed."
+          : msg
+      );
+    }
   };
 
   return (

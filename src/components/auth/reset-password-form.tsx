@@ -3,21 +3,51 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useForgetPasswordSendOTPMutation } from "@/redux/features/authApi";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 type LoginFormData = {
   email: string;
 };
 
-export default function ResetPasswordForm() {
+export default function ForgotPasswordForm() {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<LoginFormData>();
 
-  const onSubmit = (data: LoginFormData) => {
-    console.log("Login form data:", data);
+  const route = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [forgetPasswordSendOTP] = useForgetPasswordSendOTPMutation();
+
+  const onSubmit = async (data: LoginFormData) => {
+    // console.log("Login form data:", data);
+    setIsLoading(true); // Start loading
+
+    try {
+      const res = await forgetPasswordSendOTP({ email: data.email });
+
+      if (res?.data?.success) {
+        route.push(
+          `/otp-verify?email=${encodeURIComponent(
+            data.email
+          )}&authType=createAccount`
+        );
+        toast.success(res?.data?.data);
+      } else if (res?.error) {
+        // ✅ type narrowing for FetchBaseQueryError
+        const err = res.error as FetchBaseQueryError;
+        const errorMessage =
+          (err.data as { message?: string })?.message || "Something went wrong";
+
+        toast.error(errorMessage);
+      }
+    } catch {}
   };
 
   return (
@@ -60,7 +90,7 @@ export default function ResetPasswordForm() {
           type="submit"
           className="w-full bg-green-900 hover:bg-green-800 text-white px-8 py-6 text-lg font-medium rounded-lg"
         >
-          Reset email
+          {isLoading ? "Sending OTP..." : "Send OTP"}
         </Button>
       </form>
     </div>

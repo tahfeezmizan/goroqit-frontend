@@ -3,7 +3,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Select,
   SelectContent,
@@ -11,23 +10,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { useGetCategoryQuery } from "@/redux/features/categoryApi";
+import { useGetAllCategoryQuery } from "@/redux/features/categoryApi";
 import {
   useGetAllJobsQuery,
   useUpdateJobMutation,
 } from "@/redux/features/jobsApi";
-import { PostJobFormData } from "@/types/types";
-import { Calendar } from "lucide-react";
+import { Category, JobData, PostJobFormData } from "@/types/types";
+import { Calendar, Loader } from "lucide-react";
+import dynamic from "next/dynamic";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
+const JoditEditor = dynamic(() => import("jodit-react"), { ssr: false });
 
 export function JobUpdateForm() {
   const {
     register,
     handleSubmit,
+    watch,
     control,
     formState: { errors },
     reset,
@@ -37,51 +38,64 @@ export function JobUpdateForm() {
       category: "",
       jobLocation: "",
       type: undefined,
+      engagementType: "",
       startDate: undefined,
-      endDate: undefined,
+      experianceLabel: undefined,
       minSalary: 0,
       maxSalary: 0,
       description: "",
-      responsibilities: "",
     },
   });
   const { id } = useParams();
   const route = useRouter();
 
-  const { data: categories } = useGetCategoryQuery({});
-  const { data: jobs } = useGetAllJobsQuery({});
-  const [updateJob] = useUpdateJobMutation();
+  const watchEngagementType = watch("engagementType");
 
-  const job = jobs?.find((job: any) => job._id === id);
+  const { data: categories } = useGetAllCategoryQuery({});
+  const { data: jobs } = useGetAllJobsQuery({});
+  const [updateJob, { isLoading }] = useUpdateJobMutation();
+
+  const job = jobs?.find((job: JobData) => job._id === id);
 
   useEffect(() => {
-    if (job) {
+    if (job && categories) {
       reset({
         title: job.title || "",
-        // ✅ Fixed: Extract _id from category object to match SelectItem value
-        category: job.category?._id || job.category || "",
+        category: job.category?.name || job.category || "",
         jobLocation: job.jobLocation || "",
-        type: job.type || undefined,
+        type: job.type || "",
+        engagementType: job.engagementType || "",
+        rent: job.rent || 0,
+        paymentType: job.paymentType || "hourly",
         startDate: job.startDate ? job.startDate.split("T")[0] : undefined,
-        endDate: job.endDate ? job.endDate.split("T")[0] : undefined,
+        experianceLabel: job.experianceLabel || "",
         minSalary: job.minSalary || 0,
         maxSalary: job.maxSalary || 0,
         description: job.description || "",
-        responsibilities: job.responsibilities || "",
       });
     }
-  }, [job, reset]);
+  }, [job, categories, reset]);
 
   const onSubmit = async (data: PostJobFormData) => {
     const updateData = {
       title: data.title,
       category: data.category,
       jobLocation: data.jobLocation,
+      experianceLabel: data.experianceLabel,
       type: data.type,
       startDate: data.startDate ? new Date(data.startDate).toISOString() : null,
-      endDate: data.endDate ? new Date(data.endDate).toISOString() : null,
-      minSalary: Number(data.minSalary),
-      maxSalary: Number(data.maxSalary),
+      engagementType: data.engagementType,
+      paymentType: data.paymentType,
+      minSalary:
+        data.engagementType !== "Chair-rental"
+          ? Number(data.minSalary)
+          : undefined,
+      maxSalary:
+        data.engagementType !== "Chair-rental"
+          ? Number(data.maxSalary)
+          : undefined,
+      rent:
+        data.engagementType === "Chair-rental" ? Number(data.rent) : undefined,
       description: data.description,
       responsibilities: data.responsibilities,
     };
@@ -98,7 +112,7 @@ export function JobUpdateForm() {
       }
     } catch (error) {
       toast.error("❌ Job creation failed");
-      // console.error("❌ Job creation failed:", error);
+      console.error("❌ Job creation failed:", error);
     }
   };
 
@@ -116,7 +130,7 @@ export function JobUpdateForm() {
               id="title"
               placeholder="Hair Stylist"
               {...register("title", { required: "Job title is required" })}
-              className="mt-1 p-4 rounded-lg !text-lg text-black w-full"
+              className="mt-1 p-4 rounded-lg bg-gray-50 !text-lg text-black w-full"
             />
             {errors.title && (
               <p className="text-red-500 text-sm">{errors.title.message}</p>
@@ -137,15 +151,21 @@ export function JobUpdateForm() {
               rules={{ required: "Job category is required" }}
               render={({ field }) => (
                 <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger className="mt-1 p-4 rounded-lg !text-lg text-black w-full">
+                  <SelectTrigger className="mt-1 p-4 rounded-lg bg-gray-50 !text-lg text-black w-full">
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
                   <SelectContent>
-                    {categories?.map((category: any) => (
-                      <SelectItem key={category._id} value={category.name}>
-                        {category.name}
-                      </SelectItem>
-                    ))}
+                    {Array.isArray(categories) && categories.length > 0 ? (
+                      categories.map((category: Category) => (
+                        <SelectItem key={category._id} value={category?.name}>
+                          {category?.name}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <p className="px-2 py-1 text-gray-500 text-sm">
+                        No categories found
+                      </p>
+                    )}
                   </SelectContent>
                 </Select>
               )}
@@ -156,58 +176,64 @@ export function JobUpdateForm() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid md:grid-cols-2 gap-4">
           {/* Employment Type */}
           <div className="space-y-3">
             <Label className="text-lg font-medium text-gray-90">
               Employment Type
             </Label>
-            <Controller
-              name="type"
-              control={control}
-              rules={{ required: "Employment type is required" }}
-              render={({ field }) => (
-                <RadioGroup
-                  value={field.value}
-                  onValueChange={field.onChange}
-                  className="flex items-center space-x-8"
-                >
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="Full-time" id="Full-time" />
-                    <Label
-                      htmlFor="Full-time"
-                      className="text-md font-medium text-gray-600"
-                    >
-                      Full-time
-                    </Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="Remote" id="Remote" />
-                    <Label
-                      htmlFor="Remote"
-                      className="text-md font-medium text-gray-600"
-                    >
-                      Remote
-                    </Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="Freelance" id="Freelance" />
-                    <Label
-                      htmlFor="Freelance"
-                      className="text-md font-medium text-gray-600"
-                    >
-                      Freelance
-                    </Label>
-                  </div>
-                </RadioGroup>
-              )}
-            />
+            <div className="flex items-center gap-4">
+              {/* Job Type */}
+              <Controller
+                name="type"
+                control={control}
+                rules={{ required: "Job type is required" }}
+                render={({ field }) => (
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger className="mt-1 p-4 rounded-lg bg-gray-50 !text-lg text-black w-full">
+                      <SelectValue placeholder="Select Job Type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Full-time">Full-time</SelectItem>
+                      <SelectItem value="Part-time">Part-time</SelectItem>
+                      <SelectItem value="Temp">Temp</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+
+              {/* Engagement Type */}
+              <Controller
+                name="engagementType"
+                control={control}
+                rules={{ required: "Engagement type is required" }}
+                render={({ field }) => (
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger className="mt-1 p-4 rounded-lg bg-gray-50 !text-lg text-black w-full">
+                      <SelectValue placeholder="Select Engagement Type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Salaried">Salaried</SelectItem>
+                      <SelectItem value="Self-employed">
+                        Self-employed
+                      </SelectItem>
+                      <SelectItem value="Chair-rental">Chair Rental</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+            </div>
+
             {errors.type && (
               <p className="text-red-500 text-sm">{errors.type.message}</p>
             )}
+            {errors.engagementType && (
+              <p className="text-red-500 text-sm">
+                {errors.engagementType.message}
+              </p>
+            )}
           </div>
 
-          {/* Job Location */}
           <div className="space-y-2">
             <Label
               htmlFor="jobLocation"
@@ -217,11 +243,11 @@ export function JobUpdateForm() {
             </Label>
             <Input
               id="jobLocation"
-              placeholder="Job location"
+              placeholder="Enter your locations"
               {...register("jobLocation", {
                 required: "jobLocation is required",
               })}
-              className="mt-1 p-4 rounded-lg !text-lg text-black w-full"
+              className="mt-1 p-4 rounded-lg bg-gray-50 !text-lg text-black w-full"
             />
             {errors.jobLocation && (
               <p className="text-red-500 text-sm">
@@ -231,7 +257,7 @@ export function JobUpdateForm() {
           </div>
         </div>
 
-        {/* Date Range */}
+        {/* Date Range and Experience level */}
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label
@@ -247,7 +273,7 @@ export function JobUpdateForm() {
                 {...register("startDate", {
                   required: "Starting date is required",
                 })}
-                className="mt-1 p-4 rounded-lg !text-lg text-black w-full pl-10"
+                className="mt-1 p-4 rounded-lg bg-gray-50 !text-lg text-black w-full pl-10"
               />
               <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
             </div>
@@ -255,55 +281,132 @@ export function JobUpdateForm() {
               <p className="text-red-500 text-sm">{errors.startDate.message}</p>
             )}
           </div>
+
           <div className="space-y-2">
             <Label
-              htmlFor="endDate"
+              htmlFor="experianceLabel"
               className="text-lg font-medium text-gray-90"
             >
-              End Date
+              Experience Level
             </Label>
-            <div className="relative">
-              <Input
-                id="endDate"
-                type="date"
-                {...register("endDate", { required: "End date is required" })}
-                className="mt-1 p-4 rounded-lg !text-lg text-black w-full pl-10"
-              />
-              <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-            </div>
-            {errors.endDate && (
-              <p className="text-red-500 text-sm">{errors.endDate.message}</p>
+            <Controller
+              name="experianceLabel"
+              control={control}
+              rules={{ required: "Experience Level is required" }}
+              render={({ field }) => (
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <SelectTrigger className="mt-1 p-4 rounded-lg bg-gray-50 !text-lg text-black w-full">
+                    <SelectValue placeholder="Select Experience Level" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Junior">Junior</SelectItem>
+                    <SelectItem value="Mid-Level">Mid-Level</SelectItem>
+                    <SelectItem value="Senior">Senior</SelectItem>
+                    <SelectItem value="Master">Master</SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+            />
+            {errors.experianceLabel && (
+              <p className="text-red-500 text-sm">
+                {errors.experianceLabel.message}
+              </p>
             )}
           </div>
         </div>
 
-        {/* Salary Range */}
-        <div className="space-y-2">
-          <Label className="text-lg font-medium text-gray-90">
-            Salary Range
-          </Label>
-          <div className="grid grid-cols-2 gap-4">
-            <Input
-              type="number"
-              placeholder="Min"
-              {...register("minSalary", {
-                required: "Minimum salary is required",
-              })}
-              className="mt-1 p-4 rounded-lg !text-lg text-black w-full"
-            />
-            <Input
-              type="number"
-              placeholder="Max"
-              {...register("maxSalary", {
-                required: "Maximum salary is required",
-              })}
-              className="mt-1 p-4 rounded-lg !text-lg text-black w-full"
-            />
+        {/* Salary Range with Salary Type */}
+        {/* Salary / Rent Conditional */}
+        {watchEngagementType !== "Chair-rental" ? (
+          <div className="space-y-2">
+            <Label className="text-lg font-medium text-gray-90">
+              Salary Range
+            </Label>
+            <div className="flex gap-4">
+              <div className="flex-1 grid grid-cols-2 gap-4">
+                <Input
+                  type="number"
+                  placeholder="Min"
+                  {...register("minSalary", {
+                    required: "Minimum salary is required",
+                  })}
+                  className="mt-1 p-4 rounded-lg bg-gray-50 !text-lg text-black w-full"
+                />
+                <Input
+                  type="number"
+                  placeholder="Max"
+                  {...register("maxSalary", {
+                    required: "Maximum salary is required",
+                  })}
+                  className="mt-1 p-4 rounded-lg bg-gray-50 !text-lg text-black w-full"
+                />
+              </div>
+
+              <Controller
+                name="paymentType"
+                control={control}
+                rules={{ required: "Salary type is required" }}
+                render={({ field }) => (
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger className="w-[180px] mt-1 p-4 rounded-lg !text-lg text-black bg-gray-50">
+                      <SelectValue placeholder="Hourly" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="hourly">Hourly</SelectItem>
+                      <SelectItem value="weekly">Weekly</SelectItem>
+                      <SelectItem value="monthly">Monthly</SelectItem>
+                      <SelectItem value="yearly">Yearly</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+            </div>
+
+            {(errors.minSalary || errors.maxSalary || errors.paymentType) && (
+              <p className="text-red-500 text-sm">
+                Salary information is required
+              </p>
+            )}
           </div>
-          {(errors.minSalary || errors.maxSalary) && (
-            <p className="text-red-500 text-sm">Salary range is required</p>
-          )}
-        </div>
+        ) : (
+          <div className="space-y-2">
+            <Label htmlFor="rent" className="text-lg font-medium text-gray-90">
+              Rent
+            </Label>
+
+            <div className="flex gap-4">
+              <Input
+                id="rent"
+                type="number"
+                placeholder="Enter rent amount"
+                {...register("rent", { required: "Rent amount is required" })}
+                className="mt-1 p-4 rounded-lg bg-gray-50 !text-lg text-black w-full"
+              />
+              <Controller
+                name="paymentType"
+                control={control}
+                rules={{ required: "Salary type is required" }}
+                render={({ field }) => (
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger className="w-[180px] mt-1 p-4 rounded-lg !text-lg text-black bg-gray-50">
+                      <SelectValue placeholder="Hourly" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="hourly">Hourly</SelectItem>
+                      <SelectItem value="weekly">Weekly</SelectItem>
+                      <SelectItem value="monthly">Monthly</SelectItem>
+                      <SelectItem value="yearly">Yearly</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+            </div>
+
+            {errors.rent && (
+              <p className="text-red-500 text-sm">{errors.rent.message}</p>
+            )}
+          </div>
+        )}
 
         {/* Job Description */}
         <div className="space-y-2">
@@ -313,39 +416,37 @@ export function JobUpdateForm() {
           >
             Job Description
           </Label>
-          <Textarea
-            id="description"
-            placeholder="Describe the role"
-            {...register("description", {
-              required: "Job description is required",
-            })}
-            className="mt-1 p-4 rounded-lg !text-lg text-black w-full min-h-[120px] resize-none"
+
+          <Controller
+            name="description"
+            control={control}
+            rules={{ required: "Job description are required" }}
+            render={({ field }) => {
+              const defaultTemplate = `
+               <p><strong>Description:</strong></p>
+               <br/><br/>
+              <p><strong>Responsibilities:</strong></p>
+      <br/><br/>  
+              <p><strong>About the Business:</strong></p>
+            `;
+
+              return (
+                <JoditEditor
+                  ref={null}
+                  value={field.value || defaultTemplate}
+                  config={{
+                    height: 400,
+                    readonly: false,
+                  }}
+                  onBlur={(newContent) => field.onChange(newContent)}
+                  onChange={() => {}}
+                />
+              );
+            }}
           />
+
           {errors.description && (
             <p className="text-red-500 text-sm">{errors.description.message}</p>
-          )}
-        </div>
-
-        {/* Job Responsibilities */}
-        <div className="space-y-2">
-          <Label
-            htmlFor="responsibilities"
-            className="text-lg font-medium text-gray-90"
-          >
-            Job Responsibilities
-          </Label>
-          <Textarea
-            id="responsibilities"
-            placeholder="Describe the Job responsibilities"
-            {...register("responsibilities", {
-              required: "Job responsibilities are required",
-            })}
-            className="mt-1 p-4 rounded-lg !text-lg text-black w-full min-h-[120px] resize-none"
-          />
-          {errors.responsibilities && (
-            <p className="text-red-500 text-sm">
-              {errors.responsibilities.message}
-            </p>
           )}
         </div>
 
@@ -354,7 +455,11 @@ export function JobUpdateForm() {
           type="submit"
           className="w-full bg-green-900 hover:bg-green-800 text-white px-8 py-6 mt-5 text-lg font-medium rounded-lg"
         >
-          Update Job Post
+          {isLoading ? (
+            <Loader className="animate-spin size-8" />
+          ) : (
+            "Update Job"
+          )}
         </Button>
       </form>
     </div>

@@ -1,11 +1,12 @@
 // components/JobCard.tsx
-import companyLogo from "@/assets/company-logo (1).png";
 import { CardContent } from "@/components/ui/card";
 import TimeAgo from "@/lib/time-ago";
+import { getImageUrl } from "@/lib/utils";
 import { PostJobFormData } from "@/types/types";
 import { Briefcase, Calendar, CirclePoundSterling, MapPin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+
 
 export default function JobCard({ job }: { job: PostJobFormData }) {
   const {
@@ -16,10 +17,10 @@ export default function JobCard({ job }: { job: PostJobFormData }) {
     minSalary,
     startDate,
     type,
-    user: {
-      profile: { companyName } = {}, 
-    } = {},
+    user,
   } = job;
+
+  const { companyName, companyLogo } = user?.profile || {};
 
   return (
     <div className="w-full bg-white hover:shadow-md transition rounded-lg">
@@ -27,15 +28,16 @@ export default function JobCard({ job }: { job: PostJobFormData }) {
         {/* Left Info */}
         <div>
           <Image
-            src={companyLogo}
+            src={getImageUrl(companyLogo)}
             alt={"image"}
-            width={80}
-            height={80}
-            className="w-20 h-20b object-contain border p-2 rounded mb-2"
+            width={200}
+            height={200}
+            className="w-24 h-24 object-cover border p-2 rounded mb-2"
           />
           <h3 className="text-xl font-semibold leading-loose">{title}</h3>
           <p className="text-gray-800">
-            Company: <span className="font-semibold">{companyName}</span>
+            Company:{" "}
+            <span className="font-semibold">{companyName || "No compnay"}</span>
           </p>
           <div className="flex flex-wrap gap-4 mt-2 text-md text-black">
             <span className="flex items-center gap-1.5">
@@ -53,13 +55,15 @@ export default function JobCard({ job }: { job: PostJobFormData }) {
         </div>
 
         {/* Right Info */}
-        <div className="flex flex-row-reverse lg:flex-col justify-between lg:justify-between sm:items-end gap-3 md:gap-5">
-          <Link
-            href={`job/${_id}`}
-            className="bg-green-900 hover:bg-green-800 text-white px-2 py-1 text-base font-medium rounded-lg"
-          >
-            Apply Now
-          </Link>
+        <div className="flex flex-row-reverse lg:flex-col justify-between items-center md:items-end gap-4 ">
+          <div className="">
+            <Link
+              href={`job/${_id}`}
+              className="bg-green-900 hover:bg-green-800 text-white px-2 py-1 text-base font-medium rounded-lg"
+            >
+              View Detials
+            </Link>
+          </div>
           <div className="flex items-center justify-between gap-2">
             {" "}
             <CirclePoundSterling
@@ -67,7 +71,7 @@ export default function JobCard({ job }: { job: PostJobFormData }) {
               className="bg-green-900 text-white rounded-full"
             />{" "}
             <p className="font-medium text-gray-700">
-              USD ${minSalary} - ${maxSalary} per year
+              £{minSalary} - £{maxSalary} year
             </p>
           </div>
         </div>

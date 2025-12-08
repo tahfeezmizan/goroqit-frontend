@@ -83,11 +83,11 @@ getMessages: builder.query({
         body: { chatId, text, type, sender },
       }),
       // Invalidate the messages cache for this specific chat
-      invalidatesTags: (result, error, { chatId }) => [
-        // { type: "Message", id: chatId },
-        // { type: "Chat", id: chatId },
-     //   "Chat" // Also invalidate general chat list
-      ],
+    //   invalidatesTags: (result, error, { chatId }) => [
+    //     // { type: "Message", id: chatId },
+    //     // { type: "Chat", id: chatId },
+    //  //   "Chat" // Also invalidate general chat list
+    //   ],
     }),
   }),
 });

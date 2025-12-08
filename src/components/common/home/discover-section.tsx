@@ -1,7 +1,7 @@
 import Image from "next/image";
-import Image1 from "../../../../public/discover-section-img (1).png";
-import Image2 from "../../../../public/discover-section-img (2).png";
-import Image3 from "../../../../public/discover-section-img (3).png";
+import Image1 from "@/assets/discover-section-img (1).png";
+import Image2 from "@/assets/discover-section-img (2).png";
+import Image3 from "@/assets/discover-section-img (3).png";
 
 export function DiscoverSection() {
   const features = [

@@ -1,3 +1,21 @@
+export interface UserData {
+  companyName: string;
+  createdAt: string;
+  email: string;
+  image: string;
+  name: string;
+  profile?: Profile;
+  role: string;
+  roleProfile: string;
+  status: string;
+  subscribe: boolean;
+  portfolio?: Portfolio[];
+  updatedAt: string;
+  verified: boolean;
+  __v: number;
+  _id: string;
+}
+
 export interface WorkExperience {
   jobTitle: string;
   companyName: string;
@@ -19,6 +37,7 @@ export interface Education {
 }
 
 export interface Profile {
+  name: string;
   age: string | null;
   bio: string | null;
   citizenship: string | null;
@@ -42,7 +61,8 @@ export interface Profile {
   salaryExpectation: string | null;
   skills: string[];
   expartes: string[];
-
+  portfolio?: Portfolio[];
+  yearsOfExperience?: string;
   streetAddress: string;
   updatedAt: string;
   userId: string;
@@ -52,21 +72,11 @@ export interface Profile {
   __v: number;
 }
 
-export interface UserData {
-  companyName: string;
-  createdAt: string;
-  email: string;
-  image: string;
-  name: string;
-  profile: Profile;
-  role: string;
-  roleProfile: string;
-  status: string;
-  subscribe: boolean;
-  updatedAt: string;
-  verified: boolean;
-  __v: number;
-  _id: string;
+export interface Portfolio {
+  title: string;
+  description: string;
+  images: File[];
+  portfolioImages?: string[];
 }
 
 export interface ApiResponse {
@@ -74,4 +84,13 @@ export interface ApiResponse {
   success: boolean;
   message: string;
   data: UserData;
+}
+
+export interface PortfolioApiResponse {
+  statusCode: number;
+  success: boolean;
+  message: string;
+  portfolioImages: string[];
+  title: string;
+  description: string;
 }

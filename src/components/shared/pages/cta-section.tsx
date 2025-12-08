@@ -8,7 +8,7 @@ export function CtaSection() {
       className="relative h-auto flex 
        items-center lg:items-end  justify-center overflow-hidden py-24 md:py-36"
       style={{
-        backgroundImage: `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url(${bg.src})`,
+        backgroundImage: `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url(${bg})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",

@@ -1,102 +1,196 @@
-import React from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { CheckCircleIcon } from "lucide-react";
-// app/lib/jobData.ts
-interface JobInfo {
-  companyProfile: string;
-  description: string;
-  responsibilities: string[];
-  whoYouAre: string[];
-  niceToHaves: string[];
-}
+import { PostJobFormData } from "@/types/types";
+import {
+  Facebook,
+  Globe,
+  Instagram,
+  Linkedin,
+  Mail,
+  MapPin,
+  Phone,
+  Twitter,
+} from "lucide-react";
+import ApplicantPortfolio from "../find-talent/applicant-portfolio";
 
-export const jobInfo: JobInfo = {
-  companyProfile:
-    "Stripe is a software platform for starting and running internet businesses. Millions of businesses rely on Stripe's software tools to accept payments, expand globally, and manage their businesses online. Stripe has been at the forefront of expanding internet commerce, powering new business models, and supporting the latest platforms, from marketplaces to mobile commerce sites. We believe that growing the GDP of the internet is a problem rooted in code and design, not finance. Stripe is built for developers, makers, and creators. We work on solving the hard technical problems necessary to build global economic infrastructure—from designing highly reliable systems to developing advanced machine learning algorithms to prevent fraud.",
-  description:
-    "Stripe is looking for Social Media Marketing expert to help manage our online networks. You will be responsible for monitoring our social media channels, creating content, finding effective ways to engage the community and incentivize others to engage on our channels.",
-  responsibilities: [
-    "Community engagement to ensure that is supported and actively represented online",
-    "Focus on social media content development and publication",
-    "Marketing and strategy support",
-    "Stay on top of trends on social media platforms, and suggest content ideas to the team",
-    "Engage with online communities",
-  ],
-  whoYouAre: [
-    "You get energy from people and building the ideal work environment",
-    "You have a sense for beautiful spaces and office experiences",
-    "You are a confident office manager, ready for added responsibilities",
-    "You're detail-oriented and creative",
-    "You're a growth marketer and know how to run campaigns",
-  ],
-  niceToHaves: [
-    "Fluent in English",
-    "Project management skills",
-    "Copy editing skills",
-  ],
-};
+export default function JobDetail({ data }: { data: PostJobFormData }) {
+  const compnayData = data?.user?.profile;
 
-export default function JobDetail({data}: {data: any}) {
+  const content: string = data.description || "";
+
   return (
     <aside className="w-full  bg-white p-8 rounded-lg">
-      <div className="space-y-8">
+      <div className="space-y-6">
         {/* Company Profile */}
         <section>
-          <h2 className="text-xl font-bold text-gray-900 mb-4">
-            Company Profile
+          <h2 className="text-2xl font-bold text-gray-900">{data?.title}</h2>
+          <div className="text-gray-600 leading-relaxed">
+            <span className="font-medium">{compnayData?.companyName}</span>{" "}
+            <span className=" flex items-center gap-0.5 ">
+              {" "}
+              <MapPin size={16} /> {data?.jobLocation}
+            </span>
+          </div>
+        </section>
+
+        <section>
+          <div
+            className="prose max-w-none text-black"
+            dangerouslySetInnerHTML={{ __html: content ?? "" }}
+          />
+        </section>
+
+        <hr />
+        {/* Description */}
+        <section className="space-y-4">
+          <h2 className="text-xl font-bold text-gray-900">
+            Company Description
           </h2>
           <p className="text-gray-600 leading-relaxed">
-            {jobInfo.companyProfile}
+            {compnayData?.companyDescription}
           </p>
-        </section>
 
-        {/* Description */}
-        <section>
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Description</h2>
-          <p className="text-gray-600 leading-relaxed">{jobInfo.description}</p>
-        </section>
+          <hr />
+          {/* Contact Information */}
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between">
+            <div className="flex-1 mb-4">
+              <h3 className="block text-xl font-semibold text-gray-900 mb-3">
+                Contact Information
+              </h3>
 
-        {/* Responsibilities */}
-        <section>
-          <h2 className="text-xl font-bold text-gray-900 mb-4">
-            Responsibilities
-          </h2>
-          <ul className="space-y-3">
-            {jobInfo.responsibilities.map((item, index) => (
-              <li key={index} className="flex items-start">
-                <CheckCircleIcon className="h-5 w-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" />
-                <span className="text-gray-600">{item}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
+              <div className="space-y-2">
+                <a
+                  href={`mailto:${compnayData?.companyEmail || ""}`}
+                  className="flex items-center gap-2 text-black/65 hover:text-blue-600 transition-colors"
+                >
+                  <Mail className="w-5 h-5 text-gray-500" />
+                  {compnayData?.companyEmail || "Email not available"}
+                </a>
 
-        {/* Who You Are */}
-        <section>
-          <h2 className="text-xl font-bold text-gray-900 mb-4">Who You Are</h2>
-          <ul className="space-y-3">
-            {jobInfo.whoYouAre.map((item, index) => (
-              <li key={index} className="flex items-start">
-                <CheckCircleIcon className="h-5 w-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" />
-                <span className="text-gray-600">{item}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
+                <a
+                  href={`tel:${compnayData?.phone || ""}`}
+                  className="flex items-center gap-2 text-black/65 hover:text-blue-600 transition-colors"
+                >
+                  <Phone className="w-5 h-5 text-gray-500" />
+                  {compnayData?.phone || "Phone not available"}
+                </a>
 
-        {/* Nice-To-Haves */}
-        <section>
-          <h2 className="text-xl font-bold text-gray-900 mb-4">
-            Nice-To-Haves
-          </h2>
-          <ul className="space-y-3">
-            {jobInfo.niceToHaves.map((item, index) => (
-              <li key={index} className="flex items-start">
-                <CheckCircleIcon className="h-5 w-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" />
-                <span className="text-gray-600">{item}</span>
-              </li>
-            ))}
-          </ul>
+                <a
+                  href={`https://maps.google.com/?q=${
+                    compnayData?.location || ""
+                  }`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-black/65 hover:text-blue-600 transition-colors"
+                >
+                  <MapPin className="w-5 h-5 text-gray-500" />
+                  {compnayData?.location || "Location not available"}
+                </a>
+
+                <a
+                  href={
+                    compnayData?.companyWebsite
+                      ? `https://${compnayData.companyWebsite.replace(
+                          /^https?:\/\//,
+                          ""
+                        )}`
+                      : "#"
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-black/65 hover:text-blue-600 transition-colors"
+                >
+                  <Globe className="w-5 h-5 text-gray-500" />
+                  {compnayData?.companyWebsite || "Website not available"}
+                </a>
+              </div>
+            </div>
+
+            <div className="flex-1">
+              <h3 className="block text-xl font-semibold text-gray-900 mb-3">
+                Company Social Media
+              </h3>
+
+              <div className="space-y-2">
+                <a
+                  href={
+                    compnayData?.linkedinProfile
+                      ? `https://${compnayData.linkedinProfile.replace(
+                          /^https?:\/\//,
+                          ""
+                        )}`
+                      : "#"
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-black/65 hover:text-blue-600 transition-colors"
+                >
+                  <Linkedin className="w-5 h-5 text-gray-500" />
+                  {compnayData?.linkedinProfile || "LinkedIn not available"}
+                </a>
+
+                <a
+                  href={
+                    compnayData?.twitterProfile
+                      ? `https://${compnayData.twitterProfile.replace(
+                          /^https?:\/\//,
+                          ""
+                        )}`
+                      : "#"
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-black/65 hover:text-blue-600 transition-colors"
+                >
+                  <Twitter className="w-5 h-5 text-gray-500" />
+                  {compnayData?.twitterProfile || "Twitter not available"}
+                </a>
+
+                <a
+                  href={
+                    compnayData?.facebookProfile
+                      ? `https://${compnayData.facebookProfile.replace(
+                          /^https?:\/\//,
+                          ""
+                        )}`
+                      : "#"
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-black/65 hover:text-blue-600 transition-colors"
+                >
+                  <Facebook className="w-5 h-5 text-gray-500" />
+                  {compnayData?.facebookProfile || "Facebook not available"}
+                </a>
+
+                <a
+                  href={
+                    compnayData?.instagramProfile
+                      ? `https://${compnayData.instagramProfile.replace(
+                          /^https?:\/\//,
+                          ""
+                        )}`
+                      : "#"
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-black/65 hover:text-blue-600 transition-colors"
+                >
+                  <Instagram className="w-5 h-5 text-gray-500" />
+                  {compnayData?.instagramProfile || "Instagram not available"}
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <hr />
+          <h2 className="text-xl font-bold text-gray-900">Company Portfolio</h2>
+          {compnayData && (
+            <ApplicantPortfolio
+              data={compnayData as any}
+              key={compnayData._id}
+            />
+          )}
         </section>
       </div>
     </aside>

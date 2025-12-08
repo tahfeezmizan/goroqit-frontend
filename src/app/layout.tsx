@@ -1,9 +1,13 @@
+
+
+
+import CookieCard from "@/components/shared/CookieCard";
+import { Toaster } from "@/components/ui/sonner";
+import ReduxProvider from "@/provider/redux-provider";
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
-import "./globals.css";
 import { Suspense } from "react";
-import ReduxProvider from "@/provider/redux-provider";
-import { Toaster } from "@/components/ui/sonner";
+import "./globals.css";
 
 const montserrat = Montserrat({
   variable: "--font-Montserrat",
@@ -62,13 +66,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${montserrat.variable}`}>
+      <body className={`${montserrat.variable}`} suppressHydrationWarning>
         <ReduxProvider>
-          <Suspense>
-            
-            {children}
-          </Suspense>
-          <Toaster />
+          <Suspense>{children}</Suspense>
+          <Toaster position="top-right" />
+          <CookieCard />
         </ReduxProvider>
       </body>
     </html>

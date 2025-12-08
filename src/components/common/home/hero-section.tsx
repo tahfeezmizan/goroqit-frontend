@@ -1,10 +1,14 @@
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
-// import heroBg from "../../../../public/banner-img.png";
+"use client";
+
 import heroBg from "@/assets/hero-bg.png";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { useGetHomeStatisticsQuery } from "@/redux/features/adminStatics";
+import Link from "next/link";
 
 export function HeroSection() {
+  const { data: homeStatistics } = useGetHomeStatisticsQuery({});
+
   return (
     <section
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
@@ -22,12 +26,12 @@ export function HeroSection() {
           <span className="text-[#0F5F3E]">All in One</span> Place.
         </h1>
         <p className="text-lg md:text-2xl px-0 lg:px-40 leading-snug text-gray-200">
-          Roqit connects salons, barbers, and beauty creatives with fresh talent
-          and opportunities. No stress. Just jobs that fit.
+          GoRoqit connects salons, barbers, and beauty creatives with fresh
+          talent and opportunities. No stress. Just jobs that fit.
         </p>
 
         <div className=" flex flex-col items-center justify-center sm:flex-row gap-4">
-          <Link href={"/job"}>
+          <Link href={"/find-talent"}>
             <Button
               size="lg"
               className="bg-green-900 hover:bg-green-800 text-white px-8 py-4 text-lg font-medium rounded-lg"
@@ -35,7 +39,7 @@ export function HeroSection() {
               Hire now
             </Button>
           </Link>
-          <Link href={"/"}>
+          <Link href={"/job"}>
             <Button
               size="lg"
               variant="secondary"
@@ -61,7 +65,10 @@ export function HeroSection() {
             </Avatar>
           </div>
         </div>
-        <p className="text-center">1,200+ applicant already joined</p>
+        <p className="text-center">
+          {homeStatistics ? homeStatistics.totalApplicants : "1.200"}+
+          applicants already joined
+        </p>
       </div>
     </section>
   );

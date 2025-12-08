@@ -28,6 +28,7 @@ const userApi = baseApi.injectEndpoints({
           method: "GET",
         };
       },
+      providesTags: ["Auth"],
     }),
 
     // Get all talents/applicants
@@ -61,7 +62,6 @@ const userApi = baseApi.injectEndpoints({
     // Update logged-in user's basic info
     UpdateMe: builder.mutation({
       query: ({ body }) => {
-        console.log("UpdateMe body:", body);
         return {
           url: "/user/update-me",
           method: "PATCH",
@@ -73,7 +73,6 @@ const userApi = baseApi.injectEndpoints({
     // Update company profile
     UpdateCompnayProfile: builder.mutation({
       query: ({ body }) => {
-        console.log("UpdateMe body:", body);
         return {
           url: "/user/profile",
           method: "PATCH",
@@ -85,7 +84,6 @@ const userApi = baseApi.injectEndpoints({
     // Update general user profile
     UpdateProfile: builder.mutation({
       query: ({ body }) => {
-        console.log("UpdateProfile body:", body);
         return {
           url: "/user/profile",
           method: "PATCH",
@@ -101,7 +99,6 @@ const userApi = baseApi.injectEndpoints({
     // Add new work experience
     AddWorkExperience: builder.mutation({
       query: ({ body }) => {
-        console.log("AddWorkExperience body:", body);
         return {
           url: "/user/profile/work-experience",
           method: "POST",
@@ -121,7 +118,6 @@ const userApi = baseApi.injectEndpoints({
     // Update specific work experience by index
     UpdateWorkExperience: builder.mutation({
       query: ({ index, body }) => {
-        console.log("UpdateWorkExperience index:", index, "body:", body);
         return {
           url: `/user/profile/work-experience/${index}`,
           method: "PUT",
@@ -130,19 +126,60 @@ const userApi = baseApi.injectEndpoints({
       },
     }),
 
+    AddPortfolio: builder.mutation({
+      query: ({ body }) => ({
+        url: "/user/applicants/portfolio",
+        method: "POST",
+        body,
+      }),
+    }),
+
     /** ======================
      *  EDUCATION
      * =====================*/
 
-    // Delete specific education by index
-    DeleteEducation: builder.mutation({
-      query: ({ index }) => {
-        console.log("DeleteEducation index:", index);
+    addEducation: builder.mutation({
+      query: ({ body }) => {
         return {
-          url: `/user/profile/education/${index}`,
+          url: `/user/applicants/education`,
+          method: "POST",
+          body,
+        };
+      },
+    }),
+
+    // Delete specific education by index
+    deleteEducation: builder.mutation({
+      query: ({ title }) => {
+        return {
+          url: `/user/applicants/education/${title}`,
           method: "DELETE",
         };
       },
+    }),
+
+    // Delete specific education by index
+    deletePortfolio: builder.mutation({
+      query: ({ title }) => {
+        return {
+          url: `/user/applicants/portfolio/${title}`,
+          method: "DELETE",
+        };
+      },
+    }),
+
+    deleteUser: builder.mutation<void, void>({
+      query: () => ({
+        url: "/user/me",
+        method: "DELETE",
+      }),
+    }),
+    deleteSingleUser: builder.mutation({
+      query: (id) => ({
+        url: `/user/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Auth"],
     }),
   }),
 });
@@ -152,10 +189,15 @@ export const {
   useGetMeQuery,
   useGetAllTalentQuery,
   useGetAllUserQuery,
+  useAddPortfolioMutation,
   useUpdateProfileMutation,
+  useAddEducationMutation,
   useDeleteWorkExperienceMutation,
-  useDeleteEducationMutation,
   useAddWorkExperienceMutation,
   useUpdateWorkExperienceMutation,
   useUpdateCompnayProfileMutation,
+  useDeleteUserMutation,
+  useDeleteEducationMutation,
+  useDeleteSingleUserMutation,
+  useDeletePortfolioMutation,
 } = userApi;

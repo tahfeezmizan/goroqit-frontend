@@ -1,3 +1,165 @@
+// "use client";
+
+// import { Button } from "@/components/ui/button";
+// import {
+//   DropdownMenu,
+//   DropdownMenuContent,
+//   DropdownMenuItem,
+//   DropdownMenuTrigger,
+// } from "@/components/ui/dropdown-menu";
+// import {
+//   useDeleteJobMutation,
+//   useGetSingleRecruiterJobQuery,
+// } from "@/redux/features/jobsApi";
+// import { useGetMeQuery } from "@/redux/features/userApi";
+// import { PostJobFormData } from "@/types/types";
+// import { MoreVertical } from "lucide-react";
+// import Link from "next/link";
+// import Swal from "sweetalert2";
+// import TableLoader from "../shared/table-loader";
+
+// const tableHeaders = [
+//   { key: "jobTitle", label: "Job Title" },
+//   { key: "location", label: "Location" },
+//   { key: "salary", label: "Salary" },
+//   { key: "posted", label: "Posted" },
+//   { key: "applicantCount", label: "Applicant Count" },
+//   { key: "action", label: "Action" },
+// ];
+
+// export function JobPostTable() {
+//   const page = 1;
+//   const limit = 10;
+
+//   const [deleteJob] = useDeleteJobMutation();
+//   const { data: userData } = useGetMeQuery(undefined);
+
+//   const { data, isLoading, error } = useGetSingleRecruiterJobQuery({
+//     userId: userData?._id,
+//     page,
+//     limit,
+//   });
+
+//   const job = data?.jobs?.data;
+
+//   const handleDelete = (id: string | number | undefined) => {
+//     Swal.fire({
+//       title: "Are you sure?",
+//       icon: "warning",
+//       showCancelButton: true,
+//       confirmButtonColor: "#d33",
+//       cancelButtonColor: "#009966",
+//       confirmButtonText: "Yes, delete it!",
+//       cancelButtonText: "Cancel",
+//     }).then(async (result) => {
+//       if (result.isConfirmed) {
+//         try {
+//           await deleteJob(id).unwrap();
+//           Swal.fire("Deleted!", "Job has been deleted.", "success");
+//         } catch {
+//           Swal.fire(
+//             "Error!",
+//             "Failed to delete job. Please try again.",
+//             "error"
+//           );
+//         }
+//       }
+//     });
+//   };
+
+//   return (
+//     <div className="rounded-lg overflow-hidden">
+//       <div className="bg-white overflow-x-auto">
+//         <table className="w-full">
+//           <thead>
+//             <tr className="border-b border-gray-200 bg-gray-50">
+//               {tableHeaders.map((header) => (
+//                 <th
+//                   key={header.key}
+//                   className="text-left py-4 px-6 font-semibold text-gray-700"
+//                 >
+//                   {header.label}
+//                 </th>
+//               ))}
+//             </tr>
+//           </thead>
+
+//           <tbody>
+//             {isLoading ? (
+//               <tr>
+//                 <TableLoader />
+//               </tr>
+//             ) : error ? (
+//               <tr>
+//                 <td colSpan={7} className="py-8 px-6 text-center text-red-600">
+//                   Error loading jobs. Please try again.
+//                 </td>
+//               </tr>
+//             ) : job?.length > 0 ? (
+//               job?.map((job: PostJobFormData) => (
+//                 <tr
+//                   key={job._id}
+//                   className="border-b border-gray-100 hover:bg-gray-50 transition-colors duration-200"
+//                 >
+//                   <td className="py-4 px-6">
+//                     <div className="font-medium text-gray-900">{job.title}</div>
+//                   </td>
+//                   <td className="py-4 px-6 text-gray-700">{job.jobLocation}</td>
+//                   <td className="py-4 px-6 text-gray-700">
+//                     {job.minSalary} - {job.maxSalary}
+//                   </td>
+//                   <td className="py-4 px-6 text-gray-700">
+//                     {new Date(job.startDate).toLocaleDateString()}
+//                   </td>
+
+//                   <td className="py-4 px-6 text-gray-700">
+//                     {job.applicationsCount}
+//                   </td>
+//                   <td className="py-4 px-6">
+//                     <DropdownMenu>
+//                       <DropdownMenuTrigger asChild>
+//                         <Button
+//                           variant="ghost"
+//                           size="sm"
+//                           className="h-8 w-8 p-0"
+//                         >
+//                           <MoreVertical className="w-4 h-4" />
+//                         </Button>
+//                       </DropdownMenuTrigger>
+//                       <DropdownMenuContent align="end">
+//                         <DropdownMenuItem>
+//                           <Link href={`/job/${job._id}`}>View Details</Link>
+//                         </DropdownMenuItem>
+//                         <DropdownMenuItem asChild>
+//                           <Link href={`/recruiter/jobs/${job._id}`}>
+//                             Edit Job
+//                           </Link>
+//                         </DropdownMenuItem>
+//                         <DropdownMenuItem
+//                           onClick={() => handleDelete(job._id)}
+//                           className="text-red-700"
+//                         >
+//                           Delete
+//                         </DropdownMenuItem>
+//                       </DropdownMenuContent>
+//                     </DropdownMenu>
+//                   </td>
+//                 </tr>
+//               ))
+//             ) : (
+//               <tr>
+//                 <td colSpan={7} className="py-8 px-6 text-center text-gray-500">
+//                   No jobs found.
+//                 </td>
+//               </tr>
+//             )}
+//           </tbody>
+//         </table>
+//       </div>
+//     </div>
+//   );
+// }
+
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -9,39 +171,40 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   useDeleteJobMutation,
-  useGetAllJobsQuery,
+  useGetSingleRecruiterJobQuery,
 } from "@/redux/features/jobsApi";
+import { useGetMeQuery } from "@/redux/features/userApi";
 import { PostJobFormData } from "@/types/types";
-import { MoreVertical } from "lucide-react";
-import TableLoader from "../shared/table-loader";
+import { MoreVertical, Share2 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
 import Swal from "sweetalert2";
+import TableLoader from "../shared/table-loader";
 
 const tableHeaders = [
   { key: "jobTitle", label: "Job Title" },
   { key: "location", label: "Location" },
   { key: "salary", label: "Salary" },
   { key: "posted", label: "Posted" },
-  { key: "expires", label: "Expires" },
   { key: "applicantCount", label: "Applicant Count" },
   { key: "action", label: "Action" },
 ];
 
 export function JobPostTable() {
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
-  const [deleteJob] = useDeleteJobMutation();
+  const page = 1;
+  const limit = 10;
 
-  const { data, isLoading, error } = useGetAllJobsQuery({
+  const [deleteJob] = useDeleteJobMutation();
+  const { data: userData } = useGetMeQuery(undefined);
+
+  const { data, isLoading, error } = useGetSingleRecruiterJobQuery({
+    userId: userData?._id,
     page,
     limit,
   });
 
-  console.log(data);
+  const job = data?.jobs?.data;
 
   const handleDelete = (id: string | number | undefined) => {
-    console.log(id);
     Swal.fire({
       title: "Are you sure?",
       icon: "warning",
@@ -55,7 +218,7 @@ export function JobPostTable() {
         try {
           await deleteJob(id).unwrap();
           Swal.fire("Deleted!", "Job has been deleted.", "success");
-        } catch (error) {
+        } catch {
           Swal.fire(
             "Error!",
             "Failed to delete job. Please try again.",
@@ -64,6 +227,59 @@ export function JobPostTable() {
         }
       }
     });
+  };
+
+  const handleShare = (jobId: string | number | undefined) => {
+    if (!jobId) return;
+
+    const shareUrl = `${window.location.origin}/job/${jobId}`;
+
+    // Check if we're in a secure context (HTTPS or localhost)
+    const isSecureContext =
+      window.isSecureContext ||
+      window.location.hostname === "localhost" ||
+      window.location.hostname === "http://goroqit.com";
+
+    // Check if Web Share API is available AND we're in a secure context
+    if (navigator.share && isSecureContext) {
+      navigator
+        .share({
+          title: "Check out this job opportunity",
+          text: "I found this job posting that might interest you!",
+          url: shareUrl,
+        })
+        .then(() => console.log("Successful share"))
+        .catch((error) => {
+          // If share fails, fallback to clipboard
+          copyToClipboard(shareUrl);
+        });
+    } else {
+      // If Web Share API is not available or not in secure context, use clipboard fallback
+      copyToClipboard(shareUrl);
+    }
+  };
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        Swal.fire({
+          title: "Link Copied!",
+          text: "Job link has been copied to clipboard",
+          icon: "success",
+          timer: 2000,
+          showConfirmButton: false,
+        });
+      })
+      .catch(() => {
+        // If clipboard fails, show the URL in an alert
+        Swal.fire({
+          title: "Share Link",
+          html: `Copy this link:<br><code class="text-sm">${text}</code>`,
+          icon: "info",
+          confirmButtonText: "OK",
+        });
+      });
   };
 
   return (
@@ -94,9 +310,8 @@ export function JobPostTable() {
                   Error loading jobs. Please try again.
                 </td>
               </tr>
-            ) : data && data.length > 0 ? (
-              // Show data when available
-              data?.map((job: PostJobFormData) => (
+            ) : job?.length > 0 ? (
+              job?.map((job: PostJobFormData) => (
                 <tr
                   key={job._id}
                   className="border-b border-gray-100 hover:bg-gray-50 transition-colors duration-200"
@@ -106,14 +321,14 @@ export function JobPostTable() {
                   </td>
                   <td className="py-4 px-6 text-gray-700">{job.jobLocation}</td>
                   <td className="py-4 px-6 text-gray-700">
-                    {job.minSalary} - {job.maxSalary}{" "}
+                    {job?.rent
+                      ? `£${job.rent}`
+                      : `£${job.minSalary} - £${job.maxSalary}`}
                   </td>
                   <td className="py-4 px-6 text-gray-700">
                     {new Date(job.startDate).toLocaleDateString()}
                   </td>
-                  <td className="py-4 px-6 text-gray-700">
-                    {new Date(job.endDate).toLocaleDateString()}
-                  </td>
+
                   <td className="py-4 px-6 text-gray-700">
                     {job.applicationsCount}
                   </td>
@@ -130,14 +345,23 @@ export function JobPostTable() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem>
-                          <Link href={"/"}>View Details</Link>
+                          <Link href={`/job/${job._id}`}>View Details</Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem asChild>
                           <Link href={`/recruiter/jobs/${job._id}`}>
                             Edit Job
                           </Link>
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => handleDelete(job._id)} className="text-red-700">
+                        <DropdownMenuItem onClick={() => handleShare(job._id)}>
+                          <div className="flex items-center">
+                            <Share2 className="w-4 h-4 mr-2" />
+                            Share
+                          </div>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => handleDelete(job._id)}
+                          className="text-red-700"
+                        >
                           Delete
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -146,7 +370,6 @@ export function JobPostTable() {
                 </tr>
               ))
             ) : (
-              // Show empty state when no data is available
               <tr>
                 <td colSpan={7} className="py-8 px-6 text-center text-gray-500">
                   No jobs found.

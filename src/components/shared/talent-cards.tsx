@@ -2,49 +2,16 @@ import { getImageUrl } from "@/lib/utils";
 import { TalentProps } from "@/types/types";
 import {
   Briefcase,
-  BriefcaseBusiness,
   CheckCircle,
-  Globe,
+  CirclePoundSterling,
+  CircleUserRound,
   Scissors,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import { Badge } from "../ui/badge";
 
 export default function TalentCards({ talent }: { talent: TalentProps }) {
-  // Safely handle skills data - convert to array if it's a string or ensure it's an array
-  const safeSkills = React.useMemo(() => {
-    if (!talent.skills) return [];
-
-    if (Array.isArray(talent.skills)) {
-      return talent.skills;
-    }
-
-    if (typeof talent.skills === "string") {
-      // If it's a comma-separated string, split it
-      return (talent.skills as string)
-        .split(",")
-        .map((skill: string) => skill.trim())
-        .filter((skill) => skill.length > 0);
-    }
-
-    return [];
-  }, [talent.skills]);
-
-  // Safely handle work experience
-  const safeWorkExperience = React.useMemo(() => {
-    if (!talent.workExperience) return [];
-
-    if (Array.isArray(talent.workExperience)) {
-      return talent.workExperience;
-    }
-
-    return [];
-  }, [talent.workExperience]);
-
-  // Safely handle country/location
-  const location = talent.country || talent.city || "Location not specified";
-
   return (
     <div
       key={talent.id}
@@ -60,31 +27,18 @@ export default function TalentCards({ talent }: { talent: TalentProps }) {
           </div>
 
           <div className="flex justify-center mt-8">
-            <div className="relative h-32">
+            <div className="relative w-28 h-28 border rounded-full overflow-hidden">
               {talent?.userId?.image ? (
                 <Image
                   src={getImageUrl(talent.userId.image)}
                   alt={talent?.userId?.name || "Talent"}
-                  width={120}
-                  height={120}
-                  className="rounded-full object-cover"
+                  width={1000}
+                  height={1000}
+                  className="rounded-full object-cover w-full h-full"
                 />
               ) : (
-                <div className="w-[120px] h-[120px] rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <circle cx="12" cy="8" r="5" />
-                    <path d="M20 21a8 8 0 0 0-16 0" />
-                  </svg>
+                <div className="w-28 h-28 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
+                  <CircleUserRound className="size-45" />
                 </div>
               )}
             </div>
@@ -115,21 +69,21 @@ export default function TalentCards({ talent }: { talent: TalentProps }) {
             <div className="flex items-center gap-4">
               <Briefcase className="w-8 h-8 bg-white shadow-lg p-1 rounded-full  text-green-900 flex-shrink-0" />
               <span className="text-lg leading-tight text-gray-700">
-                5 years experience
+                {talent?.yearsOfExperience} years experience
               </span>
             </div>
 
             {/* Skills */}
             <div className="flex items-center gap-4 ">
               <Scissors className="w-8 h-8 bg-white shadow-lg p-1 rounded-full  text-green-900 flex-shrink-0" />
-              <span className="text-lg leading-tight text-gray-700">
-                Skills:{" "}
+              <span className=" leading-tight text-gray-700">
+                {/* Skills:{" "} */}
                 {talent?.skills && talent?.skills?.length > 0 ? (
                   talent?.skills?.map((s, i) => (
-                    <span key={i}>
+                    <Badge variant={"outline"} key={i} className="mx-0.5 mb-1 ">
                       {s}
-                      {i < talent?.skills?.length - 1 && ", "}
-                    </span>
+                      {i < talent?.skills?.length - 1 && ""}
+                    </Badge>
                   ))
                 ) : (
                   <span>Not Provided</span>
@@ -137,16 +91,28 @@ export default function TalentCards({ talent }: { talent: TalentProps }) {
               </span>
             </div>
 
-            {/* Location */}
-            <div className="flex items-center gap-4">
-              <Globe className="text-green-800" />
-              <p className="text-gray-800 font-medium">{location}</p>
+            <div className="flex items-center gap-4 ">
+              <CirclePoundSterling className="w-8 h-8 bg-white shadow-lg p-1 rounded-full  text-green-900 flex-shrink-0" />
+              <span className="text-lg leading-tight text-gray-700">
+                {/* Skills:{" "} */}
+                {talent?.price && talent?.price?.length > 0 ? (
+                  <p>{talent.price}</p>
+                ) : (
+                  <span>15000</span>
+                )}
+              </span>
             </div>
 
+            {/* Location */}
+            {/* <div className="flex items-center gap-4">
+              <Globe className="text-green-800" />
+              <p className="text-gray-800 font-medium">{location}</p>
+            </div> */}
+
             {/* Experience */}
-            <div className="flex flex-col gap-4">
+            {/* <div className="flex flex-col gap-4">
               {safeWorkExperience.length > 0 ? (
-                safeWorkExperience.map((exp: any, index: number) => (
+                safeWorkExperience.map((exp: WorkExperience, index: number) => (
                   <div key={index} className="flex items-center gap-4">
                     <span className="text-gray-800">
                       <span className="flex gap-2 font-medium">
@@ -161,7 +127,7 @@ export default function TalentCards({ talent }: { talent: TalentProps }) {
               ) : (
                 <p className="text-gray-800 italic">No experience added yet</p>
               )}
-            </div>
+            </div> */}
           </div>
         </div>
       </Link>

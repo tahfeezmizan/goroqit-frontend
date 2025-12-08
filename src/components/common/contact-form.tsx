@@ -6,7 +6,9 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowRight, Facebook, Instagram, Twitter } from "lucide-react";
+import { ArrowRight, Facebook, Instagram, Loader, Twitter } from "lucide-react";
+import { useAddContactMutation } from "@/redux/features/contactApi";
+import { toast } from "sonner";
 
 export default function ContactForm() {
   const [formData, setFormData] = useState({
@@ -15,6 +17,8 @@ export default function ContactForm() {
     phone: "",
     message: "",
   });
+
+  const [addContact, { isLoading, reset }] = useAddContactMutation();
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -26,9 +30,27 @@ export default function ContactForm() {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Contact form data:", formData);
+
+    try {
+      const res = await addContact(formData).unwrap();
+
+      if (res.success) {
+        toast.success("Thanks for contacting us! We’ll respond soon.");
+        reset();
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          message: "",
+        });
+      } else {
+     
+        toast.error("❌ Job creation failed");
+      }
+    } catch{
+    }
   };
 
   return (
@@ -74,7 +96,7 @@ export default function ContactForm() {
                   type="text"
                   value={formData.name}
                   onChange={handleInputChange}
-                  className="w-full !text-lg border-0  border-b-2 border-black rounded-lg outline-none"
+                  className="w-full !text-lg border-0  border-b-2 border-black rounded-none outline-none"
                   required
                 />
               </div>
@@ -91,7 +113,7 @@ export default function ContactForm() {
                   type="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  className="w-full !text-lg border-0  border-b-2 border-black rounded-lg outline-none"
+                  className="w-full !text-lg border-0  border-b-2 border-black rounded-none outline-none"
                   required
                 />
               </div>
@@ -100,7 +122,7 @@ export default function ContactForm() {
                   htmlFor="phone"
                   className="block text-xl font-medium  mb-2"
                 >
-                  Phone Number (optional)
+                  Phone Number
                 </label>
                 <Input
                   id="phone"
@@ -108,7 +130,7 @@ export default function ContactForm() {
                   type="tel"
                   value={formData.phone}
                   onChange={handleInputChange}
-                  className="w-full !text-lg border-0  border-b-2 border-black rounded-lg outline-none"
+                  className="w-full !text-lg border-0  border-b-2 border-black rounded-none outline-none"
                 />
               </div>
             </div>
@@ -125,24 +147,31 @@ export default function ContactForm() {
                 name="message"
                 value={formData.message}
                 onChange={handleInputChange}
-                className="w-full min-h-32 !text-lg border-0  border-b-2 border-black rounded-lg outline-none "
+                className="w-full min-h-32 !text-lg border-0  border-b-2 border-black rounded-none outline-none "
                 required
               />
             </div>
 
             <Button
               type="submit"
-              className="bg-green-900 hover:bg-green-800 text-white px-8 py-6 text-lg font-medium rounded-lg flex items-center gap-2"
+              className="w-72 bg-green-900 hover:bg-green-800 text-white px-8 py-6 text-lg font-medium rounded-lg flex items-center gap-2"
             >
-              Leave us a Message
-              <ArrowRight size={18} />
+              {isLoading ? (
+                <Loader className="animate-spin size-8" />
+              ) : (
+                <>
+                  {" "}
+                  Leave us a Message
+                  <ArrowRight size={18} />
+                </>
+              )}
             </Button>
           </form>
 
           {/* Contact Info Section */}
           <div className="border-t border-gray-200 pt-12">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-              <div className="col-span-2">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div className="col-span-1">
                 <h3 className="text-md md:text-xl font-medium  mb-4">
                   Contact Info
                 </h3>
@@ -151,26 +180,31 @@ export default function ContactForm() {
                 </h2>
               </div>
 
-              <div className="col-span-1">
-                <h4 className="text-xl font-semibold  mb-2">Email Address</h4>
-                <div className="w-8 h-0.5 bg-gray-900 mb-4"></div>
-                <p className="text-xl  mb-2">help@info.com</p>
-                <p className="text-lg ">
-                  Assistance hours:
-                  <br />
-                  Monday - Friday 6 am to 8 pm EST
-                </p>
-              </div>
-
-              <div className="col-span-1">
-                <h4 className="text-xl font-semibold  mb-2">Number</h4>
-                <div className="w-8 h-0.5 bg-gray-900 mb-4"></div>
-                <p className="text-xl  mb-2">(808) 998-3256</p>
-                <p className="text-lg ">
-                  Assistance hours:
-                  <br />
-                  Monday - Friday 6 am to 8 pm EST
-                </p>
+              <div className="col-span-1 grid grid-cols-1 md:grid-cols-2 gap-6 ">
+                <div className="col-span-1">
+                  <h4 className="text-xl font-semibold  mb-2">Email Address</h4>
+                  <div className="w-8 h-0.5 bg-gray-900 mb-4"></div>
+                  <a href="mailto:info@goroqit.com" className="text-xl mb-2 block">
+                    info@goroqit.com
+                  </a>
+                  <p className="text-lg ">
+                    Assistance hours:
+                    <br />
+                    Monday - Friday 9 am to 8 pm
+                  </p>
+                </div>
+                <div className="col-span-1">
+                  <h4 className="text-xl font-semibold  mb-2">Number</h4>
+                  <div className="w-8 h-0.5 bg-gray-900 mb-4"></div>
+                  <a href="tel:+4401895913722" className="text-xl mb-2 block">
+                    +4401895 913 722
+                  </a>
+                  <p className="text-lg ">
+                    Assistance hours:
+                    <br />
+                    Monday - Friday 9 am to 8 pm
+                  </p>
+                </div>
               </div>
             </div>
           </div>

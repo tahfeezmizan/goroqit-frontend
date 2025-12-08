@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 "use client";
 
 import type React from "react";
@@ -8,6 +10,7 @@ import {
   useGetMeQuery,
   useUpdateProfileMutation,
 } from "@/redux/features/userApi";
+import { ApiError } from "@/types/types";
 
 interface Props {
   currentResume?: string; // e.g., "/resume/1758834611063-0mvkla.pdf"
@@ -69,10 +72,9 @@ export function ResumeUpload({ currentResume }: Props) {
     try {
       const res = await updateProfile({ body: formData }).unwrap();
       toast.success("Resume uploaded successfully!");
-      console.log("Resume updated in DB:", res);
 
       // Refetch user data to get updated resume path
-      const updatedUser = await refetchUser();
+      // const updatedUser = await refetchUser();
 
       // Set preview URL based on the response from server
       if (res.resume) {
@@ -88,7 +90,7 @@ export function ResumeUpload({ currentResume }: Props) {
           setPreviewUrl(null);
         }
       }
-    } catch (err: any) {
+    } catch (err: ApiError | any) {
       toast.error(err?.data?.message || "Failed to upload resume");
       console.error("Resume upload failed:", err);
       setUploadedFile(null);
@@ -136,8 +138,8 @@ export function ResumeUpload({ currentResume }: Props) {
       // Refetch user data to reflect the change
       await refetchUser();
 
-      console.log("Resume removed from DB:", res);
-    } catch (err: any) {
+      // console.log("Resume removed from DB:", res);
+    } catch (err: ApiError | any) {
       toast.error(err?.data?.message || "Failed to remove resume");
       console.error("Resume removal failed:", err);
     }
@@ -204,7 +206,7 @@ export function ResumeUpload({ currentResume }: Props) {
         <div className="space-y-4">
           {/* Upload area */}
           <div
-            className={`border-2 border-dashed rounded-lg p-8 text-center transition-all duration-200 ${
+            className={`border border-dashed rounded-lg p-8 text-center transition-all duration-200 ${
               dragOver
                 ? "border-blue-400 bg-blue-50"
                 : isLoading

@@ -1,12 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { Column, UserData, StatItem } from "@/types/types";
-import { Calendar, Users } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import LoadingSpinner from "@/lib/loading-spinner";
+import {
+  useDeleteSingleUserMutation,
+  useGetAllUserQuery,
+} from "@/redux/features/userApi";
+import { Column, StatItem, UserData } from "@/types/types";
+import { Calendar, Trash2, Users } from "lucide-react";
+import { useMemo, useState } from "react";
+import Swal from "sweetalert2";
 import { StatsCard } from "../shared/stats-card";
 import AdminTable from "./table";
-import { useGetAllUserQuery } from "@/redux/features/userApi";
-import { useState, useMemo } from "react";
 
 const columns: Column<UserData>[] = [
   { key: "_id", label: "Serial Id" },
@@ -16,6 +22,7 @@ const columns: Column<UserData>[] = [
   { key: "status", label: "Status" },
   { key: "companyName", label: "Company" },
   { key: "createdAt", label: "Joined At" },
+  { key: "action", label: "Action" },
 ];
 
 export default function User() {
@@ -23,10 +30,36 @@ export default function User() {
   const limit = 10;
 
   const { data, isLoading } = useGetAllUserQuery({ page, limit });
+  const [deleteSingleUser] = useDeleteSingleUserMutation();
 
   const users = data?.data?.users || [];
   const meta = data?.data?.meta;
   const staticData = data?.data?.staticData;
+
+  // console.log(users);
+
+  const handleDelete = async (userId: string) => {
+    // console.log(userId);
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "This action cannot be undone!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        const res = await deleteSingleUser(userId).unwrap();
+        // console.log(res);
+        Swal.fire("Deleted!", "User has been deleted.", "success");
+      } catch {
+        Swal.fire("Error!", "Failed to delete user.", "error");
+      }
+    }
+  };
 
   // Generate stats dynamically
   const stats: StatItem[] = useMemo(() => {
@@ -49,9 +82,24 @@ export default function User() {
     ];
   }, [staticData]);
 
-  const usersWithSerial = users.map((user: any, index: number) => ({
+  const usersWithSerial = users.map((user: UserData, index: number) => ({
     ...user,
     _id: (page - 1) * limit + index + 1,
+    createdAt: new Date(user.createdAt).toLocaleDateString(),
+    action: (
+      <>
+        {user?.role !== "admin" && (
+          <Button
+            variant={"ghost"}
+            onClick={() => handleDelete(user._id)}
+            className="flex items-center gap-2 rounded-full text-red-600 bg-red-400/10 hover:bg-red-600/90 hover:text-white duration-300"
+          >
+            <Trash2 className="size-4" />
+            Delete
+          </Button>
+        )}
+      </>
+    ),
   }));
 
   return (
@@ -59,7 +107,11 @@ export default function User() {
       <StatsCard stats={stats} />
 
       {isLoading ? (
-        <p className="text-gray-500">Loading users...</p>
+        <LoadingSpinner />
+      ) : users.length === 0 ? (
+        <div className="text-center py-8">
+          <p className="text-lg text-gray-600">No users are registered</p>
+        </div>
       ) : (
         <AdminTable
           data={usersWithSerial}

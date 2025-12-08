@@ -1,6 +1,6 @@
 import Image from "next/image";
 import type { ReactNode } from "react";
-import authImg from "../../../public/auth-img.png";
+import authImg from "@/assets/auth-img.png";
 
 interface AuthLayoutProps {
   children: ReactNode;
@@ -11,7 +11,7 @@ export function AuthLayout({ children }: AuthLayoutProps) {
     <div className="min-h-screen flex">
       <div className="hidden lg:flex lg:w-1/2 relative">
         <Image
-          src={authImg.src}
+          src={authImg}
           alt="Authentication background"
           fill
           className="object-cover"

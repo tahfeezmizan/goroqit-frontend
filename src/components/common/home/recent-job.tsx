@@ -1,76 +1,14 @@
 "use client";
 
+import LoadingSpinner from "@/lib/loading-spinner";
 import { useGetAllJobsQuery } from "@/redux/features/jobsApi";
 import { PostJobFormData } from "@/types/types";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import RecentJobCard from "./recent-job-card";
 
-// const jobs = [
-//   {
-//     id: 1,
-//     companyLogo: companyLogo,
-//     experienceLevel: "Experienced",
-//     daysLeft: "30 days to go",
-//     companyName: "Hair & Care Saloon",
-//     jobTitle: "Senior Hair Stylist",
-//     salary: "40,000 – 50,000",
-//     location: "London, UK",
-//   },
-//   {
-//     id: 2,
-//     companyLogo: companyLogo2,
-//     experienceLevel: "Experienced",
-//     daysLeft: "30 days to go",
-//     companyName: "Hair & Care Saloon",
-//     jobTitle: "Senior Hair Stylist",
-//     salary: "40,000 – 50,000",
-//     location: "string",
-//   },
-//   {
-//     id: 3,
-//     companyLogo: companyLogo3,
-//     experienceLevel: "Experienced",
-//     daysLeft: "30 days to go",
-//     companyName: "Hair & Care Saloon",
-//     jobTitle: "Senior Hair Stylist",
-//     salary: "40,000 – 50,000",
-//     location: "string",
-//   },
-//   {
-//     id: 4,
-//     companyLogo: companyLogo4,
-//     experienceLevel: "Beginner",
-//     daysLeft: "30 days to go",
-//     companyName: "Hair & Care Saloon",
-//     jobTitle: "Senior Hair Stylist",
-//     salary: "40,000 – 50,000",
-//     location: "string",
-//   },
-//   {
-//     id: 5,
-//     companyLogo: companyLogo5,
-//     experienceLevel: "Experienced",
-//     daysLeft: "30 days to go",
-//     companyName: "Hair & Care Saloon",
-//     jobTitle: "Senior Hair Stylist",
-//     salary: "40,000 – 50,000",
-//     location: "string",
-//   },
-//   {
-//     id: 6,
-//     companyLogo: companyLogo,
-//     experienceLevel: "Freshers",
-//     daysLeft: "30 days to go",
-//     companyName: "Hair & Care Saloon",
-//     jobTitle: "Senior Hair Stylist",
-//     salary: "40,000 – 50,000",
-//     location: "string",
-//   },
-// ];
-
 export function RecentJob() {
-  const { data: jobs } = useGetAllJobsQuery(undefined);
+  const { data: jobs, isLoading } = useGetAllJobsQuery('');
 
   return (
     <section className="bg-[#EBF1FA] py-20">
@@ -90,11 +28,23 @@ export function RecentJob() {
         </div>
 
         {/* Job Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {jobs?.slice(0, 6)?.map((job: PostJobFormData) => (
-            <RecentJobCard job={job} key={job._id} />
-          ))}
-        </div>
+        {isLoading ? (
+          <LoadingSpinner />
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {jobs && jobs?.length > 0 ? (
+              jobs
+                .slice(0, 6)
+                .map((job: PostJobFormData) => (
+                  <RecentJobCard job={job} key={job._id} />
+                ))
+            ) : (
+              <div className="col-span-full text-center py-8 text-2xl text-gray-500">
+                No jobs available
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </section>
   );

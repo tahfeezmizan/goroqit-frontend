@@ -1,9 +1,13 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
-import { TalentSidebar, TalentFilterData } from "./talent-sidebar";
 import TalentCards from "@/components/shared/talent-cards";
+import ErrorMessage from "@/lib/error-message";
+import LoadingSpinner from "@/lib/loading-spinner";
 import { useGetFilteredTalentsQuery } from "@/redux/features/talentApi";
+import { ApiParams, TalentProps } from "@/types/types";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useCallback, useMemo, useState } from "react";
+import { TalentFilterData, TalentSidebar } from "./talent-sidebar";
 
 export default function FilterSection() {
   const [filters, setFilters] = useState<TalentFilterData>({
@@ -15,11 +19,10 @@ export default function FilterSection() {
 
   const [currentPage, setCurrentPage] = useState(1);
 
-  
   const apiFilters = useMemo(() => {
-    const apiParams: any = {
+    const apiParams: ApiParams = {
       page: currentPage,
-      limit: 4,
+      limit: 8,
     };
 
     if (filters.search) apiParams.searchTerm = filters.search;
@@ -36,7 +39,12 @@ export default function FilterSection() {
     data: talentsResponse,
     isLoading,
     error,
-  } = useGetFilteredTalentsQuery(apiFilters);
+  } = useGetFilteredTalentsQuery({
+    ...apiFilters,
+    skills: Array.isArray(apiFilters.skills)
+      ? apiFilters.skills.join(",")
+      : apiFilters.skills,
+  });
 
   // Extract talents and pagination data from response
   const { talents, pagination } = useMemo(() => {
@@ -52,7 +60,7 @@ export default function FilterSection() {
 
   // Transform API data to match TalentCards expected format
   const transformedTalents = useMemo(() => {
-    return talents.map((talent: any) => ({
+    return talents.map((talent: TalentProps) => ({
       id: talent._id,
       name:
         `${talent.firstName || ""} ${talent.lastName || ""}`.trim() ||
@@ -61,6 +69,11 @@ export default function FilterSection() {
       title: talent.workExperience?.[0]?.jobTitle || "Not specified",
       experience:
         talent.workExperience?.[0]?.experience || "Experience not specified",
+      expartes: Array.isArray(talent.expartes)
+        ? talent.expartes
+        : Array.isArray(talent.expartes)
+        ? talent.expartes
+        : [],
       skills: Array.isArray(talent.skills)
         ? talent.skills
         : Array.isArray(talent.expartes)
@@ -79,7 +92,7 @@ export default function FilterSection() {
     }));
   }, [talents]);
 
-  console.log(transformedTalents, "transformed talents");
+  // console.log(transformedTalents, "transformed talents");
 
   const handleFiltersChange = useCallback((newFilters: TalentFilterData) => {
     setFilters(newFilters);
@@ -98,7 +111,7 @@ export default function FilterSection() {
     const pages = [];
     const maxVisiblePages = 5;
     let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
-    let endPage = Math.min(
+    const endPage = Math.min(
       pagination.totalPage,
       startPage + maxVisiblePages - 1
     );
@@ -113,13 +126,13 @@ export default function FilterSection() {
         key="prev"
         onClick={() => handlePageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className={`px-3 py-1 rounded-md ${
+        className={`p-1 rounded-full border text-gray-600 hover:bg-gray-100 disabled:opacity-50 ${
           currentPage === 1
             ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-            : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-300"
+            : "bg-white text-green-700 hover:bg-gray-100 border border-gray-300"
         }`}
       >
-        Previous
+        <ChevronLeft />
       </button>
     );
 
@@ -129,9 +142,9 @@ export default function FilterSection() {
         <button
           key={i}
           onClick={() => handlePageChange(i)}
-          className={`px-3 py-1 rounded-md ${
+          className={`px-3 py-1 rounded-full ${
             currentPage === i
-              ? "bg-green-600 text-white border border-green-600"
+              ? "bg-green-600 text-white font-semibold border border-green-600"
               : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-300"
           }`}
         >
@@ -146,13 +159,13 @@ export default function FilterSection() {
         key="next"
         onClick={() => handlePageChange(currentPage + 1)}
         disabled={currentPage === pagination.totalPage}
-        className={`px-3 py-1 rounded-md ${
+        className={`p-1 rounded-full border text-gray-600 hover:bg-gray-100 disabled:opacity-50 ${
           currentPage === pagination.totalPage
             ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-            : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-300"
+            : "bg-white text-green-700 hover:bg-gray-100 border border-gray-300"
         }`}
       >
-        Next
+        <ChevronRight />
       </button>
     );
 
@@ -160,19 +173,12 @@ export default function FilterSection() {
   };
 
   if (error) {
-    return (
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20 overflow-hidden">
-        <div className="text-center py-12">
-          <div className="text-red-500 text-lg mb-2">Error loading talents</div>
-          <p className="text-gray-400">Please try again later</p>
-        </div>
-      </section>
-    );
+    return <ErrorMessage title="talents" />;
   }
 
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 py-20 overflow-hidden">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="col-span-1">
           <TalentSidebar onFiltersChange={handleFiltersChange} />
         </div>
@@ -181,15 +187,10 @@ export default function FilterSection() {
           {/* Talents grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
             {isLoading ? (
-              // Loading skeleton
-              Array.from({ length: 4 }).map((_, index) => (
-                <div key={index} className="animate-pulse">
-                  <div className="bg-gray-200 h-64 rounded-lg"></div>
-                </div>
-              ))
+              <LoadingSpinner />
             ) : transformedTalents && transformedTalents.length > 0 ? (
-              transformedTalents.map((talent: any) => (
-                <TalentCards key={talent.id} talent={talent} />
+              transformedTalents.map((talent: TalentProps) => (
+                <TalentCards key={talent._id} talent={talent} />
               ))
             ) : (
               <div className="col-span-2 text-center py-12">
@@ -205,7 +206,7 @@ export default function FilterSection() {
 
           {/* Pagination */}
           {pagination && pagination.totalPage > 1 && (
-            <div className="flex justify-center items-center space-x-2 mt-8">
+            <div className="flex justify-end items-center space-x-2 mt-8">
               {renderPageNumbers()}
             </div>
           )}

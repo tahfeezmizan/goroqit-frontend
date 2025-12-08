@@ -82,6 +82,25 @@ body {
   font-family: var(--font-montserrat);
 }
 
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+
+/* Change toast background and position (top-right) */
+[data-sonner-toaster][data-sonner-position="top-right"] {
+  top: 1rem;
+  right: 1rem;
+}
+
+/* Custom toast style */
+[data-sonner-toast] {
+  background-color: #14532d !important; /* dark green */
+  color: #ffffff !important;
+  border-radius: 0.75rem !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+}
+
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
@@ -115,12 +134,36 @@ body {
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
 }
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
   body {
     @apply bg-background text-foreground;
+    button {
+      @apply cursor-pointer;
+    }
+
+    @keyframes fade-in {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-fade-in {
+      animation: fade-in 0.4s ease-out;
+    }
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1300px) {
+  .salaryExpectatiosn{
+    display: grid;
+  grid-template-columns: 1fr;
   }
 }

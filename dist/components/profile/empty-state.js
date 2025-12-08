@@ -1,0 +1,7 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = EmptyState;
+const jsx_runtime_1 = require("react/jsx-runtime");
+function EmptyState({ icon, title, description, }) {
+    return ((0, jsx_runtime_1.jsxs)("div", { className: "flex flex-col items-center justify-center text-center max-w-md mx-auto p-6", children: [(0, jsx_runtime_1.jsxs)("div", { className: "relative w-40 h-40 flex items-center justify-center mb-6", children: [(0, jsx_runtime_1.jsx)("div", { className: "absolute inset-0 bg-gray-100 rounded-full blur-xl opacity-70" }), (0, jsx_runtime_1.jsx)("div", { className: "absolute top-0 left-1/4 w-2 h-2 rounded-full bg-gray-300" }), (0, jsx_runtime_1.jsx)("div", { className: "absolute top-1/4 right-0 w-3 h-3 rounded-full bg-gray-200 opacity-80" }), (0, jsx_runtime_1.jsx)("div", { className: "absolute bottom-1/4 left-0 w-3 h-3 rounded-full bg-gray-200 opacity-80" }), (0, jsx_runtime_1.jsx)("div", { className: "absolute top-0 right-1/3 text-gray-300 text-xl", children: "+" }), (0, jsx_runtime_1.jsx)("div", { className: "absolute bottom-1/3 right-1/4 text-gray-300 text-xl", children: "+" }), (0, jsx_runtime_1.jsx)("div", { className: "relative bg-white p-5 rounded-2xl shadow-lg", children: icon })] }), (0, jsx_runtime_1.jsx)("h2", { className: "text-xl font-semibold text-gray-800 mb-2", children: title }), (0, jsx_runtime_1.jsx)("p", { className: "text-gray-500", children: description })] }));
+}

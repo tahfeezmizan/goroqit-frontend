@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import GoogleLogin from "../shared/social-login/google-login";
 
 type SignupFormData = {
   name: string;
@@ -75,7 +76,6 @@ export function SignupForm() {
     } catch (error: unknown) {
       const apiError = error as ApiError;
       toast.error(apiError?.data?.message || "Something went wrong");
-      console.log("error", apiError);
     }
   };
 
@@ -109,7 +109,7 @@ export function SignupForm() {
                 : "bg-white text-gray-700"
             }`}
           >
-            Company
+            Recruiter
           </Button>
         </div>
       </div>
@@ -241,7 +241,7 @@ export function SignupForm() {
             })}
           />
           <Label htmlFor="terms" className="text-sm font-normal">
-            I have read and agree to roqit&apos;s Terms and conditions
+            I have read and agree to the goroqit Terms and Conditions
           </Label>
         </div>
         {errors.agreeToTerms && (
@@ -250,12 +250,29 @@ export function SignupForm() {
 
         <Button
           type="submit"
-          disabled={!watch("agreeToTerms")}
+          disabled={!watch("agreeToTerms") || isLoading}
           className="w-full mt-4 bg-green-900 hover:bg-green-800 text-white px-8 py-6 text-xl font-medium rounded-lg"
         >
           {isLoading ? <Loader className="animate-spin size-8" /> : "Sign up"}
         </Button>
       </form>
+
+      {role === "applicant" && (
+        <>
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">
+                OR
+              </span>
+            </div>
+          </div>
+
+          <GoogleLogin />
+        </>
+      )}
 
       <div className="text-center">
         <p className="text-base text-muted-foreground">

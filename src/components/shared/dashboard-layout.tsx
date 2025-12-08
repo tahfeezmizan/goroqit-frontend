@@ -9,6 +9,8 @@ import {
 import { useGetMeQuery } from "@/redux/features/userApi";
 import { TopNavbar } from "../recruiter/top-navbar";
 import { DashboardSidebar } from "./dashboard-sidebar";
+import { SidebarInset, SidebarProvider } from "../ui/sidebar";
+import { AppSidebar } from "./social-login/app-sidebar";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -18,8 +20,6 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   const { data } = useGetMeQuery(undefined);
 
   const role = data?.role;
-
-  // console.log("getMe data:", data);
 
   let sidebarItems: SidebarItems;
 
@@ -38,16 +38,15 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
   }
 
   return (
-    <div className="h-screen overflow-x-auto grid grid-cols-6 gap-0 bg-[#F5F6FA]">
-      <div className="col-span-1">
-        <DashboardSidebar sidebarItems={sidebarItems} />
-      </div>
+    <SidebarProvider className="bg-slate-800">
+      {/* Sidebar */}
+      <DashboardSidebar sidebarItems={sidebarItems} />
+      {/* <AppSidebar sidebarItems={sidebarItems} /> */}
 
-      {/* Main Content Area */}
-      <main className="col-span-5 overflow-y-auto">
+      <SidebarInset className="bg-[#EBF1FA]">
         <TopNavbar />
-        <div className="p-8 bg-[#EBF1FA]">{children}</div>
-      </main>
-    </div>
+        <div className="p-2 lg:p-8">{children}</div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }

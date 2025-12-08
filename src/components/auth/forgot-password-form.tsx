@@ -3,25 +3,58 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useSetNewPasswordMutation } from "@/redux/features/authApi";
+import { ApiError } from "@/types/types";
 import { Eye, EyeOff } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 type LoginFormData = {
-  password: string;
+  newPassword: string;
+  confirmPassword: string;
 };
 
-export default function ForgotPasswordForm() {
+export default function SetNewPasswordForm() {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<LoginFormData>();
 
+  const route = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const newPassword = watch("newPassword");
 
-  const onSubmit = (data: LoginFormData) => {
-    console.log("Login form data:", data);
+  const searchParams = useSearchParams();
+  const token = searchParams.get("token");
+
+  const [setNewPassword] = useSetNewPasswordMutation();
+
+  const onSubmit = async (data: LoginFormData) => {
+    try {
+      // ✅ Pass token and body correctly
+      const res = await setNewPassword({
+        token,
+        body: {
+          newPassword: data.newPassword,
+          confirmPassword: data.confirmPassword,
+        },
+      });
+
+      if (res?.data?.success) {
+        toast.success(res?.data?.message || "Password reset successfully");
+        route.push("/login");
+      } else {
+        const err = res.error as ApiError;
+        toast.error(err?.data?.message || "Something went wrong");
+      }
+    } catch {
+      // console.log("Catch Error", error);
+      toast.error("An unexpected error occurred");
+    }
   };
 
   return (
@@ -35,17 +68,17 @@ export default function ForgotPasswordForm() {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Password */}
         <div className="space-y-2">
-          <Label htmlFor="password" className="text-lg">
+          <Label htmlFor="newPassword" className="text-lg">
             Enter new password
           </Label>
           <div className="relative">
             <Input
-              id="password"
+              id="newPassword"
               type={showPassword ? "text" : "password"}
               className="p-5 rounded-lg !text-xl text-black"
               placeholder="••••••••"
-              {...register("password", {
-                required: "Password is required",
+              {...register("newPassword", {
+                required: "New Password is required",
                 minLength: {
                   value: 6,
                   message: "Password must be at least 6 characters",
@@ -66,26 +99,26 @@ export default function ForgotPasswordForm() {
               )}
             </Button>
           </div>
-          {errors.password && (
-            <p className="text-red-500 text-sm">{errors.password.message}</p>
+          {errors.newPassword && (
+            <p className="text-red-500 text-sm">{errors.newPassword.message}</p>
           )}
         </div>
+
+        {/* Confirm Password */}
         <div className="space-y-2">
-          <Label htmlFor="password" className="text-lg">
+          <Label htmlFor="confirmPassword" className="text-lg">
             Confirm password
           </Label>
           <div className="relative">
             <Input
-              id="password"
+              id="confirmPassword"
               type={showPassword ? "text" : "password"}
               className="p-5 rounded-lg !text-xl text-black"
               placeholder="••••••••"
-              {...register("password", {
-                required: "Password is required",
-                minLength: {
-                  value: 6,
-                  message: "Password must be at least 6 characters",
-                },
+              {...register("confirmPassword", {
+                required: "Confirm Password is required",
+                validate: (value) =>
+                  value === newPassword || "Passwords do not match", // 👈 match validation
               })}
             />
             <Button
@@ -102,8 +135,10 @@ export default function ForgotPasswordForm() {
               )}
             </Button>
           </div>
-          {errors.password && (
-            <p className="text-red-500 text-sm">{errors.password.message}</p>
+          {errors.confirmPassword && (
+            <p className="text-red-500 text-sm">
+              {errors.confirmPassword.message}
+            </p>
           )}
         </div>
 

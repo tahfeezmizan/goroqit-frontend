@@ -1,15 +1,28 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 "use client";
 
-import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Plus, Save, Trash2, Edit } from "lucide-react";
-import { toast } from "sonner";
+import LoadingSpinner from "@/lib/loading-spinner";
+import { formatWorkDuration } from "@/lib/utils";
 import {
   useGetMeQuery,
   useUpdateProfileMutation,
 } from "@/redux/features/userApi";
+import { ApiError } from "@/types/types";
+import { Edit, Plus, Save, Trash2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import Swal from "sweetalert2";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 interface WorkExperienceData {
   jobTitle: string;
@@ -42,49 +55,40 @@ export function WorkExperienceForm() {
     data: userData,
     refetch,
     isLoading: isUserLoading,
-  } = useGetMeQuery('');
+  } = useGetMeQuery("");
 
   useEffect(() => {
-    console.log("Full user data received:", userData);
-
     if (userData) {
       if (userData?.profile?.workExperience) {
-        console.log(
-          "Work Experience data found:",
-          userData?.profile.workExperience
-        );
-
         if (Array.isArray(userData?.profile?.workExperience)) {
           // Convert any numeric values to strings for form compatibility
           const formattedWorkExperiences =
-            userData?.profile?.workExperience.map((exp: any) => ({
-              jobTitle: exp.jobTitle?.toString() || "",
-              companyName: exp.companyName?.toString() || "",
-              location: exp.location?.toString() || "",
-              employmentType: exp.employmentType?.toString() || "",
-              startDate: exp.startDate?.toString() || "",
-              endDate: exp.endDate?.toString() || "",
-              experience: exp.experience?.toString() || "",
-            }));
+            userData?.profile?.workExperience.map(
+              (exp: WorkExperienceData) => ({
+                jobTitle: exp.jobTitle?.toString() || "",
+                companyName: exp.companyName?.toString() || "",
+                location: exp.location?.toString() || "",
+                employmentType: exp.employmentType?.toString() || "",
+                startDate: exp.startDate
+                  ? new Date(exp.startDate).toISOString().split("T")[0]
+                  : "",
+                endDate: exp.endDate
+                  ? new Date(exp.endDate).toISOString().split("T")[0]
+                  : "",
+                experience: exp.experience?.toString() || "",
+              })
+            );
 
-          console.log(
-            "Formatted work experiences for state:",
-            formattedWorkExperiences
-          );
           setWorkExperiences(formattedWorkExperiences);
         }
       } else {
-        console.log("No work experience data found in userData.data");
       }
     } else {
-      console.log("No userData or userData.data available");
     }
   }, [userData]);
 
   // Debug effect to track work experiences state
-  useEffect(() => {
-    console.log("Current work experiences state:", workExperiences);
-  }, [workExperiences]);
+  useEffect(() => {}, [workExperiences]);
 
   const handleInputChange = (
     field: keyof WorkExperienceData,
@@ -216,15 +220,10 @@ export function WorkExperienceForm() {
         endDate: exp.endDate,
         experience: exp.experience,
       }));
-
-      console.log("Sending work experiences to API:", workExperiencesForAPI);
-
       // Call API to save to database
       const response = await updateProfile({
         body: { workExperience: workExperiencesForAPI },
       }).unwrap();
-
-      console.log("Add/Update API response:", response);
 
       if (editingIndex !== null) {
         toast.success("Work experience updated and saved to database!");
@@ -234,7 +233,7 @@ export function WorkExperienceForm() {
 
       // Refetch to ensure data consistency
       await refetch();
-    } catch (error: any) {
+    } catch (error: ApiError | any) {
       console.error("Add/Update API error:", error);
 
       // Revert local state if API call failed
@@ -260,33 +259,29 @@ export function WorkExperienceForm() {
   };
 
   const handleDeleteExperience = async (index: number) => {
-    console.log("handleDeleteExperience called with index:", index);
-    console.log("Current workExperiences length:", workExperiences.length);
-
     if (index < 0 || index >= workExperiences.length) {
       console.error("Invalid index for deletion:", index);
       toast.error("Invalid experience selected for deletion");
       return;
     }
 
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this work experience?"
-    );
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won’t be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    });
 
-    if (confirmed) {
+    if (result.isConfirmed) {
       try {
-        console.log("Proceeding with deletion...");
-
-        // Create new array without the item at index
         const newWorkExperiences = [...workExperiences];
         newWorkExperiences.splice(index, 1);
 
-        console.log("New workExperiences after deletion:", newWorkExperiences);
-
-        // Update local state first for immediate UI feedback
         setWorkExperiences(newWorkExperiences);
 
-        // Prepare data for API call
         const workExperiencesForAPI = newWorkExperiences.map((exp) => ({
           jobTitle: exp.jobTitle,
           companyName: exp.companyName,
@@ -297,22 +292,13 @@ export function WorkExperienceForm() {
           experience: exp.experience,
         }));
 
-        console.log(
-          "Sending updated work experiences to API:",
-          workExperiencesForAPI
-        );
-
-        // Call API to update database
         const response = await updateProfile({
           body: { workExperience: workExperiencesForAPI },
         }).unwrap();
 
-        console.log("Delete API response:", response);
         toast.success("Work experience deleted and saved to database!");
 
-        // Handle editing state
         if (editingIndex === index) {
-          console.log("Was editing the deleted item, clearing form");
           setEditingIndex(null);
           setFormData({
             jobTitle: "",
@@ -324,21 +310,12 @@ export function WorkExperienceForm() {
             experience: "",
           });
         } else if (editingIndex !== null && editingIndex > index) {
-          console.log(
-            "Adjusting editing index from",
-            editingIndex,
-            "to",
-            editingIndex - 1
-          );
           setEditingIndex(editingIndex - 1);
         }
 
-        // Refetch to ensure data consistency
         await refetch();
       } catch (error: any) {
         console.error("Delete API error:", error);
-
-        // Revert local state if API call failed
         setWorkExperiences(workExperiences);
 
         let errorMessage = "Failed to delete work experience from database";
@@ -357,12 +334,6 @@ export function WorkExperienceForm() {
     }
 
     try {
-      console.log("Saving work experiences to database:", workExperiences);
-
-      // Let's debug by trying different approaches
-      // First, let's see what education sends when it works
-      console.log("=== DEBUGGING WORK EXPERIENCE API CALL ===");
-
       // Method 1: Exactly like education form (simple object mapping)
       const workExperiencesForAPI = workExperiences.map((exp) => ({
         jobTitle: exp.jobTitle,
@@ -374,40 +345,18 @@ export function WorkExperienceForm() {
         experience: exp.experience,
       }));
 
-      console.log(
-        "Method 1 - Formatted work experiences for API:",
-        workExperiencesForAPI
-      );
-      console.log("Method 1 - Request body:", {
-        workExperience: workExperiencesForAPI,
-      });
-
       // Try to send the request
       const response = await updateProfile({
         body: { workExperience: workExperiencesForAPI },
       }).unwrap();
 
       toast.success("Work experience information saved successfully!");
-      console.log(
-        "Work experience saved to database - API response:",
-        response
-      );
 
       // Force refetch to ensure we have the latest data
-      const refreshedData = await refetch();
-      console.log("Refreshed data after save:", refreshedData);
+      await refetch();
     } catch (error: any) {
-      console.error("=== DETAILED ERROR ANALYSIS ===");
-      console.error("Full error object:", error);
-      console.error("Error status:", error?.status);
-      console.error("Error data:", error?.data);
-      console.error("Error message:", error?.data?.message);
-      console.error("Error messages array:", error?.data?.errorMessages);
-      console.error("Error stack:", error?.data?.stack);
-
       // Try alternative approach if the first method fails
       if (error?.data?.message === "Cast Error") {
-        console.log("=== TRYING ALTERNATIVE METHODS ===");
 
         try {
           // Method 2: Try with snake_case fields (common in some APIs)
@@ -421,13 +370,13 @@ export function WorkExperienceForm() {
             experience: exp.experience,
           }));
 
-          console.log("Method 2 - Snake case attempt:", {
-            workExperience: altWorkExperience,
-          });
+          // console.log("Method 2 - Snake case attempt:", {
+          //   workExperience: altWorkExperience,
+          // });
 
-          const altResponse = await updateProfile({
-            body: { workExperience: altWorkExperience },
-          }).unwrap();
+          // const altResponse = await updateProfile({
+          //   body: { workExperience: altWorkExperience },
+          // }).unwrap();
 
           toast.success("Work experience saved with alternative format!");
           await refetch();
@@ -448,13 +397,9 @@ export function WorkExperienceForm() {
             experience: exp.experience,
           }));
 
-          console.log("Method 3 - Different key attempt:", {
-            work_experience: workExp,
-          });
-
-          const altResponse2 = await updateProfile({
-            body: { work_experience: workExp },
-          }).unwrap();
+          // const altResponse2 = await updateProfile({
+          //   body: { work_experience: workExp },
+          // }).unwrap();
 
           toast.success("Work experience saved with work_experience key!");
           await refetch();
@@ -553,7 +498,7 @@ export function WorkExperienceForm() {
             />
           </div>
 
-          <div className="space-y-2">
+          {/* <div className="space-y-2">
             <Label
               className="text-lg font-medium text-gray-900"
               htmlFor="employmentType"
@@ -569,6 +514,32 @@ export function WorkExperienceForm() {
               placeholder="Full Time"
               className="mt-1 p-4 rounded-lg !text-lg text-black w-full bg-gray-100"
             />
+            
+          </div> */}
+          <div className="space-y-2">
+            <Label
+              className="text-lg font-medium text-gray-900"
+              htmlFor="employmentType"
+            >
+              Employment Type
+            </Label>
+            <Select
+              value={formData.employmentType}
+              onValueChange={(value) =>
+                handleInputChange("employmentType", value)
+              }
+            >
+              <SelectTrigger className="mt-1 p-4 rounded-lg !text-lg text-black w-full bg-gray-100">
+                <SelectValue placeholder="Select employment type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Full-time">Full-time</SelectItem>
+                <SelectItem value="Part-time">Part-time</SelectItem>
+                <SelectItem value="Temp">Temp</SelectItem>
+                <SelectItem value="Self-employed">Self-employed</SelectItem>
+                <SelectItem value="Chair-rental">Chair-rental</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
 
@@ -614,6 +585,7 @@ export function WorkExperienceForm() {
               Experience
             </Label>
             <Input
+              type="number"
               id="experience"
               value={formData.experience}
               onChange={(e) => handleInputChange("experience", e.target.value)}
@@ -625,7 +597,7 @@ export function WorkExperienceForm() {
       </div>
 
       {/* Action Buttons */}
-      <div className="flex gap-4">
+      {/* <div className="flex flex-col md:flex-row gap-4">
         <Button
           onClick={handleAddExperience}
           type="button"
@@ -667,21 +639,69 @@ export function WorkExperienceForm() {
           <Save className="h-4 w-4" />
           {isLoading ? "Saving..." : "Save All Experience"}
         </Button>
+      </div> */}
+
+      {/* Action Buttons */}
+      <div className="flex flex-col md:flex-row gap-4">
+        <Button
+          onClick={handleAddExperience}
+          type="button"
+          disabled={!isFormValid() || isLoading}
+          className={`px-8 py-4 text-lg font-medium rounded-lg flex items-center gap-2 ${
+            isFormValid() && !isLoading
+              ? "bg-green-600 hover:bg-green-700 text-white"
+              : "bg-gray-300 text-gray-500 cursor-not-allowed"
+          }`}
+        >
+          <Plus className="h-4 w-4" />
+          {isLoading
+            ? "Saving..."
+            : editingIndex !== null
+            ? "Update Experience"
+            : "Add Work Experience"}
+        </Button>
+
+        {editingIndex !== null && (
+          <>
+            <Button
+              onClick={handleCancelEdit}
+              type="button"
+              className="bg-gray-500 hover:bg-gray-600 text-white px-8 py-4 text-lg font-medium rounded-lg"
+            >
+              Cancel Edit
+            </Button>
+
+            {/* Show Save All Experience only when editing */}
+            <Button
+              onClick={handleSave}
+              type="button"
+              disabled={!isSaveEnabled() || isLoading}
+              className={`px-8 py-4 text-lg font-medium rounded-lg flex items-center gap-2 ${
+                isSaveEnabled() && !isLoading
+                  ? "bg-green-900 hover:bg-green-800 text-white"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+              }`}
+            >
+              <Save className="h-4 w-4" />
+              {isLoading ? "Saving..." : "Save All Experience"}
+            </Button>
+          </>
+        )}
       </div>
 
       {/* Added Work Experience List */}
       {(workExperiences.length > 0 || isUserLoading) && (
         <div className="mt-8">
           <h4 className="text-2xl font-semibold text-gray-900 mb-4">
-            {isUserLoading
-              ? "Loading work experience data..."
-              : `Added Work Experience (${workExperiences.length})`}
+            {isUserLoading ? (
+              <LoadingSpinner />
+            ) : (
+              `Added Work Experience (${workExperiences.length})`
+            )}
           </h4>
 
           {isUserLoading ? (
-            <div className="flex justify-center py-8">
-              <div className="animate-spin h-8 w-8 border-2 border-green-600 border-t-transparent rounded-full"></div>
-            </div>
+            <LoadingSpinner />
           ) : (
             <div className="space-y-4">
               {workExperiences.map((experience, index) => (
@@ -717,7 +737,11 @@ export function WorkExperienceForm() {
                           {new Date(experience.endDate).toLocaleDateString()}
                         </span>
                         <span>
-                          <strong>Experience:</strong> {experience.experience}
+                          <strong>Experience:</strong>{" "}
+                          {formatWorkDuration(
+                            experience.startDate,
+                            experience.endDate
+                          )}
                         </span>
                       </div>
                     </div>
@@ -726,7 +750,7 @@ export function WorkExperienceForm() {
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
-                          console.log("Edit button clicked for index:", index);
+                          // console.log("Edit button clicked for index:", index);
                           handleEditExperience(index);
                         }}
                         size="sm"
@@ -741,14 +765,14 @@ export function WorkExperienceForm() {
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
-                          console.log(
-                            "Delete button clicked for index:",
-                            index
-                          );
-                          console.log(
-                            "Current workExperiences:",
-                            workExperiences
-                          );
+                          // console.log(
+                          //   "Delete button clicked for index:",
+                          //   index
+                          // );
+                          // console.log(
+                          //   "Current workExperiences:",
+                          //   workExperiences
+                          // );
                           handleDeleteExperience(index);
                         }}
                         size="sm"

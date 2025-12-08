@@ -12,11 +12,11 @@ export function Footer() {
           <div className="col-span-1">
             <Link href={"/"}>
               <Image
-                src={whiteLogo }
+                src={whiteLogo}
                 alt="Logo"
                 width={165}
                 height={40}
-                className="w-40 h-11"
+                className="w-40 h-auto"
               />
             </Link>
           </div>
@@ -44,7 +44,7 @@ export function Footer() {
               </li>
               <li>
                 <Link
-                  href="/sing-in"
+                  href="/sign-up"
                   className="text-gray-200 hover:text-white transition-colors"
                 >
                   Sign in
@@ -113,7 +113,7 @@ export function Footer() {
       <div className="bg-[#414652] py-4">
         <div className="container mx-auto px-4">
           <p className="text-center text-gray-300 text-sm">
-            © 2025 Roqit · All rights reserved.
+            © 2025 GoRoqit · All rights reserved.
           </p>
         </div>
       </div>

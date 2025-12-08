@@ -2,28 +2,45 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { RootState } from "../store";
 
-// const baseURL = process.env.PUBLIC_BASEURL as string;
+const baseURL = process.env.NEXT_PUBLIC_BASEURL as string;
 
 export const baseApi = createApi({
-    reducerPath: "api",
-    baseQuery: fetchBaseQuery({
-        // baseUrl: "http://206.162.244.155:6001/api/v1",
-        baseUrl: "http://10.10.7.62:5001/api/v1",
-        prepareHeaders: (headers, { getState }) => {
-            const token = (getState() as RootState).user.user;
+  reducerPath: "api",
+  baseQuery: fetchBaseQuery({
+    baseUrl: `${baseURL}/api/v1`,
+    prepareHeaders: (headers, { getState }) => {
+      const userData = (getState() as RootState).user.user;
 
-            if (token) {
-                headers.set("Authorization", `Bearer ${token}`);
-            }
-            return headers;
-        },
+      if (userData) {
+        // Extract the accessToken from the user data
+        const token =
+          typeof userData === "object" && userData.accessToken
+            ? userData.accessToken
+            : userData; // Fallback to the entire token if it's not an object
+
+        headers.set("Authorization", `Bearer ${token}`);
+      }
+      return headers;
+    },
+  }),
+  tagTypes: [
+    "Auth",
+    "Product",
+    "Jobs",
+    "Chat",
+    "Message",
+    "Application",
+    "Category",
+    "Plan",
+    "DashboardStatistics",
+    "Talents",
+    "RecruiterDashboardStatistics",
+  ],
+  endpoints: (builder) => ({
+    getProfile: builder.query<any, void>({
+      query: () => "/profile",
     }),
-    tagTypes: ["Auth", "Product", "Jobs", "Chat", "Message", "Application", "Category", "Plan", "DashboardStatistics", "Talents", "RecruiterDashboardStatistics"],
-    endpoints: (builder) => ({
-        getProfile: builder.query<any, void>({
-            query: () => "/profile",
-        }),
-    }),
+  }),
 });
 
 export const { useGetProfileQuery } = baseApi;

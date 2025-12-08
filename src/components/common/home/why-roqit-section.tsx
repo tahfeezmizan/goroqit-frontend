@@ -33,7 +33,7 @@ export function WhyRoqitSection() {
       <div className="flex flex-col md:flex-row gap-10 items-center justify-between overflow-hidden">
         <div className="flex-1 space-y-8 ">
           <h2 className=" text-4xl  font-bold text-black leading-tight mb-10">
-            Why Roqit?
+            Why GoRoqit?
           </h2>
 
           <div className="space-y-8 ">
@@ -55,7 +55,7 @@ export function WhyRoqitSection() {
 
         <div className="flex-1 ">
           <Image
-            src={image.src}
+            src={image}
             width={632}
             height={556}
             className="w-full lg:w-[632px] h-full lg:h-[556px] mr-0"
