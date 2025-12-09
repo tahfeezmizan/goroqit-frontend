@@ -228,7 +228,7 @@ export default function ChatDetail() {
               alt={activeUser?.participants[0]?.name || "User"}
               width={40}
               height={40}
-              className="rounded-full w-10 mr-3"
+              className="rounded-full w-10 h-10 object-cover mr-3"
             />
           ) : (
             <CircleUserRound className="size-11 mr-3" />
@@ -252,7 +252,7 @@ export default function ChatDetail() {
       {/* Messages Container */}
       <div
         ref={containerRef}
-        className="flex-1 overflow-y-auto p-4 space-y-3 min-h-0 pb-16"
+        className="flex-1 overflow-y-auto p-4 space-y-3 min-h-0 pb-20 "
         style={{
           maxHeight: containerHeight,
           height: containerHeight,
@@ -303,7 +303,7 @@ export default function ChatDetail() {
       </div>
 
       {/* Input */}
-      <div className="bg-white fixed bottom-1 w-[60%] border-t border-gray-200 p-4 flex space-x-2 flex-shrink-0">
+      <div className="bg-white fixed bottom-1 w-full md:w-[60%] border-t border-gray-200 p-4 flex space-x-2 flex-shrink-0">
         <Input
           placeholder="Type a message..."
           value={messageText}
