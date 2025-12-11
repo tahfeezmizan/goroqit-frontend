@@ -7,7 +7,6 @@ import { Briefcase, Calendar, CirclePoundSterling, MapPin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-
 export default function JobCard({ job }: { job: PostJobFormData }) {
   const {
     _id,
@@ -16,8 +15,10 @@ export default function JobCard({ job }: { job: PostJobFormData }) {
     maxSalary,
     minSalary,
     startDate,
+    rent,
     type,
     user,
+    paymentType,
   } = job;
 
   const { companyName, companyLogo } = user?.profile || {};
@@ -70,8 +71,9 @@ export default function JobCard({ job }: { job: PostJobFormData }) {
               size={20}
               className="bg-green-900 text-white rounded-full"
             />{" "}
-            <p className="font-medium text-gray-700">
-              £{minSalary} - £{maxSalary} year
+            <p className="font-medium text-gray-700 capitalize">
+              {rent ? `£${rent}` : ` £${minSalary} - £${maxSalary}`}{" "}
+              {paymentType}
             </p>
           </div>
         </div>

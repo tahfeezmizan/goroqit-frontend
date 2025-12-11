@@ -110,15 +110,15 @@ export default function ChatList() {
 
   // Socket connection for real-time updates
   useEffect(() => {
-    console.log("🔌 Connecting socket for chat list...");
-    console.log("Current User ID:", currentUserId);
-    console.log("Current User Role:", currentUserRole);
+    // console.log("🔌 Connecting socket for chat list...");
+    // console.log("Current User ID:", currentUserId);
+    // console.log("Current User Role:", currentUserRole);
 
     const socket = io("https://api.goroqit.com");
     socketRef.current = socket;
 
     socket.on("connect", () => {
-      console.log("✅ Chat list socket connected");
+      // console.log("✅ Chat list socket connected");
       setIsSocketConnected(true);
     });
 
@@ -276,7 +276,7 @@ export default function ChatList() {
         {/* 🔍 Search bar with connection status */}
         <div className="p-3 py-3.5 border-b border-gray-200">
           <h3 className="text-2xl font-semibold mb-2">All Messages</h3>
-          <div className="relative mb-2">
+          {/* <div className="relative mb-2">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
             <Input
               placeholder="Search messages"
@@ -284,7 +284,7 @@ export default function ChatList() {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-          </div>
+          </div> */}
           <div className="flex items-center justify-between text-xs">
             <span className="text-gray-500">
               {sortedChats.length} {sortedChats.length === 1 ? "chat" : "chats"}
@@ -331,15 +331,15 @@ export default function ChatList() {
                   }`}
                 >
                   <Link href={`${basePath}/${chat._id}`}>
-                    <div className="flex items-start space-x-3">
-                      <div className="relative">
+                    <div className="flex items-center space-x-3">
+                      <div className="relative w-11 h-11">
                         {participant?.image ? (
                           <Image
                             src={getImageUrl(participant?.image)}
                             alt={participant?.name || "Chat"}
-                            width={1000}
-                            height={1000}
-                            className="rounded-full w-10 h-10"
+                            width={200}
+                            height={200}
+                            className="w-full h-full rounded-full object-cover"
                           />
                         ) : (
                           <CircleUserRound className="size-11" />

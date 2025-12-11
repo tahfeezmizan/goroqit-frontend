@@ -159,7 +159,6 @@
 //     </div>
 //   );
 // }
-
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -260,9 +259,43 @@ export function JobPostTable() {
   };
 
   const copyToClipboard = (text: string) => {
-    navigator.clipboard
-      .writeText(text)
-      .then(() => {
+    // Check if clipboard API is available
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard
+        .writeText(text)
+        .then(() => {
+          Swal.fire({
+            title: "Link Copied!",
+            text: "Job link has been copied to clipboard",
+            icon: "success",
+            timer: 2000,
+            showConfirmButton: false,
+          });
+        })
+        .catch(() => {
+          // If clipboard fails, show the URL in an alert
+          showUrlAlert(text);
+        });
+    } else {
+      // Fallback for browsers that don't support clipboard API
+      fallbackCopyToClipboard(text);
+    }
+  };
+
+  const fallbackCopyToClipboard = (text: string) => {
+    // Create a temporary textarea element
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.style.position = "fixed";
+    textArea.style.left = "-999999px";
+    textArea.style.top = "-999999px";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+
+    try {
+      const successful = document.execCommand("copy");
+      if (successful) {
         Swal.fire({
           title: "Link Copied!",
           text: "Job link has been copied to clipboard",
@@ -270,16 +303,23 @@ export function JobPostTable() {
           timer: 2000,
           showConfirmButton: false,
         });
-      })
-      .catch(() => {
-        // If clipboard fails, show the URL in an alert
-        Swal.fire({
-          title: "Share Link",
-          html: `Copy this link:<br><code class="text-sm">${text}</code>`,
-          icon: "info",
-          confirmButtonText: "OK",
-        });
-      });
+      } else {
+        showUrlAlert(text);
+      }
+    } catch (err) {
+      showUrlAlert(text);
+    }
+
+    document.body.removeChild(textArea);
+  };
+
+  const showUrlAlert = (text: string) => {
+    Swal.fire({
+      title: "Share Link",
+      html: `Copy this link:<br><code class="text-sm">${text}</code>`,
+      icon: "info",
+      confirmButtonText: "OK",
+    });
   };
 
   return (
