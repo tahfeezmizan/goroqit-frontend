@@ -185,6 +185,7 @@ export interface PostJobFormData {
     role: string;
     roleProfile: string;
   } | null;
+  
 }
 
 export type Column<T> = {

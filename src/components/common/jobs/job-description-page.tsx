@@ -27,8 +27,6 @@ export default function JobDescriptionPage() {
   const router = useRouter();
   const pathname = usePathname();
 
-  console.log("Jobs", job);
-
   const [easyApply, { isLoading: applyLoading }] =
     useEasyApplyJobMutation(undefined);
 
