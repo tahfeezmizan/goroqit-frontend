@@ -7,13 +7,13 @@ export default function ChatLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="fixed  w-[80%]">
-      <div className="grid grid-cols-8 ">
+    <div className="fixed w-full md:w-[80%]">
+      <div className="grid grid-cols-1 md:grid-cols-8 ">
         <div className="col-span-2 ">
           <ChatList />
         </div>
 
-        <div className="col-span-6 h-screen">{children}</div>
+        <div className=" col-span-6 h-screen ">{children}</div>
       </div>
     </div>
   );

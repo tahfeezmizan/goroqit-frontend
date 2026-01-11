@@ -11,16 +11,16 @@ export default function JobPostPage() {
 
   const handlePostJobClick = (e: React.MouseEvent) => {
     // Profile completion check
-    if (data?.profileCompletion < 70) {
-      e.preventDefault();
-      import("sonner").then(({ toast }) => {
-        toast.error(
-          "Please complete at least 80% of your profile to post a job."
-        );
-      });
-      router.push("/recruiter/company");
-      return;
-    }
+    // if (data?.profileCompletion < 70) {
+    //   e.preventDefault();
+    //   import("sonner").then(({ toast }) => {
+    //     toast.error(
+    //       "Please complete at least 80% of your profile to post a job."
+    //     );
+    //   });
+    //   router.push("/recruiter/company");
+    //   return;
+    // }
 
     // Subscription check
     if (data?.subscribe === false) {

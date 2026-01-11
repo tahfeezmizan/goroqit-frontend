@@ -207,9 +207,9 @@ export function Navbar() {
                                   userData?.image
                               )}
                               alt={userData?.name}
-                              width={1000}
-                              height={1000}
-                              className="w-10 h-10 rounded-full"
+                              width={200}
+                              height={200}
+                              className="w-full h-full object-cover rounded-full"
                             />
                           ) : (
                             <CircleUserRound className="size-9 text-white" />

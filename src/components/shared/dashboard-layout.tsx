@@ -8,9 +8,8 @@ import {
 } from "@/lib/sidebar-nav-config";
 import { useGetMeQuery } from "@/redux/features/userApi";
 import { TopNavbar } from "../recruiter/top-navbar";
-import { DashboardSidebar } from "./dashboard-sidebar";
 import { SidebarInset, SidebarProvider } from "../ui/sidebar";
-import { AppSidebar } from "./social-login/app-sidebar";
+import { DashboardSidebar } from "./dashboard-sidebar";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;

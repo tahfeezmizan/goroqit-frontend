@@ -9,7 +9,7 @@ export default function ChatLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="fixed w-full md:w-950% pr-4 lg:pr-0">
+    <div className="fixed w-full !md:w-80% pr-4 lg:pr-0">
       <div className="grid grid-cols-1 md:grid-cols-8  ">
         <div className="col-span-2 ">
           <ChatList  />

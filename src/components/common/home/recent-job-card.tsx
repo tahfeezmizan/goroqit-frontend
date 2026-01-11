@@ -2,6 +2,7 @@
 import TimeAgo from "@/lib/time-ago";
 import { getImageUrl } from "@/lib/utils";
 import { PostJobFormData } from "@/types/types";
+import { Building } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -13,13 +14,19 @@ export default function RecentJobCard({ job }: { job: PostJobFormData }) {
   return (
     <div key={_id} className="rounded-lg overflow-hidden bg-white  p-5">
       <div className="flex justify-between items-start mb-8">
-        <Image
-          src={getImageUrl(companyLogo)}
-          alt={title}
-          width={200}
-          height={200}
-          className="w-24 h-24 border p-2 rounded object-cover"
-        />
+        {companyLogo ? (
+          <Image
+            src={getImageUrl(companyLogo)}
+            alt={title}
+            width={200}
+            height={200}
+            className="w-24 h-24 border p-2 rounded object-cover"
+          />
+        ) : (
+          <div className="w-24 h-24 flex items-center justify-center border rounded bg-gray-100">
+            <Building className="size-16 text-gray-400" />
+          </div>
+        )}
 
         <div className="space-y-1">
           {/* experienceLevel */}
