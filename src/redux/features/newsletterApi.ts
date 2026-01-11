@@ -1,3 +1,4 @@
+import { get } from "lodash";
 import { baseApi } from "./baseApi";
 
 const newsletterApi = baseApi.injectEndpoints({
@@ -9,7 +10,18 @@ const newsletterApi = baseApi.injectEndpoints({
         body: data,
       }),
     }),
+
+    getNewsletters: builder.query({
+      query: () => ({
+        url: "/newsletter",
+        method: "GET",
+      }),
+      transformResponse: (response: any) => {
+        return response?.data;
+      },
+    }),
   }),
 });
 
-export const { useCreateNewsletterMutation } = newsletterApi;
+export const { useCreateNewsletterMutation, useGetNewslettersQuery } =
+  newsletterApi;
