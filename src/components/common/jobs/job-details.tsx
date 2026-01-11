@@ -215,15 +215,14 @@ export default function JobDetail({ data }: { data: PostJobFormData }) {
           <div className="">
             {compnayData && (
               <>
-                <h2 className="text-xl font-bold text-gray-900">
+                <h2 className="text-xl font-bold text-gray-900 mb-4">
                   Company Portfolio
                 </h2>
-                {compnayData && (
-                  <ApplicantPortfolio
-                    data={compnayData as any}
-                    key={compnayData._id}
-                  />
-                )}
+
+                <ApplicantPortfolio
+                  data={compnayData as any}
+                  key={compnayData._id}
+                />
               </>
             )}
           </div>
