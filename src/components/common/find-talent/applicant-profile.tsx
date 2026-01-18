@@ -44,7 +44,7 @@ export default function ApplicantProfile() {
               </h3>
               <p className="text-gray-600 font-medium">
                 {talent?.profile?.expartes &&
-                talent?.profile?.expartes?.length > 0
+                  talent?.profile?.expartes?.length > 0
                   ? talent?.profile?.expartes?.join(", ")
                   : "No expartes listed"}
               </p>
@@ -77,6 +77,7 @@ export default function ApplicantProfile() {
                   Email
                 </Button>
 
+
                 <CreateChatModal myId={id} />
               </div>
             </div>
@@ -99,7 +100,7 @@ export default function ApplicantProfile() {
                 <p className="text-lg text-gray-900">
                   <span>£</span>
                   {talent?.profile?.salaryExpectation &&
-                  talent?.profile?.salaryExpectation?.length > 0
+                    talent?.profile?.salaryExpectation?.length > 0
                     ? talent?.profile?.salaryExpectation
                     : "No skills listed"}
                   <span>/hr</span>
@@ -117,10 +118,10 @@ export default function ApplicantProfile() {
               <ul className="space-y-2">
                 {talent?.profile?.skills && talent?.profile?.skills?.length > 0
                   ? talent?.profile?.skills?.map((skill: string) => (
-                      <Badge variant={"outline"} key={skill} className="mx-0.5">
-                        {skill}
-                      </Badge>
-                    ))
+                    <Badge variant={"outline"} key={skill} className="mx-0.5">
+                      {skill}
+                    </Badge>
+                  ))
                   : "No Expectations"}
               </ul>
             </div>

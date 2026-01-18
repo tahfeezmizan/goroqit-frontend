@@ -1,36 +1,87 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Roqit – Find Work. Find Talent. All in One Place.
 
-## Getting Started
+Roqit is a modern two-way job marketplace designed specifically for **salons, barbers, and beauty professionals**. It connects skilled beauty creatives with salons looking to hire — quickly, efficiently, and stress-free.
 
-First, run the development server:
+---
+
+## 🌟 Features
+
+### 🔍 For Job Seekers
+- Create and manage a professional profile
+- Showcase skills, experience, and availability
+- Browse verified job listings
+- Apply for jobs easily
+- Get discovered by salons looking for talent
+
+### 🏢 For Employers (Salons & Studios)
+- Post job openings effortlessly
+- Describe job roles and required skills
+- Browse and hire verified beauty professionals
+- Fast talent matching
+- Direct communication with candidates
+
+---
+
+## 🧭 How It Works
+
+1. **Set up your profile**  
+   Create an account, add your information, skills, and upload relevant details.
+
+2. **Describe your job**  
+   Employers can post jobs by clearly defining roles, responsibilities, and skill requirements.
+
+3. **Search & match talent**  
+   Browse profiles and find the best match quickly and efficiently.
+
+---
+
+## ✅ Why Roqit?
+
+- **Two-Way Marketplace** – Not just another job board
+- **Fast Matches** – Job posts go live instantly
+- **Trusted Network** – Verified roles and profiles
+- **Direct Communication** – Chat, review skills, and view portfolios
+
+---
+
+## 📋 Sections Included
+
+- Hero section with call-to-action
+- How It Works
+- Why Roqit
+- Recent Job Circulars
+- Top Talent Ready to Work
+- Smart Way to Hire
+- Newsletter Subscription
+- Footer with resources and legal links
+
+---
+
+## 🛠 Tech Stack (Suggested)
+
+> *(Adjust based on your actual implementation)*
+
+- **Frontend:** React / Next.js
+- **Styling:** Tailwind CSS
+- **Backend:** Node.js, Express
+- **Database:** MongoDB
+- **Authentication:** JWT / OAuth
+- **Deployment:** Vercel / Netlify
+
+---
+
+## 🚀 Getting Started
 
 ```bash
+# Clone the repository
+git clone https://github.com/your-username/roqit.git
+
+# Navigate to the project directory
+cd roqit
+
+# Install dependencies
+npm install
+
+# Run the development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

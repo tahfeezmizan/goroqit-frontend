@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -12,12 +12,30 @@ import {
 } from "@/components/ui/dialog";
 import { useCreateChatMutation } from "@/redux/features/chatAPI";
 import { MessageSquare } from "lucide-react";
+import { parseCookies } from "nookies";
+import { jwtDecode } from "jwt-decode";
+
+type TokenPayload = {
+  role?: string;
+};
 
 const CreateChatModal = ({ myId }: { myId: string }) => {
-  // const params = useParams(); // 🔹 dynamic route params
-
   const router = useRouter();
+  const pathname = usePathname();
   const [createChat, { isLoading }] = useCreateChatMutation();
+
+  const cookies = parseCookies();
+  const token = cookies.token || cookies.user;
+
+  const handleMessageClick = () => {
+    if (!token) {
+      router.push(`/login?redirect=${pathname}`);
+      return;
+    }
+
+    // token থাকলে message page বা action
+    router.push("/messages");
+  };
 
   const handleCreateChat = async () => {
     try {
@@ -36,7 +54,8 @@ const CreateChatModal = ({ myId }: { myId: string }) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="flex items-center gap-2">
+        <Button variant="outline" size="sm" className="flex items-center gap-2"
+          onClick={() => handleMessageClick()}>
           <MessageSquare className="w-4 h-4" />
           Message
         </Button>
