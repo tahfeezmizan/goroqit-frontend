@@ -54,7 +54,6 @@ export interface TalentProps {
   title: string;
   experience: string;
   skills: string[];
-  price: string;
 
   // Additional fields from your data
   email: string;
@@ -69,7 +68,9 @@ export interface TalentProps {
 
   workExperience: WorkExperience[];
 
-  salaryExpectation?: number | null;
+  price?: AmountWithType | null;
+  salaryExpectation?: SalaryExpectation | null;
+
   mobile: string;
   verified: boolean;
   status: string;
@@ -81,6 +82,16 @@ export interface TalentProps {
   city: string;
   country: string;
   streetAddress: string;
+}
+
+interface AmountWithType {
+  amount: number;
+  type: "hourly" | "monthly" | "yearly";
+}
+
+interface SalaryExpectation {
+  amount: number;
+  type: "hourly" | "monthly" | "yearly"; // future safe
 }
 
 export interface AppliedJob {
@@ -185,7 +196,6 @@ export interface PostJobFormData {
     role: string;
     roleProfile: string;
   } | null;
-  
 }
 
 export type Column<T> = {

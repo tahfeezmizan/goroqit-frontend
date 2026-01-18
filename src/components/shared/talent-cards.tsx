@@ -12,6 +12,8 @@ import Link from "next/link";
 import { Badge } from "../ui/badge";
 
 export default function TalentCards({ talent }: { talent: TalentProps }) {
+  console.log(talent);
+
   return (
     <div
       key={talent.id}
@@ -94,9 +96,18 @@ export default function TalentCards({ talent }: { talent: TalentProps }) {
             <div className="flex items-center gap-4 ">
               <CirclePoundSterling className="w-8 h-8 bg-white shadow-lg p-1 rounded-full  text-green-900 flex-shrink-0" />
               <span className="text-lg leading-tight text-gray-700">
-                {/* Skills:{" "} */}
-                {talent?.price && talent?.price?.length > 0 ? (
-                  <p>{talent.price}</p>
+                {talent?.price ? (
+                  <p>
+                    {talent.price.amount} /{" "}
+                    <span className="capitalize">{talent.price.type}</span>
+                  </p>
+                ) : talent?.salaryExpectation ? (
+                  <p>
+                    {talent.salaryExpectation.amount} /{" "}
+                    <span className="capitalize">
+                      {talent.salaryExpectation.type}
+                    </span>
+                  </p>
                 ) : (
                   <span>15000</span>
                 )}
