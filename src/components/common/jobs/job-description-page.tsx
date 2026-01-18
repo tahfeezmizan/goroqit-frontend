@@ -66,7 +66,7 @@ export default function JobDescriptionPage() {
             router.push("/profile");
           }
         }
-      } catch {}
+      } catch { }
       // router.push(`/job/${job?.title}/${job?._id}`);
     }
     // Applicant: stay on the same page per requirement
@@ -95,7 +95,7 @@ export default function JobDescriptionPage() {
                       <p className="font-medium text-gray-500">
                         <Link
                           href={`/about-company`}
-                          // ${job?.user?.profile?._id}
+                        // ${job?.user?.profile?._id}
                         >
                           <span> {job?.user?.profile?.companyName}</span>
                         </Link>
