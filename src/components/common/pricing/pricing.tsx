@@ -3,9 +3,13 @@
 import { useGetPlansQuery } from "@/redux/features/planApi";
 import { PricingCard } from "./pricing-card";
 import LoadingSpinner from "@/lib/loading-spinner";
+import { useSearchParams } from "next/navigation";
+import { Info } from "lucide-react";
 
 export default function PricingPage() {
   const { data, isLoading } = useGetPlansQuery();
+  const searchParams = useSearchParams();
+  const isFromApp = searchParams.get("from") === "app";
 
   // Extract plans safely
   const planData = data?.plans ?? [];
@@ -13,13 +17,33 @@ export default function PricingPage() {
   return (
     <div className="bg-[#EBF1FA] pt-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-20 overflow-hidden">
+        {/* Guidance banner for mobile app users */}
+        {isFromApp && (
+          <div className="mb-8 bg-blue-50 border border-blue-200 rounded-xl p-5 flex items-start gap-3">
+            <Info className="text-blue-500 mt-0.5 flex-shrink-0 size-5" />
+            <div>
+              <p className="text-blue-800 font-semibold text-sm">
+                Complete Your Subscription on the Website
+              </p>
+              <p className="text-blue-700 text-sm mt-1">
+                Apple and Google do not allow in-app purchases for job
+                subscription services. Please select a plan below and complete
+                your payment here — your subscription will be reflected in the
+                app immediately after purchase.
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Header Section */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4 text-balance">
-            Choose your plan
+            Subscription Plans
           </h1>
           <p className="text-base text-gray-600 max-w-2xl mx-auto text-pretty">
-            Boost your job post to reach more candidates and hire faster.
+            To post jobs and access full recruiter features, an active
+            subscription is required. Choose a plan that fits your needs and
+            complete your purchase securely below.
           </p>
         </div>
 

@@ -11,7 +11,7 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { Eye, EyeOff, Loader } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
@@ -38,6 +38,14 @@ export function LoginForm() {
 
   // Get the redirect URL from query parameters
   const redirectUrl = searchParams.get("redirect") || "/profile";
+
+  const toastShown = useRef(false);
+  useEffect(() => {
+    if (redirectUrl === "/pricing" && !toastShown.current) {
+      toastShown.current = true;
+      toast.info("Please login to continue with your subscription plan.");
+    }
+  }, [redirectUrl]);
 
   const onSubmit = async (data: LoginFormData) => {
     try {

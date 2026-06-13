@@ -18,9 +18,11 @@ import {
   useUpdatePlanMutation,
 } from "@/redux/features/planApi";
 import { Loader } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import Swal from "sweetalert2";
+import { selectIsLoggedIn } from "@/redux/slice/userSlice";
 
 interface PricingCardProps {
   _id: string;
@@ -42,6 +44,8 @@ export function PricingCard({
   onDeleted,
 }: PricingCardProps) {
   const pathName = usePathname();
+  const router = useRouter();
+  const isLoggedIn = useSelector(selectIsLoggedIn);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editData, setEditData] = useState({
     title,
@@ -55,11 +59,16 @@ export function PricingCard({
     useCreateCheckoutSessionMutation();
 
   const handleCheckout = async () => {
+    if (!isLoggedIn) {
+      router.push("/login?redirect=/pricing");
+      return;
+    }
+
     try {
       const res = await createCheckoutSession(_id).unwrap();
 
       if (res?.url) {
-        window.location.href = res.url; // This will redirect to Stripe
+        window.location.href = res.url;
       } else {
         console.error("No URL found in response:", res);
       }
