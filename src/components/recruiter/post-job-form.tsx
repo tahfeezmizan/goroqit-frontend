@@ -17,8 +17,10 @@ import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 import { Calendar, Loader } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
+import { useEffect, useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { useGoogleMaps } from "@/hooks/use-google-maps";
 
 // ✅ Dynamic import for Jodit Editor
 const JoditEditor = dynamic(() => import("jodit-react"), { ssr: false });
@@ -29,6 +31,7 @@ export function PostJobForm() {
     handleSubmit,
     control,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<PostJobFormData>({
     defaultValues: {
@@ -45,10 +48,62 @@ export function PostJobForm() {
       description: "",
       responsibilities: "",
       experianceLabel: undefined,
+      location: undefined,
     },
   });
 
   const watchEngagementType = watch("engagementType");
+
+  const isGoogleMapsLoaded = useGoogleMaps();
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
+
+  useEffect(() => {
+    if (!isGoogleMapsLoaded || !inputRef.current) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+      }
+    };
+    const inputElement = inputRef.current;
+    inputElement.addEventListener("keydown", handleKeyDown);
+
+    const autocomplete = new window.google.maps.places.Autocomplete(inputElement, {
+      types: ["geocode", "establishment"],
+    });
+    autocompleteRef.current = autocomplete;
+
+    const listener = autocomplete.addListener("place_changed", () => {
+      const place = autocomplete.getPlace();
+      const address = place.formatted_address || place.name || "";
+      const lat = place.geometry?.location?.lat();
+      const lng = place.geometry?.location?.lng();
+
+      setValue("jobLocation", address, { shouldValidate: true });
+      if (lat !== undefined && lng !== undefined) {
+        setValue("location", {
+          type: "Point",
+          coordinates: [lng, lat],
+        });
+      }
+    });
+
+    return () => {
+      if (listener) {
+        window.google.maps.event.removeListener(listener);
+      }
+      inputElement.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isGoogleMapsLoaded, setValue]);
+
+  const { ref: jobLocationRef, ...jobLocationRegister } = register("jobLocation", {
+    required: "Job location is required",
+    minLength: {
+      value: 3,
+      message: "Job location must be at least 3 characters long",
+    },
+  });
 
   const route = useRouter();
   const [createJob, { isLoading }] = useCreateJobMutation();
@@ -60,6 +115,7 @@ export function PostJobForm() {
         title: data.title,
         category: data.category,
         jobLocation: data.jobLocation,
+        location: data.location,
         experianceLabel: data.experianceLabel,
         type: data.type,
         startDate: data.startDate
@@ -231,14 +287,12 @@ export function PostJobForm() {
             </Label>
             <Input
               id="jobLocation"
-              placeholder="Enter your locations"
-              {...register("jobLocation", {
-                required: "Job location is required",
-                minLength: {
-                  value: 3,
-                  message: "Job location must be at least 3 characters long",
-                },
-              })}
+              placeholder={isGoogleMapsLoaded ? "Search job location (Google Maps suggestion)..." : "Enter your locations"}
+              {...jobLocationRegister}
+              ref={(e) => {
+                jobLocationRef(e);
+                inputRef.current = e;
+              }}
               className="mt-1 p-4 rounded-lg bg-gray-50 !text-lg text-black w-full"
             />
             {errors.jobLocation && (

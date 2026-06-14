@@ -171,6 +171,10 @@ export interface PostJobFormData {
   description?: string;
   responsibilities?: string;
   jobLocation: string;
+  location?: {
+    type: "Point";
+    coordinates: number[];
+  };
   applicationsCount: string;
   paymentType: "yearly" | "monthly" | "weekly" | "hourly";
   experianceLabel: "Junior" | "Mid-Level" | "Senior" | "Master";

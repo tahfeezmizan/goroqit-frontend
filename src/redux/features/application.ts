@@ -18,8 +18,8 @@ const applicationApi = baseApi.injectEndpoints({
       invalidatesTags: ["Application"],
     }),
     getApplication: builder.query({
-      query: () => ({
-        url: "/application",
+      query: (jobId?: string) => ({
+        url: `/application${jobId ? `?job=${jobId}` : ""}`,
         method: "GET",
       }),
       providesTags: ["Application"],

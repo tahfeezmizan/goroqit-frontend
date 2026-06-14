@@ -3,7 +3,9 @@
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/format-date";
 import { useGetApplicationQuery } from "@/redux/features/application";
-import { AppliedJob } from "@/types/types";
+import { useGetSingleRecruiterJobQuery } from "@/redux/features/jobsApi";
+import { useGetMeQuery } from "@/redux/features/userApi";
+import { AppliedJob, PostJobFormData } from "@/types/types";
 import Link from "next/link";
 import { useState } from "react";
 import {
@@ -14,17 +16,53 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export function ApplicationsList() {
-  const { data: appliedUser } = useGetApplicationQuery("");
+  const [selectedJobId, setSelectedJobId] = useState<string>("");
+  const { data: appliedUser } = useGetApplicationQuery(selectedJobId);
   const [selectedApplicant, setSelectedApplicant] = useState<AppliedJob | null>(
     null
   );
 
+  const { data: userData } = useGetMeQuery(undefined);
+  const { data: jobsData } = useGetSingleRecruiterJobQuery(
+    { userId: userData?._id || "", page: 1, limit: 100 },
+    { skip: !userData?._id }
+  );
+
+  const jobs = jobsData?.jobs?.data || [];
+
   return (
     <div className="">
       <div className="space-y-6">
-        <h2 className="text-3xl font-bold text-gray-900">Applications</h2>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <h2 className="text-3xl font-bold text-gray-900">Applications</h2>
+          <div className="w-full sm:w-[280px]">
+            <Select
+              onValueChange={(val) => setSelectedJobId(val === "all" ? "" : val)}
+              value={selectedJobId || "all"}
+            >
+              <SelectTrigger className="w-full p-4 rounded-lg bg-white border border-gray-200 text-gray-800">
+                <SelectValue placeholder="Filter by Job" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Jobs</SelectItem>
+                {jobs.map((job: PostJobFormData) => (
+                  <SelectItem key={job._id} value={String(job._id)}>
+                    {job.title}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
 
         <div className="overflow-x-auto bg-white rounded-lg shadow-sm border border-gray-200">
           <table className="w-full">
