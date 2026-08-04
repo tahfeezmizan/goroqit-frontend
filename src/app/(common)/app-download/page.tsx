@@ -53,9 +53,9 @@ const keyFeatures = [
 
 export default function AppDownloadPage() {
   return (
-    <div className="bg-[#EBF1FA] min-h-screen pt-28 pb-20">
+    <div className="bg-[#EBF1FA] min-h-screen pt-20 sm:pt-24 pb-14">
       {/* 1. Header Information Text */}
-      <section className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-4 mb-8">
+      <section className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-3 mb-0">
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-green-900/10 border border-green-900/20 text-green-900 text-sm font-semibold">
           <Sparkles className="w-4 h-4 text-green-700" />
           <span>Official GoRoqit Mobile Application</span>
@@ -70,8 +70,8 @@ export default function AppDownloadPage() {
         </p>
       </section>
 
-      {/* 2. Large Mockup Image Showcase */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-10">
+      {/* 2. Large Mockup Image Showcase (Zero vertical gap above & below) */}
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 my-0 py-0">
         <div className="w-full">
           <Image
             src={appMockup}
@@ -84,8 +84,8 @@ export default function AppDownloadPage() {
         </div>
       </section>
 
-      {/* 3. Download Buttons - Side by Side on all screen sizes including mobile */}
-      <section className="max-w-4xl mx-auto px-4 sm:px-6 text-center mb-16">
+      {/* 3. Download Buttons */}
+      <section className="max-w-4xl mx-auto px-4 sm:px-6 text-center mt-2 mb-10 sm:mb-12">
         <div className="flex flex-row justify-center items-center gap-3 sm:gap-4 max-w-md sm:max-w-none mx-auto">
           {/* Apple App Store */}
           <a
@@ -105,11 +105,9 @@ export default function AppDownloadPage() {
 
           {/* Google Play Store */}
           <a
-            href="#google-download"
-            onClick={(e) => {
-              e.preventDefault();
-              alert("Directing to Google Play Store...");
-            }}
+            href="https://play.google.com/store/apps/details?id=com.luke.go_roqit_app"
+            target="_blank"
+            rel="noopener noreferrer"
             className="flex-1 sm:flex-initial flex items-center justify-center sm:justify-start gap-2 sm:gap-3.5 px-3.5 sm:px-7 py-3.5 sm:py-4 bg-black hover:bg-zinc-800 text-white rounded-2xl transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 cursor-pointer"
           >
             <GooglePlayIcon className="w-5 h-5 sm:w-7 sm:h-7 text-emerald-400 flex-shrink-0" />

@@ -53,8 +53,10 @@ export function Footer() {
                 </div>
               </a>
 
-              <Link
-                href="/app-download"
+              <a
+                href="https://play.google.com/store/apps/details?id=com.luke.go_roqit_app"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="flex items-center gap-2 px-3 py-2 bg-black/60 hover:bg-black border border-white/20 hover:border-white/40 text-white rounded-xl transition-all shadow-sm"
               >
                 <GooglePlayIcon className="w-4 h-4 text-emerald-400 flex-shrink-0" />
@@ -64,7 +66,7 @@ export function Footer() {
                   </p>
                   <p className="text-xs font-bold leading-tight mt-0.5">Google Play</p>
                 </div>
-              </Link>
+              </a>
             </div>
           </div>
 
