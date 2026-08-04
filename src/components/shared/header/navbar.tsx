@@ -77,6 +77,7 @@ export function Navbar() {
           { href: "/", label: "Home" },
           { href: "/job", label: "Search Job" },
           { href: "/contact", label: "Contact Us" },
+          { href: "/app-download", label: "App" },
         ];
       case "recruiter":
         return [
@@ -85,6 +86,7 @@ export function Navbar() {
           { href: "/find-talent", label: "Find Talent" },
           { href: "/pricing", label: "Pricing" },
           { href: "/contact", label: "Contact Us" },
+          { href: "/app-download", label: "App" },
         ];
       default: // guest
         return [
@@ -92,6 +94,7 @@ export function Navbar() {
           { href: "/find-talent", label: "Find Talent" },
           { href: "/job", label: "Search Job" },
           { href: "/contact", label: "Contact Us" },
+          { href: "/app-download", label: "App" },
         ];
     }
   };
