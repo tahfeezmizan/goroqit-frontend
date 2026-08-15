@@ -6,6 +6,7 @@ import { useGetApplicationQuery } from "@/redux/features/application";
 import { useGetSingleRecruiterJobQuery } from "@/redux/features/jobsApi";
 import { useGetMeQuery } from "@/redux/features/userApi";
 import { AppliedJob, PostJobFormData } from "@/types/types";
+import { getImageUrl } from "@/lib/utils";
 import Link from "next/link";
 import { useState } from "react";
 import {
@@ -147,13 +148,14 @@ export function ApplicationsList() {
                             {selectedApplicant?.resume && (
                               <p>
                                 <span className="font-semibold">Resume:</span>{" "}
-                                <Link
-                                  href={selectedApplicant?.resume}
+                                <a
+                                  href={getImageUrl(selectedApplicant?.resume)}
                                   target="_blank"
+                                  rel="noopener noreferrer"
                                   className="text-blue-600 underline"
                                 >
                                   View Resume
-                                </Link>
+                                </a>
                               </p>
                             )}
                           </div>

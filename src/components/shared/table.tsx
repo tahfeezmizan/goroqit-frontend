@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { AppliedJob } from "@/types/types";
 import { X } from "lucide-react";
+import { getImageUrl } from "@/lib/utils";
 
 export default function Table({ appliedJobs }: { appliedJobs: AppliedJob[] }) {
   const [selectedJob, setSelectedJob] = useState<AppliedJob | null>(null);
@@ -99,8 +100,9 @@ export default function Table({ appliedJobs }: { appliedJobs: AppliedJob[] }) {
               <div>
                 <p className="font-semibold text-gray-800">Resume</p>
                 <a
-                  href={selectedJob.resume}
+                  href={getImageUrl(selectedJob.resume)}
                   target="_blank"
+                  rel="noopener noreferrer"
                   className="text-blue-600 hover:underline"
                 >
                   View Resume
