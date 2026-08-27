@@ -2,15 +2,29 @@
 import { baseApi } from "./baseApi";
 
 const jobsApi = baseApi.injectEndpoints({
+  overrideExisting: true,
   endpoints: (builder) => ({
     getAllJobs: builder.query({
-      query: () => ({
+      query: (params?: { page?: number; limit?: number } | any) => ({
         url: "/job",
         method: "GET",
+        params: typeof params === "object" ? params : undefined,
       }),
       providesTags: ["Jobs"],
       transformResponse: (response: any) => {
-        return response?.data?.data;
+        if (response?.meta && Array.isArray(response?.data)) {
+          return {
+            data: response.data,
+            meta: response.meta,
+          };
+        }
+        if (response?.data?.meta) {
+          return {
+            data: response.data.data || response.data,
+            meta: response.data.meta,
+          };
+        }
+        return response?.data || response;
       },
     }),
 
@@ -30,9 +44,9 @@ const jobsApi = baseApi.injectEndpoints({
       }),
       providesTags: ["Jobs"],
       transformResponse: (response: any) => {
-        // assume API response like: { data: [], total: 50, page: 1, limit: 10 }
         return {
           jobs: response?.data,
+          meta: response?.meta || response?.data?.meta,
         };
       },
     }),
@@ -64,6 +78,7 @@ const jobsApi = baseApi.injectEndpoints({
         method: "PATCH",
         body: data,
       }),
+      invalidatesTags: ["Jobs"],
     }),
 
     deleteJob: builder.mutation({
@@ -77,13 +92,26 @@ const jobsApi = baseApi.injectEndpoints({
     }),
 
     getAllJobswithStatics: builder.query({
-      query: () => ({
+      query: (params?: { page?: number; limit?: number }) => ({
         url: "/job",
         method: "GET",
+        params,
       }),
       providesTags: ["Jobs"],
       transformResponse: (response: any) => {
-        return response?.data;
+        if (response?.meta && Array.isArray(response?.data)) {
+          return {
+            data: response.data,
+            meta: response.meta,
+          };
+        }
+        if (response?.data?.meta) {
+          return {
+            data: response.data.data || response.data,
+            meta: response.data.meta,
+          };
+        }
+        return response?.data || response;
       },
     }),
 
@@ -102,7 +130,6 @@ const jobsApi = baseApi.injectEndpoints({
 
         if (filters?.searchTerm)
           params.append("searchTerm", filters.searchTerm);
-        // ✅ CRITICAL FIX: This was using filters.searchTerm instead of filters.jobLocation
         if (filters?.jobLocation)
           params.append("jobLocation", filters.jobLocation);
         if (filters?.category) params.append("category", filters.category);
@@ -121,7 +148,19 @@ const jobsApi = baseApi.injectEndpoints({
       },
       providesTags: ["Jobs"],
       transformResponse: (response: any) => {
-        return response?.data;
+        if (response?.meta && Array.isArray(response?.data)) {
+          return {
+            data: response.data,
+            meta: response.meta,
+          };
+        }
+        if (response?.data?.meta) {
+          return {
+            data: response.data.data || response.data,
+            meta: response.data.meta,
+          };
+        }
+        return response?.data || response;
       },
     }),
 

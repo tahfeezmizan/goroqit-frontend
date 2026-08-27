@@ -13,16 +13,18 @@ import {
 import { useGetAllCategoryQuery } from "@/redux/features/categoryApi";
 import {
   useGetAllJobsQuery,
+  useGetSingleJobQuery,
   useUpdateJobMutation,
 } from "@/redux/features/jobsApi";
 import { Category, JobData, PostJobFormData } from "@/types/types";
 import { Calendar, Loader } from "lucide-react";
 import dynamic from "next/dynamic";
-import { useParams, useRouter } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useParams, useRouter, usePathname } from "next/navigation";
+import { useEffect, useMemo, useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { useGoogleMaps } from "@/hooks/use-google-maps";
+import LoadingSpinner from "@/lib/loading-spinner";
 const JoditEditor = dynamic(() => import("jodit-react"), { ssr: false });
 
 export function JobUpdateForm() {
@@ -51,12 +53,22 @@ export function JobUpdateForm() {
   });
   const { id } = useParams();
   const route = useRouter();
+  const pathname = usePathname();
 
   const watchEngagementType = watch("engagementType");
 
   const isGoogleMapsLoaded = useGoogleMaps();
   const inputRef = useRef<HTMLInputElement | null>(null);
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
+  const editorRef = useRef<any>(null);
+
+  const editorConfig = useMemo(
+    () => ({
+      height: 400,
+      readonly: false,
+    }),
+    []
+  );
 
   useEffect(() => {
     if (!isGoogleMapsLoaded || !inputRef.current) return;
@@ -99,21 +111,47 @@ export function JobUpdateForm() {
 
   const { data: categories } = useGetAllCategoryQuery({});
   const { data: jobs } = useGetAllJobsQuery({});
+  const { data: singleJob, isLoading: isJobLoading } = useGetSingleJobQuery(
+    { id: id as string },
+    { skip: !id }
+  );
   const [updateJob, { isLoading }] = useUpdateJobMutation();
 
-  const job = jobs?.find((job: JobData) => job._id === id);
+  const rawJob = singleJob?.data || singleJob || jobs?.find((j: any) => j._id === id);
+  const job = rawJob?.data || rawJob;
 
   useEffect(() => {
-    if (job && categories) {
+    if (job) {
+      const categoryName =
+        typeof job.category === "object"
+          ? job.category?.name || job.category?._id
+          : Array.isArray(categories)
+          ? categories.find(
+              (c: Category) => c._id === job.category || c.name === job.category
+            )?.name || job.category
+          : job.category;
+
+      let formattedDate: string | undefined = undefined;
+      if (job.startDate) {
+        try {
+          const d = new Date(job.startDate);
+          if (!isNaN(d.getTime())) {
+            formattedDate = d.toISOString().split("T")[0];
+          }
+        } catch {
+          formattedDate = String(job.startDate).split("T")[0];
+        }
+      }
+
       reset({
         title: job.title || "",
-        category: job.category?.name || job.category || "",
+        category: categoryName || "",
         jobLocation: job.jobLocation || "",
         type: job.type || "",
         engagementType: job.engagementType || "",
         rent: job.rent || 0,
         paymentType: job.paymentType || "hourly",
-        startDate: job.startDate ? job.startDate.split("T")[0] : undefined,
+        startDate: formattedDate as any,
         experianceLabel: job.experianceLabel || "",
         minSalary: job.minSalary || 0,
         maxSalary: job.maxSalary || 0,
@@ -128,6 +166,9 @@ export function JobUpdateForm() {
   });
 
   const onSubmit = async (data: PostJobFormData) => {
+    const latestDescription =
+      editorRef.current?.value || data.description || "";
+
     const updateData = {
       title: data.title,
       category: data.category,
@@ -148,7 +189,7 @@ export function JobUpdateForm() {
           : undefined,
       rent:
         data.engagementType === "Chair-rental" ? Number(data.rent) : undefined,
-      description: data.description,
+      description: latestDescription,
       responsibilities: data.responsibilities,
     };
 
@@ -159,14 +200,26 @@ export function JobUpdateForm() {
       }).unwrap();
 
       if (res.success) {
-        toast.success("✅ Job Update Sucessfully");
-        route.push("/recruiter/jobs");
+        toast.success("✅ Job Update Successfully");
+        if (pathname?.startsWith("/admin")) {
+          route.push("/admin/jobs");
+        } else {
+          route.push("/recruiter/jobs");
+        }
       }
     } catch (error) {
-      toast.error("❌ Job creation failed");
-      console.error("❌ Job creation failed:", error);
+      toast.error("❌ Job update failed");
+      console.error("❌ Job update failed:", error);
     }
   };
+
+  if (isJobLoading || !job) {
+    return (
+      <div className="p-12 rounded-lg bg-white flex justify-center items-center min-h-[400px]">
+        <LoadingSpinner />
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 rounded-lg bg-white">
@@ -486,12 +539,9 @@ export function JobUpdateForm() {
 
               return (
                 <JoditEditor
-                  ref={null}
+                  ref={editorRef}
                   value={field.value || defaultTemplate}
-                  config={{
-                    height: 400,
-                    readonly: false,
-                  }}
+                  config={editorConfig}
                   onBlur={(newContent) => field.onChange(newContent)}
                   onChange={() => {}}
                 />

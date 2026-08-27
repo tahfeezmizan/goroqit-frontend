@@ -89,32 +89,53 @@ export default function JobsSection() {
       return { jobs: jobsResponse, pagination: null };
     }
 
+    const jobsList = Array.isArray(jobsResponse.data)
+      ? jobsResponse.data
+      : Array.isArray(jobsResponse.data?.data)
+      ? jobsResponse.data.data
+      : [];
+
+    const metaData = jobsResponse.meta || jobsResponse.data?.meta || null;
+
     return {
-      jobs: jobsResponse.data || [],
-      pagination: jobsResponse.meta || null,
+      jobs: jobsList,
+      pagination: metaData,
     };
   }, [jobsResponse]);
 
   const handleFiltersChange = useCallback((newFilters: FilterData) => {
-    setFilters(newFilters);
-    setCurrentPage(1);
+    setFilters((prev) => {
+      if (JSON.stringify(prev) !== JSON.stringify(newFilters)) {
+        setCurrentPage(1);
+        return newFilters;
+      }
+      return prev;
+    });
   }, []);
 
   const handlePageChange = useCallback((page: number) => {
     setCurrentPage(page);
-
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
+  const totalPages = useMemo(() => {
+    return Number(
+      pagination?.totalPage ||
+        pagination?.totalPages ||
+        pagination?.total_page ||
+        1
+    );
+  }, [pagination]);
+
   // Generate page numbers for pagination
   const renderPageNumbers = () => {
-    if (!pagination || pagination.totalPage <= 1) return null;
+    if (!pagination || totalPages <= 1) return null;
 
     const pages = [];
     const maxVisiblePages = 5;
     let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
     const endPage = Math.min(
-      pagination.totalPage,
+      totalPages,
       startPage + maxVisiblePages - 1
     );
 
@@ -126,15 +147,17 @@ export default function JobsSection() {
     pages.push(
       <button
         key="prev"
+        type="button"
         onClick={() => handlePageChange(currentPage - 1)}
-        disabled={currentPage === 1}
-        className={`p-1 rounded-full border text-gray-600 hover:bg-gray-100 disabled:opacity-50 ${
-          currentPage === 1
-            ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-            : "bg-white text-green-700 hover:bg-gray-100 border border-gray-300"
+        disabled={currentPage <= 1}
+        className={`p-2 rounded-full border flex items-center justify-center transition-colors ${
+          currentPage <= 1
+            ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed opacity-50"
+            : "bg-white text-green-800 hover:bg-green-50 border-gray-300 shadow-sm cursor-pointer"
         }`}
+        title="Previous Page"
       >
-        <ChevronLeft />
+        <ChevronLeft className="w-5 h-5" />
       </button>
     );
 
@@ -143,15 +166,16 @@ export default function JobsSection() {
       pages.push(
         <button
           key={1}
+          type="button"
           onClick={() => handlePageChange(1)}
-          className="p-1 rounded-full border text-gray-600 hover:bg-gray-100 disabled:opacity-50"
+          className="px-3 py-1 rounded-full border text-gray-700 bg-white hover:bg-gray-100 border-gray-300 cursor-pointer"
         >
           1
         </button>
       );
       if (startPage > 2) {
         pages.push(
-          <span key="ellipsis1" className="px-2 py-1">
+          <span key="ellipsis1" className="px-2 py-1 text-gray-500">
             ...
           </span>
         );
@@ -163,10 +187,11 @@ export default function JobsSection() {
       pages.push(
         <button
           key={i}
+          type="button"
           onClick={() => handlePageChange(i)}
-          className={`px-3 py-1 rounded-full ${
+          className={`px-3.5 py-1.5 rounded-full text-sm font-medium transition-colors cursor-pointer ${
             currentPage === i
-              ? "bg-green-600 text-white font-semibold border border-green-600"
+              ? "bg-green-800 text-white shadow-sm"
               : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-300"
           }`}
         >
@@ -176,21 +201,22 @@ export default function JobsSection() {
     }
 
     // Last page
-    if (endPage < pagination.totalPage) {
-      if (endPage < pagination.totalPage - 1) {
+    if (endPage < totalPages) {
+      if (endPage < totalPages - 1) {
         pages.push(
-          <span key="ellipsis2" className="px-2 py-1">
+          <span key="ellipsis2" className="px-2 py-1 text-gray-500">
             ...
           </span>
         );
       }
       pages.push(
         <button
-          key={pagination.totalPage}
-          onClick={() => handlePageChange(pagination.totalPage)}
-          className="px-3 py-1 rounded-md bg-white text-gray-700 hover:bg-gray-100 border border-gray-300"
+          key={totalPages}
+          type="button"
+          onClick={() => handlePageChange(totalPages)}
+          className="px-3 py-1 rounded-full border text-gray-700 bg-white hover:bg-gray-100 border-gray-300 cursor-pointer"
         >
-          {pagination.totalPage}
+          {totalPages}
         </button>
       );
     }
@@ -199,15 +225,17 @@ export default function JobsSection() {
     pages.push(
       <button
         key="next"
+        type="button"
         onClick={() => handlePageChange(currentPage + 1)}
-        disabled={currentPage === pagination.totalPage}
-        className={`p-1 rounded-full border text-gray-600 hover:bg-gray-100 disabled:opacity-50 ${
-          currentPage === pagination.totalPage
-            ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-            : "bg-white text-green-700 hover:bg-gray-100 border border-gray-300"
+        disabled={currentPage >= totalPages}
+        className={`p-2 rounded-full border flex items-center justify-center transition-colors ${
+          currentPage >= totalPages
+            ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed opacity-50"
+            : "bg-white text-green-800 hover:bg-green-50 border-gray-300 shadow-sm cursor-pointer"
         }`}
+        title="Next Page"
       >
-        <ChevronRight />
+        <ChevronRight className="w-5 h-5" />
       </button>
     );
 
@@ -259,7 +287,7 @@ export default function JobsSection() {
           </div>
 
           {/* Pagination */}
-          {pagination && pagination.totalPage > 1 && (
+          {pagination && totalPages > 1 && (
             <div className="flex justify-end items-center space-x-2 mt-8">
               {renderPageNumbers()}
             </div>

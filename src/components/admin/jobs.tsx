@@ -138,12 +138,13 @@ import {
   useGetAllJobswithStaticsQuery,
 } from "@/redux/features/jobsApi";
 import { Column } from "@/types/types";
-import { Calendar, Trash2, Users } from "lucide-react";
+import { Calendar, Edit, Eye, Trash2, Users } from "lucide-react";
 import { useMemo, useState } from "react";
 import { StatsCard } from "../shared/stats-card";
 import { Button } from "../ui/button";
 import AdminTable from "./table";
 import Swal from "sweetalert2";
+import Link from "next/link";
 
 interface JobRow {
   serial: number;
@@ -203,16 +204,41 @@ export default function Jobs() {
         type: job.type,
         jobLocation: job.jobLocation,
         applicationsCount: job.applicationsCount,
-        salaryRange: `£${job.minSalary} - £${job.maxSalary}`,
+        salaryRange: job.rent
+          ? `£${job.rent}`
+          : `£${job.minSalary} - £${job.maxSalary}`,
         action: (
-          <Button
-            variant={"ghost"}
-            onClick={() => handleDelete(job._id)}
-            className="flex items-center gap-2 rounded-full text-red-600 bg-red-400/10 hover:bg-red-600/90 hover:text-white duration-300"
-          >
-            <Trash2 className="size-4" />
-            Delete
-          </Button>
+          <div className="flex items-center gap-2">
+            <Link href={`/job/${job._id}`} target="_blank" rel="noopener noreferrer">
+              <Button
+                variant={"ghost"}
+                size={"icon"}
+                title="View Details"
+                className="rounded-full text-green-600 bg-green-400/10 hover:bg-green-600/90 hover:text-white duration-300"
+              >
+                <Eye className="size-4" />
+              </Button>
+            </Link>
+            <Link href={`/admin/jobs/${job._id}`}>
+              <Button
+                variant={"ghost"}
+                size={"icon"}
+                title="Edit"
+                className="rounded-full text-blue-600 bg-blue-400/10 hover:bg-blue-600/90 hover:text-white duration-300"
+              >
+                <Edit className="size-4" />
+              </Button>
+            </Link>
+            <Button
+              variant={"ghost"}
+              size={"icon"}
+              title="Delete"
+              onClick={() => handleDelete(job._id)}
+              className="rounded-full text-red-600 bg-red-400/10 hover:bg-red-600/90 hover:text-white duration-300"
+            >
+              <Trash2 className="size-4" />
+            </Button>
+          </div>
         ),
       })),
     [jobs, page, limit]
