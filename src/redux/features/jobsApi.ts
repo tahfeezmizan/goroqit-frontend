@@ -12,19 +12,11 @@ const jobsApi = baseApi.injectEndpoints({
       }),
       providesTags: ["Jobs"],
       transformResponse: (response: any) => {
-        if (response?.meta && Array.isArray(response?.data)) {
-          return {
-            data: response.data,
-            meta: response.meta,
-          };
-        }
-        if (response?.data?.meta) {
-          return {
-            data: response.data.data || response.data,
-            meta: response.data.meta,
-          };
-        }
-        return response?.data || response;
+        return (
+          response?.data?.data ||
+          (Array.isArray(response?.data) ? response.data : response?.data) ||
+          []
+        );
       },
     }),
 

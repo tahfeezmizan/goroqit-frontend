@@ -8,7 +8,11 @@ import Link from "next/link";
 import RecentJobCard from "./recent-job-card";
 
 export function RecentJob() {
-  const { data: jobs, isLoading } = useGetAllJobsQuery('');
+  const { data: jobsData, isLoading } = useGetAllJobsQuery(undefined);
+
+  const jobs = Array.isArray(jobsData)
+    ? jobsData
+    : jobsData?.data || [];
 
   return (
     <section className="bg-[#EBF1FA] py-20">
