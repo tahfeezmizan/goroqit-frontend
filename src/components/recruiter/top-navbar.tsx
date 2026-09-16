@@ -148,6 +148,7 @@ import {
 } from "@/components/ui/tooltip";
 import { AlertTriangle } from "lucide-react";
 import { useEffect, useState } from "react";
+import { RoqitRewardsButton } from "@/components/shared/RoqitRewardsButton";
 
 export function TopNavbar() {
   const { data, isLoading } = useGetMeQuery(undefined);
@@ -223,8 +224,10 @@ export function TopNavbar() {
           {data?.role} Panel
         </h1>
 
-        {/* User Profile Dropdown */}
-        <DropdownMenu>
+        {/* User Profile & Rewards */}
+        <div className="flex items-center gap-4">
+          <RoqitRewardsButton />
+          <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
@@ -333,6 +336,7 @@ export function TopNavbar() {
             )}
           </DropdownMenuContent>
         </DropdownMenu>
+        </div>
       </div>
     </div>
   );

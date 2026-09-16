@@ -49,6 +49,8 @@ export function getTokenAndRole(): {
   role: string | null;
 } {
   try {
+    if (typeof window === "undefined") return { token: null, role: null };
+
     // 1️⃣ Try direct key first
     const directToken = localStorage.getItem("accessToken");
     if (directToken) {

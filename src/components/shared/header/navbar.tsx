@@ -29,6 +29,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import { RoqitRewardsButton } from "@/components/shared/RoqitRewardsButton";
 
 // Types for user roles
 type UserRole = "guest" | "applicant" | "recruiter" | "admin";
@@ -177,6 +178,7 @@ export function Navbar() {
             <div className="hidden lg:flex items-center space-x-4">
               {isMounted && hasToken ? (
                 <>
+                  <RoqitRewardsButton />
                   {activeRole !== "admin" && (
                     <>
                       <Link
@@ -492,7 +494,9 @@ export function Navbar() {
                 ))}
                 <div className="">
                   {isMounted && hasToken ? (
-                    ""
+                    <div className="pt-2">
+                      <RoqitRewardsButton className="w-full justify-center" />
+                    </div>
                   ) : (
                     <div className="flex flex-col space-y-3">
                       <Button

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import Cookies from "js-cookie";
 import { RootState } from "../store";
 
 const baseURL = process.env.NEXT_PUBLIC_BASEURL as string;
@@ -9,17 +10,32 @@ export const baseApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: `${baseURL}/api/v1`,
     prepareHeaders: (headers, { getState }) => {
-      const userData = (getState() as RootState).user.user;
+      const userData = (getState() as RootState).user?.user;
+
+      let token: string | null | undefined = null;
 
       if (userData) {
-        // Extract the accessToken from the user data
-        const token =
-          typeof userData === "object" && userData.accessToken
+        token =
+          typeof userData === "object" && userData?.accessToken
             ? userData.accessToken
-            : userData; // Fallback to the entire token if it's not an object
-
-        headers.set("Authorization", `Bearer ${token}`);
+            : userData;
       }
+
+      if (!token) {
+        token =
+          Cookies.get("token") ||
+          (typeof window !== "undefined"
+            ? localStorage.getItem("accessToken")
+            : null);
+      }
+
+      if (token && typeof token === "string" && token !== "null" && token !== "undefined") {
+        const cleanToken = token.startsWith("Bearer ")
+          ? token.slice(7)
+          : token;
+        headers.set("Authorization", `Bearer ${cleanToken}`);
+      }
+
       return headers;
     },
   }),

@@ -181,6 +181,13 @@ const userApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Auth"],
     }),
+
+    getRewardSsoUrl: builder.query({
+      query: () => ({
+        url: "/rewards/sso-url",
+        method: "GET",
+      }),
+    }),
   }),
 });
 
@@ -200,4 +207,6 @@ export const {
   useDeleteEducationMutation,
   useDeleteSingleUserMutation,
   useDeletePortfolioMutation,
+  useGetRewardSsoUrlQuery,
+  useLazyGetRewardSsoUrlQuery,
 } = userApi;
