@@ -66,16 +66,21 @@ export function LoginForm() {
           })
         );
 
-        // Check if user came from clicking Roqit Rewards button
+        // Read & immediately clear rewards intent from sessionStorage
+        const searchRedirect = searchParams.get("redirect");
+        const sessionIntent =
+          typeof window !== "undefined"
+            ? sessionStorage.getItem("redirectAfterAuth")
+            : null;
+
+        if (typeof window !== "undefined") {
+          sessionStorage.removeItem("redirectAfterAuth");
+        }
+
         const isRewardsIntent =
-          redirectUrl === "rewards" ||
-          (typeof window !== "undefined" &&
-            sessionStorage.getItem("redirectAfterAuth") === "rewards");
+          searchRedirect === "rewards" || sessionIntent === "rewards";
 
         if (isRewardsIntent) {
-          if (typeof window !== "undefined") {
-            sessionStorage.removeItem("redirectAfterAuth");
-          }
           toast.success("Login Successful. Connecting to Roqit Rewards...");
           try {
             const ssoRes = await getRewardSsoUrl(undefined, false).unwrap();

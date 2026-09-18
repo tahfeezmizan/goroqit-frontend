@@ -302,14 +302,18 @@ export default function OtpVerify() {
         toast.success("OTP verification successful");
 
         // Check if user came from clicking Roqit Rewards button
-        const isRewardsIntent =
-          typeof window !== "undefined" &&
-          sessionStorage.getItem("redirectAfterAuth") === "rewards";
+        const sessionIntent =
+          typeof window !== "undefined"
+            ? sessionStorage.getItem("redirectAfterAuth")
+            : null;
+
+        if (typeof window !== "undefined") {
+          sessionStorage.removeItem("redirectAfterAuth");
+        }
+
+        const isRewardsIntent = sessionIntent === "rewards";
 
         if (isRewardsIntent) {
-          if (typeof window !== "undefined") {
-            sessionStorage.removeItem("redirectAfterAuth");
-          }
           try {
             const ssoRes = await getRewardSsoUrl(undefined, false).unwrap();
             const redirectSsoUrl =

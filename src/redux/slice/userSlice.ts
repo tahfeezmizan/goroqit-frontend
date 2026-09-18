@@ -38,6 +38,7 @@ export const userSlice = createSlice({
         Cookies.remove("accessToken");
         Cookies.remove("user");
         Cookies.remove("token");
+        sessionStorage.removeItem("redirectAfterAuth");
       }
     },
   },
