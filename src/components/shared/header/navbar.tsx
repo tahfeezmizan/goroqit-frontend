@@ -132,7 +132,7 @@ export function Navbar() {
                       alt="Logo"
                       width={165}
                       height={40}
-                      className="w-40 h-auto"
+                      className="w-32 sm:w-40 h-auto"
                     />
                   ) : (
                     <Image
@@ -140,7 +140,7 @@ export function Navbar() {
                       alt="Logo"
                       width={165}
                       height={40}
-                      className="w-40 h-auto"
+                      className="w-32 sm:w-40 h-auto"
                     />
                   )
                 ) : (
@@ -149,7 +149,7 @@ export function Navbar() {
                     alt="Logo"
                     width={165}
                     height={40}
-                    className="w-40 h-auto"
+                    className="w-32 sm:w-40 h-auto"
                   />
                 )}
               </Link>
@@ -158,7 +158,7 @@ export function Navbar() {
             {/* Desktop Navigation Links */}
             <div
               className={cn(
-                "hidden lg:flex items-center space-x-3",
+                "hidden lg:flex items-center space-x-1 xl:space-x-3",
                 pathname === "/" ? "text-white" : "text-green-900",
                 pathname === "/" && isScrolled && "text-green-900"
               )}
@@ -167,7 +167,7 @@ export function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="px-3 font-medium text-xl"
+                  className="px-2 xl:px-3 font-medium text-base xl:text-lg whitespace-nowrap"
                 >
                   {link.label}
                 </Link>
@@ -175,7 +175,7 @@ export function Navbar() {
             </div>
 
             {/* Desktop Right Section */}
-            <div className="hidden lg:flex items-center space-x-4">
+            <div className="hidden lg:flex items-center space-x-2 xl:space-x-4 shrink-0">
               {isMounted && hasToken ? (
                 <>
                   <RoqitRewardsButton />
@@ -190,7 +190,7 @@ export function Navbar() {
                             : "#"
                         }
                         className={cn(
-                          "p-2 rounded-full hover:bg-white/10 transition-colors",
+                          "p-2 rounded-full hover:bg-white/10 transition-colors shrink-0",
                           pathname === "/" ? "text-white" : "text-black",
                           pathname === "/" && isScrolled && "text-green-900"
                         )}
@@ -203,7 +203,7 @@ export function Navbar() {
                   {/* Profile Dropdown */}
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <button className="flex items-center space-x-2 p-1 rounded-full hover:bg-white/10 transition-colors">
+                      <button className="flex items-center space-x-2 p-1 rounded-full hover:bg-white/10 transition-colors shrink-0">
                         <div className="w-10 h-10 rounded-full bg-green-900 flex items-center justify-center">
                           {userData?.profile?.companyLogo || userData?.image ? (
                             <Image
@@ -298,12 +298,13 @@ export function Navbar() {
                   </DropdownMenu>
                 </>
               ) : (
-                <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-2 xl:space-x-3 shrink-0">
+                  <RoqitRewardsButton />
                   <Button
                     asChild
                     variant="outline"
                     className={cn(
-                      "px-6 py-2 text-base font-medium rounded-lg border-2 cursor-pointer",
+                      "px-4 xl:px-6 py-2 text-sm xl:text-base font-medium rounded-lg border-2 cursor-pointer whitespace-nowrap",
                       pathname === "/"
                         ? "border-green-900 bg-transparent text-white hover:bg-white hover:border-white hover:text-black"
                         : "border-green-900 text-black hover:bg-green-900 hover:text-white",
@@ -315,7 +316,7 @@ export function Navbar() {
 
                   <Button
                     asChild
-                    className="bg-green-900 hover:bg-green-800 text-white px-6 py-2 text-base font-medium rounded-lg cursor-pointer"
+                    className="bg-green-900 hover:bg-green-800 text-white px-4 xl:px-6 py-2 text-sm xl:text-base font-medium rounded-lg cursor-pointer whitespace-nowrap"
                   >
                     <Link href="/sign-up">Sign up</Link>
                   </Button>
@@ -323,167 +324,103 @@ export function Navbar() {
               )}
             </div>
 
-            {/* Mobile Menu Button */}
-            <div className="lg:hidden flex items-center">
-              <Button
-                asChild
+            {/* Mobile Header Right Section */}
+            <div className="lg:hidden flex items-center space-x-3">
+              <RoqitRewardsButton />
+
+              {/* Hamburger Menu Toggle Button */}
+              <button
+                type="button"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="p-2 !bg-transparent "
+                className="p-1 focus:outline-none cursor-pointer"
+                aria-label="Toggle Menu"
               >
-                <div>
-                  {isMobileMenuOpen ? (
-                    <X
-                      className={cn(
-                        "size-9",
-                        pathname === "/" ? "text-white" : "text-black",
-                        pathname === "/" && isScrolled && "text-black "
-                      )}
-                    />
-                  ) : (
-                    <>
-                      {isMounted && hasToken ? (
-                        <>
-                          {activeRole !== "admin" && (
-                            <Link
-                              href={
-                                activeRole === "applicant"
-                                  ? "/profile/messages"
-                                  : activeRole === "recruiter"
-                                  ? "/recruiter/messages"
-                                  : "#"
-                              }
-                              className={cn(
-                                "p-2 rounded-full hover:bg-white/10 transition-colors",
-                                pathname === "/" ? "text-white" : "text-black",
-                                pathname === "/" &&
-                                  isScrolled &&
-                                  "text-green-900"
-                              )}
-                            >
-                              <MessageCircle className="h-6 w-6 size-9" />
-                            </Link>
-                          )}
-
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <button className="flex items-center space-x-2 p-1 rounded-full hover:bg-white/10 transition-colors">
-                                <div className="w-9 h-9 rounded-full bg-green-900 flex items-center justify-center overflow-hidden">
-                                  {userData?.image ? (
-                                    <Image
-                                      src={getImageUrl(userData?.image)}
-                                      alt={userData?.name}
-                                      width={1000}
-                                      height={1000}
-                                      className="w-full h-full "
-                                    />
-                                  ) : (
-                                    <CircleUserRound className="size-8 text-white" />
-                                  )}
-                                </div>
-                              </button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-48">
-                              <DropdownMenuItem asChild>
-                                <span className="text-xl font-semibold">
-                                  {userData?.name}
-                                </span>
-                              </DropdownMenuItem>
-
-                              {activeRole === "applicant" && (
-                                <DropdownMenuItem asChild>
-                                  <Link
-                                    href="/profile"
-                                    className="flex items-center space-x-2"
-                                  >
-                                    <User className="h-4 w-4" />
-                                    <span>Profile</span>
-                                  </Link>
-                                </DropdownMenuItem>
-                              )}
-
-                              {activeRole === "recruiter" && (
-                                <>
-                                  <DropdownMenuItem asChild>
-                                    <Link
-                                      href="/recruiter"
-                                      className="flex items-center space-x-2"
-                                    >
-                                      <LayoutDashboard className="h-4 w-4" />
-                                      <span>Dashboard</span>
-                                    </Link>
-                                  </DropdownMenuItem>
-                                  <DropdownMenuItem asChild>
-                                    <Link
-                                      href="/recruiter/jobs/post-job"
-                                      className="flex items-center space-x-2"
-                                    >
-                                      <Plus className="h-4 w-4" />
-                                      <span>Create Job</span>
-                                    </Link>
-                                  </DropdownMenuItem>
-                                </>
-                              )}
-
-                              {activeRole === "admin" && (
-                                <>
-                                  <DropdownMenuItem asChild>
-                                    <Link
-                                      href="/admin"
-                                      className="flex items-center space-x-2"
-                                    >
-                                      <LayoutDashboard className="h-4 w-4" />
-                                      <span>Dashboard</span>
-                                    </Link>
-                                  </DropdownMenuItem>
-                                  <DropdownMenuItem asChild>
-                                    <Link
-                                      href="/admin/jobs"
-                                      className="flex items-center space-x-2"
-                                    >
-                                      <FileText className="h-4 w-4" />
-                                      <span>All Jobs</span>
-                                    </Link>
-                                  </DropdownMenuItem>
-                                </>
-                              )}
-
-                              <DropdownMenuItem
-                                onClick={handleLogout}
-                                className="flex items-center space-x-2"
-                              >
-                                <LogOut className="h-4 w-4" />
-                                <span>Logout</span>
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </>
-                      ) : (
-                        ""
-                      )}
-                      <Menu
-                        className={cn(
-                          "size-9",
-                          pathname === "/" ? "text-white" : "text-black",
-                          pathname === "/" && isScrolled && "text-black "
-                        )}
-                      />
-                    </>
-                  )}
-                </div>
-              </Button>
+                {isMobileMenuOpen ? (
+                  <X
+                    className={cn(
+                      "size-8 sm:size-9",
+                      pathname === "/" ? "text-white" : "text-black",
+                      pathname === "/" && isScrolled && "text-black"
+                    )}
+                  />
+                ) : (
+                  <Menu
+                    className={cn(
+                      "size-8 sm:size-9",
+                      pathname === "/" ? "text-white" : "text-black",
+                      pathname === "/" && isScrolled && "text-black"
+                    )}
+                  />
+                )}
+              </button>
             </div>
           </div>
 
-          {/* Mobile Menu */}
+          {/* Mobile Menu Dropdown */}
           {isMobileMenuOpen && (
-            <div className="lg:hidden border-t border-gray-200 py-4">
-              <div className="flex flex-col space-y-3">
+            <div className="lg:hidden border-t border-gray-200/20 py-4 mt-2">
+              {/* Logged-in User Profile Header in Mobile Menu */}
+              {isMounted && hasToken && (
+                <div className="mb-4 pb-3 border-b border-gray-200/20 px-3 flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 rounded-full bg-green-900 flex items-center justify-center overflow-hidden border border-white/20">
+                      {userData?.image ? (
+                        <Image
+                          src={getImageUrl(userData?.image)}
+                          alt={userData?.name || "User"}
+                          width={100}
+                          height={100}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <CircleUserRound className="size-8 text-white" />
+                      )}
+                    </div>
+                    <div>
+                      <p
+                        className={cn(
+                          "font-semibold text-base",
+                          pathname === "/" ? "text-white" : "text-black",
+                          pathname === "/" && isScrolled && "text-green-900"
+                        )}
+                      >
+                        {userData?.name}
+                      </p>
+                      <p className="text-xs opacity-75 capitalize">
+                        {activeRole}
+                      </p>
+                    </div>
+                  </div>
+
+                  {activeRole !== "admin" && (
+                    <Link
+                      href={
+                        activeRole === "applicant"
+                          ? "/profile/messages"
+                          : activeRole === "recruiter"
+                          ? "/recruiter/messages"
+                          : "#"
+                      }
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={cn(
+                        "p-2 rounded-full hover:bg-white/10 transition-colors",
+                        pathname === "/" ? "text-white" : "text-black",
+                        pathname === "/" && isScrolled && "text-green-900"
+                      )}
+                    >
+                      <MessageCircle className="h-6 w-6" />
+                    </Link>
+                  )}
+                </div>
+              )}
+
+              <div className="flex flex-col space-y-2">
                 {navigationLinks.map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
                     className={cn(
-                      "px-3 py-2 text-base font-semibold transition-colors",
+                      "px-3 py-2 text-base font-semibold transition-colors rounded-md hover:bg-white/10",
                       pathname === "/" ? "text-white" : "text-black",
                       pathname === "/" && isScrolled && "text-green-900"
                     )}
@@ -492,36 +429,91 @@ export function Navbar() {
                     {link.label}
                   </Link>
                 ))}
-                <div className="">
-                  {isMounted && hasToken ? (
-                    <div className="pt-2">
-                      <RoqitRewardsButton className="w-full justify-center" />
-                    </div>
-                  ) : (
-                    <div className="flex flex-col space-y-3">
-                      <Button
-                        asChild
-                        variant="outline"
+
+                {isMounted && hasToken && (
+                  <div className="pt-2 border-t border-gray-200/20 flex flex-col space-y-2">
+                    {activeRole === "applicant" && (
+                      <Link
+                        href="/profile"
+                        onClick={() => setIsMobileMenuOpen(false)}
                         className={cn(
-                          "px-6 py-2 text-base font-medium rounded-lg border-2 cursor-pointer",
-                          pathname === "/"
-                            ? "border-green-900 bg-transparent text-white hover:bg-white hover:border-white hover:text-black"
-                            : "border-green-900 text-black hover:bg-green-900 hover:text-white",
-                          pathname === "/" && isScrolled && "text-green-900 "
+                          "px-3 py-2 text-base font-semibold flex items-center space-x-2 rounded-md hover:bg-white/10",
+                          pathname === "/" ? "text-white" : "text-black",
+                          pathname === "/" && isScrolled && "text-green-900"
                         )}
                       >
-                        <Link href="/login">Login</Link>
-                      </Button>
+                        <User className="h-5 w-5" />
+                        <span>Profile</span>
+                      </Link>
+                    )}
 
-                      <Button
-                        asChild
-                        className="bg-green-900 hover:bg-green-800 text-white px-6 py-2 text-base font-medium rounded-lg cursor-pointer"
+                    {activeRole === "recruiter" && (
+                      <Link
+                        href="/recruiter"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className={cn(
+                          "px-3 py-2 text-base font-semibold flex items-center space-x-2 rounded-md hover:bg-white/10",
+                          pathname === "/" ? "text-white" : "text-black",
+                          pathname === "/" && isScrolled && "text-green-900"
+                        )}
                       >
-                        <Link href="/sign-up">Sign up</Link>
-                      </Button>
-                    </div>
-                  )}
-                </div>
+                        <LayoutDashboard className="h-5 w-5" />
+                        <span>Dashboard</span>
+                      </Link>
+                    )}
+
+                    {activeRole === "admin" && (
+                      <Link
+                        href="/admin"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className={cn(
+                          "px-3 py-2 text-base font-semibold flex items-center space-x-2 rounded-md hover:bg-white/10",
+                          pathname === "/" ? "text-white" : "text-black",
+                          pathname === "/" && isScrolled && "text-green-900"
+                        )}
+                      >
+                        <LayoutDashboard className="h-5 w-5" />
+                        <span>Dashboard</span>
+                      </Link>
+                    )}
+
+                    <button
+                      onClick={() => {
+                        setIsMobileMenuOpen(false);
+                        handleLogout();
+                      }}
+                      className="px-3 py-2 text-base font-semibold text-red-500 flex items-center space-x-2 rounded-md hover:bg-red-500/10 cursor-pointer text-left w-full"
+                    >
+                      <LogOut className="h-5 w-5" />
+                      <span>Logout</span>
+                    </button>
+                  </div>
+                )}
+
+                {isMounted && !hasToken && (
+                  <div className="flex flex-col space-y-3 pt-2">
+                    <Button
+                      asChild
+                      variant="outline"
+                      className={cn(
+                        "px-6 py-2 text-base font-medium rounded-lg border-2 cursor-pointer",
+                        pathname === "/"
+                          ? "border-green-900 bg-transparent text-white hover:bg-white hover:border-white hover:text-black"
+                          : "border-green-900 text-black hover:bg-green-900 hover:text-white",
+                        pathname === "/" && isScrolled && "text-green-900 "
+                      )}
+                    >
+                      <Link href="/login">Login</Link>
+                    </Button>
+
+                    <Button
+                      asChild
+                      className="bg-green-900 hover:bg-green-800 text-white px-6 py-2 text-base font-medium rounded-lg cursor-pointer"
+                    >
+                      <Link href="/sign-up">Sign up</Link>
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
           )}

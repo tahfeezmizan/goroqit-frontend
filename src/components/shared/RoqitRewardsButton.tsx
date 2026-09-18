@@ -3,6 +3,7 @@
 import { useLazyGetRewardSsoUrlQuery } from "@/redux/features/userApi";
 import Cookies from "js-cookie";
 import { Gift, Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 interface RoqitRewardsButtonProps {
@@ -10,21 +11,26 @@ interface RoqitRewardsButtonProps {
 }
 
 export function RoqitRewardsButton({ className = "" }: RoqitRewardsButtonProps) {
+  const router = useRouter();
   const [triggerGetSsoUrl, { isLoading }] = useLazyGetRewardSsoUrlQuery();
 
   const handleRewardsClick = async () => {
-    // 1️⃣ Verify token availability before dispatching request
     const token =
       Cookies.get("token") ||
       (typeof window !== "undefined"
         ? localStorage.getItem("accessToken")
         : null);
 
+    // 1️⃣ If user is logged out (guest), track intent & redirect to login page
     if (!token) {
-      toast.error("Please log in to access Roqit Rewards.");
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem("redirectAfterAuth", "rewards");
+      }
+      router.push("/login?redirect=rewards");
       return;
     }
 
+    // 2️⃣ If user is logged in, hit rewards SSO API & redirect to returned URL
     try {
       const res = await triggerGetSsoUrl(undefined, false).unwrap();
       console.log("Rewards SSO API Response:", res);
@@ -66,12 +72,12 @@ export function RoqitRewardsButton({ className = "" }: RoqitRewardsButtonProps) 
       onClick={handleRewardsClick}
       disabled={isLoading}
       type="button"
-      className={`flex items-center gap-2 bg-[#1b4e2d] hover:bg-[#153f24] text-white px-4 py-1.5 rounded-full border border-white/20 transition-all duration-200 cursor-pointer text-sm md:text-base font-medium disabled:opacity-70 disabled:cursor-not-allowed shadow-sm ${className}`}
+      className={`flex items-center gap-2 bg-[#1b4e2d] hover:bg-[#153f24] text-white px-3.5 sm:px-4 py-2 rounded-full border border-white/20 transition-all duration-200 cursor-pointer text-xs sm:text-sm md:text-base font-medium disabled:opacity-70 disabled:cursor-not-allowed shadow-sm h-9 md:h-10 ${className}`}
     >
       {isLoading ? (
-        <Loader2 className="h-5 w-5 animate-spin text-white shrink-0" />
+        <Loader2 className="h-4 w-4 md:h-5 md:w-5 animate-spin text-white shrink-0" />
       ) : (
-        <Gift className="h-5 w-5 text-white shrink-0" />
+        <Gift className="h-4 w-4 md:h-5 md:w-5 text-white shrink-0" />
       )}
       <span className="whitespace-nowrap">Roqit Rewards</span>
     </button>

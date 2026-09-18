@@ -184,6 +184,7 @@ import {
   useResendOTPMutation,
   useVerifyUserMutation,
 } from "@/redux/features/authApi";
+import { useLazyGetRewardSsoUrlQuery } from "@/redux/features/userApi";
 import { setUser } from "@/redux/slice/userSlice";
 import { ApiError } from "@/types/types";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -205,6 +206,7 @@ export default function OtpVerify() {
 
   const [verifyUser] = useVerifyUserMutation();
   const [resendOTP] = useResendOTPMutation();
+  const [getRewardSsoUrl] = useLazyGetRewardSsoUrlQuery();
 
   useEffect(() => {
     if (countdown > 0) {
@@ -298,6 +300,43 @@ export default function OtpVerify() {
         );
 
         toast.success("OTP verification successful");
+
+        // Check if user came from clicking Roqit Rewards button
+        const isRewardsIntent =
+          typeof window !== "undefined" &&
+          sessionStorage.getItem("redirectAfterAuth") === "rewards";
+
+        if (isRewardsIntent) {
+          if (typeof window !== "undefined") {
+            sessionStorage.removeItem("redirectAfterAuth");
+          }
+          try {
+            const ssoRes = await getRewardSsoUrl(undefined, false).unwrap();
+            const redirectSsoUrl =
+              typeof ssoRes === "string"
+                ? ssoRes
+                : ssoRes?.data?.url ||
+                  ssoRes?.data?.ssoUrl ||
+                  ssoRes?.data?.sso_url ||
+                  ssoRes?.data?.redirectUrl ||
+                  ssoRes?.data?.link ||
+                  (typeof ssoRes?.data === "string" ? ssoRes.data : null) ||
+                  ssoRes?.url ||
+                  ssoRes?.ssoUrl ||
+                  ssoRes?.sso_url;
+
+            if (redirectSsoUrl && typeof redirectSsoUrl === "string") {
+              window.location.href = redirectSsoUrl;
+              return;
+            }
+          } catch (rewardsErr) {
+            console.error(
+              "Failed to redirect to rewards after OTP verification:",
+              rewardsErr
+            );
+          }
+        }
+
         route.push("/");
       } else {
         const err = res as ApiError;

@@ -5,6 +5,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useLoginUserMutation } from "@/redux/features/authApi";
+import { useLazyGetRewardSsoUrlQuery } from "@/redux/features/userApi";
 import { setUser } from "@/redux/slice/userSlice";
 import { ApiError } from "@/types/types";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
@@ -33,6 +34,7 @@ export function LoginForm() {
   const searchParams = useSearchParams();
   const dispatch = useDispatch();
   const [loginUser, { isLoading }] = useLoginUserMutation();
+  const [getRewardSsoUrl] = useLazyGetRewardSsoUrlQuery();
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -63,6 +65,44 @@ export function LoginForm() {
             },
           })
         );
+
+        // Check if user came from clicking Roqit Rewards button
+        const isRewardsIntent =
+          redirectUrl === "rewards" ||
+          (typeof window !== "undefined" &&
+            sessionStorage.getItem("redirectAfterAuth") === "rewards");
+
+        if (isRewardsIntent) {
+          if (typeof window !== "undefined") {
+            sessionStorage.removeItem("redirectAfterAuth");
+          }
+          toast.success("Login Successful. Connecting to Roqit Rewards...");
+          try {
+            const ssoRes = await getRewardSsoUrl(undefined, false).unwrap();
+            const redirectSsoUrl =
+              typeof ssoRes === "string"
+                ? ssoRes
+                : ssoRes?.data?.url ||
+                  ssoRes?.data?.ssoUrl ||
+                  ssoRes?.data?.sso_url ||
+                  ssoRes?.data?.redirectUrl ||
+                  ssoRes?.data?.link ||
+                  (typeof ssoRes?.data === "string" ? ssoRes.data : null) ||
+                  ssoRes?.url ||
+                  ssoRes?.ssoUrl ||
+                  ssoRes?.sso_url;
+
+            if (redirectSsoUrl && typeof redirectSsoUrl === "string") {
+              window.location.href = redirectSsoUrl;
+              return;
+            }
+          } catch (rewardsErr) {
+            console.error(
+              "Failed to redirect to rewards after login:",
+              rewardsErr
+            );
+          }
+        }
 
         const role = res?.data?.data?.role;
 
