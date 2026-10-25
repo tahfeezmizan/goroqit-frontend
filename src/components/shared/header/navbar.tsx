@@ -28,7 +28,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 import { RoqitRewardsButton } from "@/components/shared/RoqitRewardsButton";
 
 // Types for user roles
@@ -38,8 +39,7 @@ export function Navbar() {
   const dispatch = useDispatch();
   const router = useRouter();
   const pathname = usePathname();
-
-  const { data: userData } = useGetMeQuery(undefined);
+  const authUser = useSelector((state: RootState) => state.user?.user);
 
   // Defer reading cookies/user role until after mount to avoid SSR/CSR mismatch
   const [isMounted, setIsMounted] = useState(false);
@@ -47,16 +47,22 @@ export function Navbar() {
 
   useEffect(() => {
     setIsMounted(true);
-    setHasToken(!!Cookies.get("token"));
-  }, []);
+    const token =
+      Cookies.get("token") ||
+      (typeof window !== "undefined"
+        ? localStorage.getItem("accessToken")
+        : null);
+    setHasToken(Boolean(token || authUser));
+  }, [authUser]);
 
-  // ✅ Re-check token when userData changes (for instant update)
-  useEffect(() => {
-    setHasToken(!!Cookies.get("token"));
-  }, [userData]);
+  const { data: userData } = useGetMeQuery(undefined, {
+    skip: !isMounted || !hasToken,
+  });
 
   const activeRole: UserRole =
-    isMounted && userData?.role ? userData.role : "guest";
+    isMounted && (userData?.role || authUser?.role)
+      ? (userData?.role || authUser?.role)
+      : "guest";
 
   // State to control mobile menu visibility
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
